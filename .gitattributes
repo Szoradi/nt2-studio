@@ -1,0 +1,7 @@
+# Song and C64 files are binary: never convert line endings in them
+*.nt2 binary
+*.sid binary
+*.prg binary
+*.bin binary
+*.d64 binary
+*.wasm binary

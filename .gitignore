@@ -1,0 +1,10 @@
+node_modules
+dist
+
+# Built on the instruments of a third-party tune that is not part of this repository
+songs/side-step.nt2
+
+# Editor and OS leftovers
+.DS_Store
+Thumbs.db
+*.log

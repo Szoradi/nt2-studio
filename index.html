@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NT2 Studio</title>
+  <link rel="stylesheet" href="/src/ui/style.css">
+</head>
+<body>
+  <header id="toolbar">
+    <!-- Row 1: the song and its files -->
+    <div class="tbar">
+      <span class="brand">NT2 Studio</span>
+      <div class="group">
+        <span class="cap">Song</span>
+        <input id="in-name" class="songname" maxlength="32" spellcheck="false" title="Song name (used for saved and exported files)">
+      </div>
+      <div class="group">
+        <span class="cap">File</span>
+        <button id="btn-new" title="New song (the current one is kept under Recent)">New</button>
+        <button id="btn-open" title="Open a song file or .d64 disk image, or import a NinjaTracker 2 .sid, packed .prg or gamemusic file (Ctrl+O)">Open</button>
+        <button id="btn-recent" title="Songs that were replaced by New, Open or Examples">Recent</button>
+        <button id="btn-examples" title="Example tunes from the NinjaTracker V2.03 disk">Examples</button>
+        <span class="sep"></span>
+        <button id="btn-save" title="Save in NinjaTracker 2 song format (Ctrl+S, Ctrl+Shift+S to save as)">Save</button>
+        <button id="btn-export" title="Pack and export for the C64 (.sid, .prg, gamemusic, 4k intro source)">Export</button>
+        <span class="sep"></span>
+        <button id="btn-clearmusic" class="danger" title="Remove all patterns and tracks, keep tables and commands (Ctrl+Z to undo)">Clear music</button>
+      </div>
+      <div class="group">
+        <span class="cap">Pattern</span>
+        <button id="btn-pdup" title="Copy the current pattern to the first unused one (Ctrl+D)">Duplicate</button>
+        <button id="btn-pclear" title="Empty the current pattern">Clear</button>
+        <label for="in-bar" title="Frames per bar (4 beats), for the bar and beat lines. Remembered for each song; guessed for a new one">Bar</label>
+        <input id="in-bar" class="hex" maxlength="3" size="3" spellcheck="false" title="Frames per bar (4 beats), for the bar and beat lines. Remembered for each song; guessed for a new one">
+      </div>
+      <span class="spacer"></span>
+      <div class="group">
+        <button id="btn-help" title="Keys and data format reference (F8)">Help</button>
+      </div>
+    </div>
+    <!-- Row 2: playing and editing -->
+    <div class="tbar">
+      <div class="group">
+        <span class="cap">Play</span>
+        <button id="btn-play" class="go" title="Play from the beginning (F1)">&#9654; Start</button>
+        <button id="btn-playcursor" title="Play from the cursor row of the pattern, or from the track cursor (F6)">&#9654; Cursor</button>
+        <button id="btn-playpatt" title="Loop the current pattern on its own (F9)">&#8635; Pattern</button>
+        <button id="btn-stop" title="Stop (F3 or Esc)">&#9632; Stop</button>
+        <span id="time" class="readout" title="Play time">0:00</span>
+        <span class="sep"></span>
+        <button id="btn-ff" class="toggle" title="Fast forward (F7)">FF</button>
+        <button id="btn-follow" class="toggle on" title="Follow the play position">Follow</button>
+      </div>
+      <div class="group">
+        <span class="cap">Mute</span>
+        <button id="btn-mute0" class="toggle sq" title="Mute channel 1 (Shift+click: solo)">1</button>
+        <button id="btn-mute1" class="toggle sq" title="Mute channel 2 (Shift+click: solo)">2</button>
+        <button id="btn-mute2" class="toggle sq" title="Mute channel 3 (Shift+click: solo)">3</button>
+      </div>
+      <div class="group">
+        <span class="cap">Subtune</span>
+        <span class="stepper">
+          <button id="btn-subprev" title="Previous subtune">&#9664;</button>
+          <span id="subtune" class="readout">00</span>
+          <button id="btn-subnext" title="Next subtune">&#9654;</button>
+        </span>
+      </div>
+      <div class="group">
+        <span class="cap">Octave</span>
+        <span class="stepper">
+          <button id="btn-octprev" title="Octave down (,)">&#9664;</button>
+          <span id="octave" class="readout">3</span>
+          <button id="btn-octnext" title="Octave up (.)">&#9654;</button>
+        </span>
+        <button id="btn-keymode" title="Note entry layout: ProTracker or DMC keys (F4)">PT</button>
+      </div>
+      <span class="spacer"></span>
+      <div class="group">
+        <label for="sel-model">SID</label>
+        <select id="sel-model"><option>8580</option><option>6581</option></select>
+        <label for="in-hr" title="Sustain/Release value used during hard restart">HR</label>
+        <input id="in-hr" class="hex" maxlength="2" size="2" spellcheck="false">
+        <label for="in-fw" title="Waveform of the note init frame">1st wave</label>
+        <input id="in-fw" class="hex" maxlength="2" size="2" spellcheck="false">
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="panel" id="panel-tracks" data-panel="tracks">
+      <h2>Tracks <span id="tracks-info" class="info"></span></h2>
+      <div class="cols" id="tracks"></div>
+    </section>
+    <section class="panel" id="panel-pattern" data-panel="pattern">
+      <h2>Patterns <span id="pattern-info" class="info"></span></h2>
+      <div class="cols" id="patterns"></div>
+    </section>
+    <div class="side">
+      <section class="panel" id="panel-tables" data-panel="tables">
+        <h2>Tables</h2>
+        <div class="cols" id="tables"></div>
+      </section>
+      <section class="panel" id="panel-commands" data-panel="commands">
+        <h2>Commands <span class="info">AD SR Wv Pu Fl Name</span></h2>
+        <div class="cols" id="commands"></div>
+      </section>
+    </div>
+  </main>
+
+  <footer id="status"><span id="status-msg"></span><span id="status-hint"></span></footer>
+
+  <input type="file" id="file-input" hidden>
+
+  <dialog id="dlg-files">
+    <h3 id="dlg-files-title">Choose a song</h3>
+    <div id="dlg-files-list" class="list"></div>
+    <div class="actions"><button data-close>Cancel</button></div>
+  </dialog>
+
+  <dialog id="dlg-export">
+    <h3>Export</h3>
+    <div class="form">
+      <label>Format</label>
+      <select id="ex-format">
+        <option value="sid">SID file (.sid) - player + music</option>
+        <option value="prg">C64 program data (.prg) - player + music</option>
+        <option value="game">Gamemusic data (.bin) - music only, for nt2play.s</option>
+        <option value="4k">4k intro source (.asm) - trimmed player + music, KickAssembler</option>
+      </select>
+      <label class="ex-addr">Start address</label><input id="ex-addr" class="hex ex-addr" maxlength="4" size="4" value="1000" spellcheck="false">
+      <label class="ex-normal">Zeropage (2 bytes)</label><input id="ex-zp" class="hex ex-normal" maxlength="2" size="2" value="FC" spellcheck="false">
+      <label class="ex-sid">Title</label><input id="ex-title" class="ex-sid" maxlength="31">
+      <label class="ex-sid">Author</label><input id="ex-author" class="ex-sid" maxlength="31">
+      <label class="ex-sid">Released</label><input id="ex-released" class="ex-sid" maxlength="31">
+      <label class="ex-game">Load address</label>
+      <label class="ex-game check"><input type="checkbox" id="ex-loadaddr" checked> include 2 byte load address</label>
+    </div>
+    <pre id="ex-info"></pre>
+    <div class="actions"><button data-close>Close</button><button id="ex-go" class="primary">Download</button></div>
+  </dialog>
+
+  <dialog id="dlg-help">
+    <h3>NT2 Studio help</h3>
+    <div id="help-body" class="help"></div>
+    <div class="actions"><button data-close class="primary">Close</button></div>
+  </dialog>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
