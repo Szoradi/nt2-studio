@@ -68,6 +68,13 @@
         </span>
         <button id="btn-keymode" title="Note entry layout: ProTracker or DMC keys (F4)">PT</button>
       </div>
+      <div class="group">
+        <span class="cap">Sounds</span>
+        <span class="seg">
+          <button id="btn-mode-inst" class="toggle" title="Edit sounds as instruments: envelope, waveform, pulse and filter steps with sliders and graphs">Instruments</button>
+          <button id="btn-mode-classic" class="toggle" title="Edit sounds as in NinjaTracker: the wave, pulse and filter tables and the command list in hex">Tables</button>
+        </span>
+      </div>
       <span class="spacer"></span>
       <div class="group">
         <label for="sel-model">SID</label>
@@ -90,12 +97,16 @@
       <div class="cols" id="patterns"></div>
     </section>
     <div class="side">
+      <section class="panel" id="panel-inst" data-panel="inst">
+        <h2>Instruments <span class="info">the number is the command to use in a pattern</span></h2>
+        <div class="inst"><div id="inst-list"></div><div id="inst-split" title="Drag to change the width of the instrument list (double-click to reset)"></div><div id="inst-editor"></div></div>
+      </section>
       <section class="panel" id="panel-tables" data-panel="tables">
         <h2>Tables</h2>
         <div class="cols" id="tables"></div>
       </section>
       <section class="panel" id="panel-commands" data-panel="commands">
-        <h2>Commands <span class="info">AD SR Wv Pu Fl Name</span></h2>
+        <h2>Commands</h2>
         <div class="cols" id="commands"></div>
       </section>
     </div>

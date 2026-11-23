@@ -6,6 +6,7 @@ import {
 } from '../core/song.ts';
 import { S, selectionRange, curTracks, patternUsed, CMD_NAME_COL } from './editor.ts';
 import type { PlayState } from '../audio/engine.ts';
+import { renderInstruments } from './instrument.ts';
 
 const $ = (id: string) => document.getElementById(id)!;
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -188,7 +189,9 @@ function renderTables() {
 
 function renderCommands() {
   const active = S.focus === 'commands';
-  let html = '<div class="col active"><div class="list">';
+  // Column titles, laid out like a row so each sits over its column
+  const titles = ['AD', 'SR', 'Wv', 'Pu', 'Fl'].map(t => `<span class="hc">${t}</span><span class="gap"></span>`).join('');
+  let html = `<div class="col active"><div class="cmd-head"><span class="rn">&nbsp;&nbsp;</span>${titles}<span class="name">Name</span></div><div class="list">`;
   for (let i = 0; i < MAX_CMD; i++) {
     const c = S.song.commands[i];
     const cc = active && i === S.cmdNum ? S.cmdCol : -1;
@@ -309,6 +312,7 @@ const HINTS: Record<string, string> = {
   tracks: 'Hex: pattern 01-7F, transpose 80-FF (C0 = none), end with 00 xx to loop  |  Enter: open pattern  Shift+Enter: new pattern  F6: play from here',
   pattern: 'Notes: piano keys  Space: key off  Shift+Space: key on  Enter: play row and step  |  Shift+Q/A: transpose  Shift+L: legato  Shift+O: optimize  -/+: command',
   tables: 'Hex edit  |  Enter: follow jump  Shift+Space: test command  Space: key off  Ins/Del: insert/delete row',
+  inst: 'Piano keys: try the instrument  Shift+Space: test note  Space: key off  Up/Down: other instrument  |  Drag the points in the graphs, or use the controls',
   commands: 'ADSR + table pointers  |  Enter: go to table  Shift+Enter: new table row  Shift+Space: test  Tab into Name to type',
 };
 
@@ -320,10 +324,19 @@ export function renderAll(play: PlayState | null, opts: { playOnly?: boolean } =
     applyPlay(play, true);
     return;
   }
+  const inst = S.sideMode === 'inst';
+  $('panel-inst').classList.toggle('hidden', !inst);
+  $('panel-tables').classList.toggle('hidden', inst);
+  $('panel-commands').classList.toggle('hidden', inst);
+  $('panel-inst').parentElement!.classList.toggle('one', inst);
+  $('main').classList.toggle('inst-mode', inst);
+  $('btn-mode-inst').classList.toggle('on', inst);
+  $('btn-mode-classic').classList.toggle('on', !inst);
   renderTracks();
   renderPatterns();
   renderTables();
   renderCommands();
+  renderInstruments();
   scrollToCursor($('tables'));
   scrollToCursor($('commands'));
   applyPlay(play, false);
@@ -363,8 +376,8 @@ export const HELP_HTML = `
 <tr><td>Tab / Shift+Tab</td><td>Next / previous panel</td></tr>
 <tr><td>Shift+1 2 3</td><td>Tracks 1-3</td></tr>
 <tr><td>Shift+4</td><td>Patterns</td></tr>
-<tr><td>Shift+5 6 7</td><td>Wave, pulse, filter table</td></tr>
-<tr><td>Shift+8</td><td>Commands</td></tr>
+<tr><td>Shift+5 6 7</td><td>Wave, pulse, filter table (switches Sounds to Tables)</td></tr>
+<tr><td>Shift+8</td><td>Commands, or the Instruments panel</td></tr>
 <tr><td>Arrows, PgUp/PgDn, Home/End</td><td>Move around</td></tr>
 <tr><td>Shift+Up/Down</td><td>Select rows</td></tr>
 <tr><td>Ctrl+C / X / V</td><td>Copy, cut, paste (paste overwrites from the cursor)</td></tr>
@@ -409,6 +422,14 @@ export const HELP_HTML = `
 <p><b>Wave</b> - 00-8F: set waveform, right = arpeggio (00-7F relative, 8C-DF absolute note). 90-BF: no waveform change, delay 00-2F frames. C0-DF: vibrato, speed 00-1F, right = depth. E0-FE: slide, speed high byte 00-1E, right = low byte. FF: jump to right (00 stops).</p>
 <p><b>Pulse</b> - 01-7F: modulate for that many frames, right = signed speed. 80-FE: set pulse to right. FF: jump.</p>
 <p><b>Filter</b> - 01-7F: modulate cutoff for that many frames, right = signed speed. 80-FE: set passband (left nybble - 8) and filtered channels (right nybble), right = cutoff. FF: jump.</p>
+<h4>Instruments</h4>
+<p>The <b>Sounds</b> switch in the toolbar chooses how sounds are edited. <b>Instruments</b> shows each command as an instrument: a name, an envelope with four sliders, and its waveform, pulse and filter programs as lists of steps, each with a graph of the program frame by frame. Drag a point in a graph to change its step: a round point is a set value, a diamond is the end of a sweep (sideways for its length, up or down for its speed), a pitch step moves by semitones. The shaded part is the program repeating. <b>Tables</b> shows the same data as in NinjaTracker: the three tables and the command list in hex. Both edit the same song, so you can switch at any time and nothing is converted.</p>
+<table>
+<tr><td>Piano keys</td><td>Try the instrument (while the Instruments panel is active)</td></tr>
+<tr><td>Shift+Space / Space</td><td>Test note / key off</td></tr>
+<tr><td>Up / Down</td><td>Previous / next instrument</td></tr>
+</table>
+<p>The instrument number is the command number to type in a pattern. <b>+</b> adds a step after a step (a copy of it), <b>&times;</b> removes one, and <b>Then</b> says what happens after the last step: stop, or repeat from a step. If two instruments use the same steps the section says <i>Shared</i>; <b>Make own copy</b> separates them. <b>Remove</b> stops using a table and deletes its steps unless something else still uses them.</p>
 <h4>Commands</h4>
 <table>
 <tr><td>Enter</td><td>On Wv/Pu/Fl: go to that table position</td></tr>

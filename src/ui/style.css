@@ -206,6 +206,106 @@ input.songname { width: 11em; padding: 0 7px; color: var(--note); }
 .name.cursor { background: var(--cursor); color: #fff; }
 .caret { background: #fff; color: #000; }
 
+.seg { display: inline-flex; }
+.seg button:first-child { border-radius: 4px 0 0 4px; }
+.seg button:last-child { border-radius: 0 4px 4px 0; border-left: 0; }
+.side.one { grid-template-rows: 1fr; }
+/* The instrument editor needs more room than the hex lists it replaces */
+#main.inst-mode { grid-template-columns: minmax(200px, 0.7fr) minmax(440px, 1.7fr) minmax(600px, 2.5fr); }
+
+.inst { flex: 1; min-height: 0; display: flex; }
+#inst-split { width: 5px; flex-shrink: 0; cursor: col-resize; border-left: 1px solid var(--line); }
+#inst-split:hover, #inst-split.drag { background: #46618f; border-left-color: #46618f; }
+#inst-list { width: 132px; flex-shrink: 0; overflow-y: auto; padding: 6px; scrollbar-width: thin; scrollbar-color: var(--faint) transparent; }
+#inst-list > button { width: 100%; margin-bottom: 6px; }
+.il { display: flex; align-items: center; gap: 6px; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-family: var(--mono); line-height: 20px; }
+.il:hover { background: var(--rowcur); }
+.il.cur { background: var(--cursor); color: #fff; }
+.il.cur .rn, .il.cur .il-tags { color: #cfe0ff; }
+.il .rn { margin-right: 0; }
+.il-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.il-name i { color: var(--faint); font-family: system-ui, sans-serif; }
+.il.cur .il-name i { color: #cfe0ff; }
+.il-tags { font-size: 10px; color: var(--dim); letter-spacing: .1em; }
+#inst-editor { flex: 1; min-width: 0; overflow-y: auto; padding: 8px 10px 14px; scrollbar-width: thin; scrollbar-color: var(--faint) transparent; }
+.ie-head, .ie-sec, .st, .envrow { display: flex; align-items: center; gap: 6px; }
+.ie-head .num { font-family: var(--mono); color: var(--cmd); font-size: 15px; }
+.ie-name { width: 9em; font-family: var(--mono); color: var(--note); padding: 0 7px; }
+.ie-note { color: var(--dim); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.ie-head button { flex-shrink: 0; }
+.ie-note.warn { color: var(--warn); }
+.ie-empty { display: flex; align-items: center; gap: 10px; padding: 18px 4px; color: var(--dim); }
+.grow { flex: 1; }
+.ie-sec { flex-wrap: wrap; margin-top: 10px; padding: 7px 9px 8px; border: 1px solid var(--line); border-radius: 6px; background: rgba(255, 255, 255, .015); }
+.ie-sec h3 { margin: 0 4px 0 0; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--accent); }
+.ie-sec.off h3 { color: var(--dim); }
+.ie-sec button, .ie-sec select, .ie-sec input { height: 22px; line-height: 20px; padding: 0 6px; font-size: 12px; }
+.ie-sec button.sq { width: 22px; padding: 0; }
+.ig, .steps, .envrow { flex-basis: 100%; min-width: 0; }
+.ig { margin: 6px -9px 2px; overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.st { padding: 2px 0; min-height: 26px; align-items: center; }
+/* A step always stays on one line: when the panel is narrow its lists, sliders and labels shrink */
+.stc { flex: 1; min-width: 0; display: flex; align-items: center; gap: 5px; overflow: hidden; }
+.stc > * { flex-shrink: 0; }
+.stc select { flex: 0 1 auto; min-width: 42px; }
+.stc input[type=range] { flex: 0 1 110px; min-width: 36px; }
+.stc .lb { flex-shrink: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.stc .ck { white-space: nowrap; gap: 3px; }
+.stc output { min-width: 2.6em; }
+.stc input.nm { width: 4.2em; }
+.st > .rn, .st > .lb, .st > .ie-note { line-height: 22px; }
+.st.end { margin-top: 3px; padding-top: 5px; border-top: 1px dashed var(--line); }
+.st .rn { font-family: var(--mono); width: 1.6em; text-align: right; margin-right: 2px; }
+.lb { color: var(--dim); font-size: 12px; }
+.ck { display: inline-flex; align-items: center; gap: 3px; font-size: 12px; color: var(--text); }
+input.nm { width: 5em; font-family: var(--mono); }
+.ie-sec input[type=range] { padding: 0; border: 0; background: none; width: 110px; accent-color: var(--accent); }
+.ie-sec output { font-family: var(--mono); font-size: 12px; color: var(--note); min-width: 3.4em; }
+.envrow { gap: 14px; margin-top: 6px; flex-wrap: wrap; }
+.sliders { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2px 18px; flex: 1; min-width: 200px; }
+.adsr { display: flex; align-items: center; gap: 6px; }
+.adsr .lb { width: 4.2em; }
+.adsr input[type=range] { flex: 1; width: auto; min-width: 50px; }
+svg.env { flex-shrink: 0; }
+.env-fill { fill: var(--accent); opacity: .12; }
+
+.tg-head { display: flex; align-items: center; gap: 8px; padding: 3px 8px; font-size: 12px; color: var(--dim); white-space: nowrap; overflow: hidden; }
+.tg-head b { color: var(--text); font-weight: 600; }
+.tg-head .grow { flex: 1; }
+.tg-what { overflow: hidden; text-overflow: ellipsis; min-width: 0; color: var(--faint); }
+.tg-key { display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.tg-key i { width: 8px; height: 8px; border-radius: 2px; margin-left: 6px; }
+.tg-key i.k-set { border-radius: 50%; background: var(--accent); }
+.tg-key i.k-mod { transform: rotate(45deg) scale(.85); background: var(--cmd); }
+svg.tg { display: block; }
+.tg-grid { stroke: var(--line); stroke-width: 1; shape-rendering: crispEdges; opacity: .6; }
+.tg-grid.major { stroke: #4a5468; opacity: 1; }
+.tg-tick { stroke: var(--faint); }
+.tg-lab { fill: var(--dim); font: 10px var(--mono); }
+.tg-rep { fill: rgba(0, 0, 0, .28); }
+.tg-mark { stroke: var(--warn); stroke-dasharray: 3 3; opacity: .7; }
+.tg-marklab { fill: var(--warn); font: 10px var(--mono); }
+.tg-line { fill: none; stroke: var(--accent); stroke-width: 1.75; stroke-linejoin: round; }
+.tg-line.rep { stroke: var(--faint); stroke-width: 1.25; }
+.tg-stepline { fill: none; stroke: var(--faint); stroke-width: 1; }
+.tg-step { fill: #b48cf2; }
+.tg-step.rep { opacity: .35; }
+.tg-step.off { opacity: .55; }
+.tg-step.rep.off { opacity: .2; }
+.tg-step.abs { stroke: var(--note); stroke-width: 1; }
+.tg-step.fx { opacity: .3; }
+.w-tri { fill: var(--dur); background: var(--dur); }
+.w-saw { fill: var(--cmd); background: var(--cmd); }
+.w-pul { fill: var(--accent); background: var(--accent); }
+.w-noi { fill: #e6e9ef; background: #e6e9ef; }
+.tg-cur { fill: none; stroke: #fff; stroke-width: 1.25; }
+.tg-h { stroke: var(--bg); stroke-width: 1.5; }
+.tg-h.set { fill: var(--accent); }
+.tg-h.mod { fill: var(--cmd); }
+.tg-h.cur { stroke: #fff; }
+.tg-hit { fill: transparent; cursor: grab; }
+svg.tg.dragging, svg.tg.dragging .tg-hit { cursor: grabbing; }
+
 #status {
   display: flex;
   justify-content: space-between;
@@ -254,9 +354,55 @@ dialog .list button { display: block; width: 100%; text-align: left; margin-bott
 @media (max-width: 1100px) {
   /* Narrow window: the panels stack and scroll inside the main area, so the toolbar and the
      status bar stay in place */
-  #main { grid-template-columns: 1fr; grid-auto-rows: 60vh; overflow-y: auto; }
+  #main, #main.inst-mode { grid-template-columns: 1fr; grid-auto-rows: 60vh; overflow-y: auto; }
   .side { display: contents; }
   .help { columns: 1; }
 }
 
-input[type=checkbox] { height: auto; padding: 0; }
+/* Tick boxes drawn like the other controls: a dark box that fills with the accent colour when on */
+input[type=checkbox], .ie-sec input[type=checkbox] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #4a5468;
+  border-radius: 3px;
+  background: #1d2028;
+  cursor: pointer;
+  display: inline-grid;
+  place-content: center;
+  vertical-align: middle;
+}
+input[type=checkbox]::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  transform: scale(0);
+  background: #fff;
+  clip-path: polygon(12% 52%, 0 66%, 38% 100%, 100% 22%, 86% 10%, 37% 70%);
+}
+input[type=checkbox]:checked { background: #2b5fb8; border-color: #3d74d6; }
+input[type=checkbox]:checked::before { transform: scale(1); }
+input[type=checkbox]:hover { border-color: var(--accent); }
+input[type=checkbox]:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.ck { cursor: pointer; gap: 4px; }
+.ck:has(input:not(:checked)) { color: var(--dim); }
+.st select[data-f="kind"] { width: 80px; }
+.st select[data-f="wf"] { width: 84px; }
+.st select[data-f="pm"] { width: 90px; }
+.st select[data-f="ft"] { width: 96px; }
+
+/* Too narrow for even a shrunk step: let it wrap, so no control is cut off */
+#inst-editor { container-type: inline-size; }
+@container (max-width: 530px) {
+  .stc { flex-wrap: wrap; overflow: visible; gap: 4px 5px; }
+  .st { align-items: flex-start; }
+}
+
+/* Column titles of the command list: same font and spacing as its rows */
+.cmd-head { display: flex; white-space: pre; padding: 3px 6px; font-family: var(--mono); font-size: 13px; line-height: 18px; color: var(--dim); border-bottom: 1px solid var(--line); }
+.cmd-head .hc { width: calc(2ch + 4px); text-align: center; }
+.cmd-head .name { color: var(--dim); }

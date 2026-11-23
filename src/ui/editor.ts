@@ -7,7 +7,7 @@ import {
   MAX_CMDNAMELEN, MAX_SONGS,
 } from '../core/song.ts';
 
-export type Panel = 'tracks' | 'pattern' | 'tables' | 'commands';
+export type Panel = 'tracks' | 'pattern' | 'tables' | 'commands' | 'inst';
 export const PANELS: Panel[] = ['tracks', 'pattern', 'tables', 'commands'];
 
 /** Command editor columns: 10 hex nybbles (AD SR Wv Pu Fl) and the name. */
@@ -43,6 +43,8 @@ export const S = {
   /** Per channel: silenced in the editor (playback only, not part of the song). */
   mute: [false, false, false],
   testCmd: 1,
+  /** What the right-hand side shows: the instrument editor, or the tables and the command list. */
+  sideMode: 'inst' as 'inst' | 'classic',
   sel: null as Selection | null,
 };
 
@@ -51,22 +53,27 @@ let listener: Listener = () => {};
 let onError: (msg: string) => void = () => {};
 export function setListeners(l: Listener, err: (msg: string) => void) { listener = l; onError = err; }
 
+/** Counts the edits that went through, so a caller can tell whether its edit was accepted. */
+export let edits = 0;
+
 const undoStack: Song[] = [];
 const redoStack: Song[] = [];
 const MAX_UNDO = 300;
 
 /** Run an edit. Return false from `fn` to reject it (the song is restored). */
-export function edit(fn: () => boolean | void): boolean {
+export function edit(fn: () => boolean | void, merge = false): boolean {
   const before = cloneSong(S.song);
   if (fn() === false) {
     S.song = before;
     listener(false);
     return false;
   }
-  undoStack.push(before);
+  // A merged edit continues the previous one (a drag), so undo takes the whole gesture back
+  if (!merge) undoStack.push(before);
   if (undoStack.length > MAX_UNDO) undoStack.shift();
   redoStack.length = 0;
   S.dirty = true;
+  edits++;
   clampCursors();
   if (S.focus === 'tracks') syncPatternsFromTracks(S.trkCh);
   listener(true);
@@ -574,6 +581,16 @@ export function tableDelete() {
   });
 }
 
+/** Rewrite one existing row (dragging in the table graph). `merge` joins it to the previous edit. */
+export function tableSetRow(t: number, r: number, left: number, right: number, merge = false) {
+  edit(() => {
+    const tbl = S.song.tables[t];
+    if (r >= tbl.left.length) return false;
+    tbl.left[r] = left & 0xff;
+    tbl.right[r] = right & 0xff;
+  }, merge);
+}
+
 /** Enter on a jump row: go to its destination. */
 export function tableFollowJump() {
   const t = S.tblNum, r = S.tblRow[t], tbl = S.song.tables[t];
@@ -665,6 +682,210 @@ export function commandPointToTableEnd(t: number) {
 }
 
 // ---------------------------------------------------------------------------
+// Instruments: a command together with the table programs it points at
+// ---------------------------------------------------------------------------
+
+const PTR = ['wave', 'pulse', 'filt'] as const;
+
+export const commandUsed = (c: Command) => !!(c.ad || c.sr || c.wave || c.pulse || c.filt || c.name);
+
+/** Rows `start`..`end` of a table program: steps up to row `last`, then its closing jump at row `jump` (or -1). */
+export interface Program { start: number; end: number; last: number; jump: number }
+
+/**
+ * The program a table pointer starts: the rows up to and including the next jump. A wave program
+ * also ends on a vibrato or slide row, since the player stays there.
+ */
+export function programAt(song: Song, t: number, ptr: number): Program | null {
+  const left = song.tables[t].left;
+  if (ptr < 1 || ptr > left.length) return null;
+  for (let i = ptr - 1; i < left.length; i++) {
+    if (left[i] === 0xff) return { start: ptr - 1, end: i, last: i - 1, jump: i };
+    // A jump right after a vibrato or slide is never reached, but it still belongs to this program
+    if (t === 0 && left[i] >= 0xc0) return { start: ptr - 1, end: left[i + 1] === 0xff ? i + 1 : i, last: i, jump: -1 };
+  }
+  return { start: ptr - 1, end: left.length - 1, last: left.length - 1, jump: -1 };
+}
+
+/** Who else uses the rows of a program: other commands pointing into it, and jumps from outside. */
+export function programUsers(song: Song, t: number, p: Program, self: number): { cmds: number[]; jumps: number } {
+  const cmds: number[] = [];
+  song.commands.forEach((c, i) => { if (i !== self && c[PTR[t]] - 1 >= p.start && c[PTR[t]] - 1 <= p.end) cmds.push(i); });
+  const tbl = song.tables[t];
+  let jumps = 0;
+  for (let r = 0; r < tbl.left.length; r++) {
+    if ((r < p.start || r > p.end) && tbl.left[r] === 0xff && tbl.right[r] - 1 >= p.start && tbl.right[r] - 1 <= p.end) jumps++;
+  }
+  return { cmds, jumps };
+}
+
+function tableRoom(tbl: { left: number[] }, rows: number): boolean {
+  if (tbl.left.length + rows > MAX_TBLLEN) {
+    onError('The table is full (255 rows)');
+    return false;
+  }
+  return true;
+}
+
+function deleteRows(song: Song, t: number, from: number, to: number) {
+  const tbl = song.tables[t];
+  for (let r = to; r >= from; r--) {
+    tbl.left.splice(r, 1);
+    tbl.right.splice(r, 1);
+    adjustTableRefs(song, t, r + 1, -1);
+  }
+}
+
+export function instSetAdsr(i: number, field: 'ad' | 'sr', v: number, merge = false) {
+  edit(() => { S.song.commands[i][field] = v & 0xff; }, merge);
+}
+
+export function instSetName(i: number, name: string, merge = false) {
+  edit(() => { S.song.commands[i].name = name.slice(0, MAX_CMDNAMELEN).replace(/\s+$/, ''); }, merge);
+}
+
+/** Add a step after row `after` of a program, or as its first step when `after` is -1. */
+export function instInsertStep(i: number, t: number, after: number, left: number, right: number) {
+  edit(() => {
+    const tbl = S.song.tables[t], cmd = S.song.commands[i];
+    if (!tableRoom(tbl, 1)) return false;
+    const at = after < 0 ? cmd[PTR[t]] - 1 : after + 1;
+    tbl.left.splice(at, 0, left);
+    tbl.right.splice(at, 0, right);
+    adjustTableRefs(S.song, t, at, 1);
+    // A new first step belongs to this instrument: keep its pointer on it
+    if (after < 0) cmd[PTR[t]] = at + 1;
+  });
+}
+
+export function instDeleteStep(t: number, r: number) {
+  edit(() => {
+    const tbl = S.song.tables[t];
+    if (r >= tbl.left.length) return false;
+    // A jump to the deleted step would end up on the row after it. When that row is the closing
+    // jump the player would run a jump as a step, so repeat from the step before instead.
+    if (tbl.left[r + 1] === 0xff) {
+      const to = r > 0 && tbl.left[r - 1] !== 0xff ? r : 0;
+      for (let i = 0; i < tbl.left.length; i++) if (tbl.left[i] === 0xff && tbl.right[i] === r + 1) tbl.right[i] = to;
+    }
+    deleteRows(S.song, t, r, r);
+  });
+}
+
+/** What a program does after its last step: jump to a row (1-based), or 0 to stop. */
+export function instSetEnd(i: number, t: number, dest: number) {
+  edit(() => {
+    const tbl = S.song.tables[t];
+    const p = programAt(S.song, t, S.song.commands[i][PTR[t]]);
+    if (!p) return false;
+    if (p.jump >= 0) { tbl.right[p.jump] = dest; return; }
+    if (!tableRoom(tbl, 1)) return false;
+    tbl.left.splice(p.end + 1, 0, 0xff);
+    tbl.right.splice(p.end + 1, 0, dest);
+    adjustTableRefs(S.song, t, p.end + 1, 1);
+  });
+}
+
+/** What a table gets when an instrument starts using it: one step, then stop. */
+const NEW_PROGRAM: [number, number][][] = [
+  [[0x21, 0x00], [0xff, 0x00]],
+  [[0x80, 0x80], [0xff, 0x00]],
+  [[0x97, 0x80], [0xff, 0x00]],
+];
+
+function appendProgram(song: Song, t: number, rows: [number, number][]): number {
+  const tbl = song.tables[t];
+  const at = tbl.left.length;
+  for (const [l, r] of rows) { tbl.left.push(l); tbl.right.push(r); }
+  return at + 1;
+}
+
+/** Give an instrument a fresh program in a table it does not use yet. */
+export function instAddProgram(i: number, t: number) {
+  edit(() => {
+    if (!tableRoom(S.song.tables[t], NEW_PROGRAM[t].length)) return false;
+    S.song.commands[i][PTR[t]] = appendProgram(S.song, t, NEW_PROGRAM[t]);
+  });
+}
+
+/** Copy of a program's rows, as they must read at the end of the table (jumps inside it follow). */
+function copiedRows(song: Song, t: number, p: Program): [number, number][] {
+  const tbl = song.tables[t], at = tbl.left.length;
+  const rows: [number, number][] = [];
+  for (let r = p.start; r <= p.end; r++) {
+    let right = tbl.right[r];
+    if (tbl.left[r] === 0xff && right - 1 >= p.start && right - 1 <= p.end) right = right - p.start + at;
+    rows.push([tbl.left[r], right]);
+  }
+  return rows;
+}
+
+/** Stop sharing: move the instrument onto its own copy of the program. */
+export function instOwnProgram(i: number, t: number) {
+  edit(() => {
+    const p = programAt(S.song, t, S.song.commands[i][PTR[t]]);
+    if (!p || !tableRoom(S.song.tables[t], p.end - p.start + 1)) return false;
+    S.song.commands[i][PTR[t]] = appendProgram(S.song, t, copiedRows(S.song, t, p));
+  });
+}
+
+function dropProgram(song: Song, i: number, t: number) {
+  const cmd = song.commands[i];
+  const p = programAt(song, t, cmd[PTR[t]]);
+  cmd[PTR[t]] = 0;
+  if (!p) return;
+  const users = programUsers(song, t, p, i);
+  if (!users.cmds.length && !users.jumps) deleteRows(song, t, p.start, p.end);
+}
+
+/** Take a table away from an instrument. Its rows are deleted unless something else uses them. */
+export function instRemoveProgram(i: number, t: number) {
+  edit(() => dropProgram(S.song, i, t));
+}
+
+/** Set up an unused command as a plain new instrument. */
+export function instCreate(i: number): boolean {
+  return edit(() => {
+    if (!tableRoom(S.song.tables[0], NEW_PROGRAM[0].length)) return false;
+    const name = `inst ${(i + 1).toString(16).toUpperCase().padStart(2, '0')}`;
+    S.song.commands[i] = { ad: 0x09, sr: 0xa9, wave: appendProgram(S.song, 0, NEW_PROGRAM[0]), pulse: 0, filt: 0, name };
+  });
+}
+
+/** Copy an instrument, with its own copies of the programs, to the first unused command. Returns its index or -1. */
+export function instDuplicate(i: number): number {
+  const free = S.song.commands.findIndex(c => !commandUsed(c));
+  if (free < 0) return -1;
+  const ok = edit(() => {
+    const src = S.song.commands[i];
+    const copy: Command = { ...src };
+    for (let t = 0; t < 3; t++) {
+      const p = programAt(S.song, t, src[PTR[t]]);
+      if (!p) continue;
+      if (!tableRoom(S.song.tables[t], p.end - p.start + 1)) return false;
+      copy[PTR[t]] = appendProgram(S.song, t, copiedRows(S.song, t, p));
+    }
+    S.song.commands[free] = copy;
+  });
+  return ok ? free : -1;
+}
+
+/** Empty an instrument, removing the programs nothing else uses. */
+export function instClear(i: number) {
+  edit(() => {
+    for (let t = 0; t < 3; t++) dropProgram(S.song, i, t);
+    S.song.commands[i] = emptyCommand();
+  });
+}
+
+/** Number of pattern rows that name a command (plain or legato). */
+export function commandUseCount(n: number): number {
+  let count = 0;
+  for (const rows of S.song.patterns) for (const r of rows) if ((r.cmd & 0x7f) === n) count++;
+  return count;
+}
+
+// ---------------------------------------------------------------------------
 // Clipboard
 // ---------------------------------------------------------------------------
 
@@ -735,7 +956,7 @@ export function paste() {
       S.tblRow[t] = r + clip.table.length;
       return tbl.left.length <= MAX_TBLLEN;
     });
-  } else if (S.focus === 'commands' && clip.command) {
+  } else if ((S.focus === 'commands' || S.focus === 'inst') && clip.command) {
     const src = clip.command;
     edit(() => { S.song.commands[S.cmdNum] = { ...src }; });
   }

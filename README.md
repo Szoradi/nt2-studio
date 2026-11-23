@@ -8,6 +8,9 @@ by Cadaver (Lasse Öörni). It runs in any current browser on Windows, macOS and
 - Tracker-style editing of tracks, patterns, wave/pulse/filter tables and commands, with the
   original editor's keys plus mouse support, row selection, undo/redo and all three channels
   visible side by side.
+- An instrument editor (the **Sounds** switch in the toolbar): each command shown as an instrument
+  with an envelope, and its wave, pulse and filter programs as steps with sliders and draggable
+  graphs. It edits the same commands and tables as the hex view, so the two can be mixed freely.
 - Playback runs the **original 6502 playroutine** inside the WebSid emulator, so what you hear
   is the real player code. Edits are applied while the tune plays.
 - Reads and writes the original editor's song format (including songs on `.d64` disk images),

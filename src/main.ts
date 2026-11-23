@@ -13,6 +13,8 @@ import { Engine } from './audio/engine.ts';
 import { AudioOutput, OUTPUT_RATE } from './audio/output.ts';
 import * as E from './ui/editor.ts';
 import { S, PANELS, CMD_NAME_COL, type Panel } from './ui/editor.ts';
+import { graphMouseDown } from './ui/tablegraph.ts';
+import { wireInstruments } from './ui/instrument.ts';
 import { renderAll, renderTime, showStatus, HELP_HTML } from './ui/view.ts';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -571,7 +573,57 @@ function setOctave(o: number) {
   E.notify();
 }
 
+function storeSideMode() {
+  try { localStorage.setItem('nt2studio.sideMode', S.sideMode); } catch { /* storage unavailable */ }
+}
+
+/** Switch the right-hand side between the instrument editor and the tables with the command list. */
+function setSideMode(mode: 'inst' | 'classic') {
+  S.sideMode = mode;
+  storeSideMode();
+  if (mode === 'inst' && (S.focus === 'tables' || S.focus === 'commands')) S.focus = 'inst';
+  if (mode === 'classic' && S.focus === 'inst') S.focus = 'commands';
+  E.notify();
+}
+
+/** Drag the divider inside the instrument panel to resize the list of instruments; the width is remembered. */
+function wireListSplit() {
+  const split = $('inst-split'), list = $('inst-list');
+  const KEY = 'nt2studio.instListWidth';
+  const apply = (w: number) => { list.style.width = w ? `${w}px` : ''; };
+  try { apply(parseInt(localStorage.getItem(KEY) ?? '', 10) || 0); } catch { /* storage unavailable */ }
+  let width = 0;
+  const onMove = (e: MouseEvent) => {
+    const panel = list.parentElement!.getBoundingClientRect();
+    // Keep room for a name in the list and for the controls beside it
+    width = Math.round(Math.max(80, Math.min(panel.width - 260, e.clientX - panel.left)));
+    apply(width);
+    renderAll(engine?.state ?? null);
+  };
+  const onUp = () => {
+    window.removeEventListener('mousemove', onMove);
+    window.removeEventListener('mouseup', onUp);
+    split.classList.remove('drag');
+    try { if (width) localStorage.setItem(KEY, String(width)); } catch { /* storage unavailable */ }
+  };
+  split.addEventListener('mousedown', e => {
+    e.preventDefault();
+    width = 0;
+    split.classList.add('drag');
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  });
+  split.addEventListener('dblclick', () => {
+    apply(0);
+    try { localStorage.removeItem(KEY); } catch { /* storage unavailable */ }
+    renderAll(engine?.state ?? null);
+  });
+}
+
 function setFocus(p: Panel) {
+  // In instrument mode the command list is the instrument panel, and a table means leaving the mode
+  if (S.sideMode === 'inst' && p === 'commands') p = 'inst';
+  if (S.sideMode === 'inst' && p === 'tables') { S.sideMode = 'classic'; storeSideMode(); }
   S.focus = p;
   S.sel = null;
   E.notify();
@@ -751,6 +803,22 @@ function testCurrentCommand(cmdNumber: number) {
 function panelKey(e: KeyboardEvent): boolean {
   if (S.focus === 'pattern') return patternKey(e);
 
+  if (S.focus === 'inst') {
+    if (e.code === 'Space') {
+      if (e.shiftKey) testCurrentCommand(S.cmdNum + 1);
+      else engine?.testKeyOff(S.trkCh);
+      return true;
+    }
+    if (e.shiftKey || e.repeat) return false;
+    if (S.keyMode === 1 && /^Digit[1-7]$/.test(e.code)) { setOctave(parseInt(e.code.slice(5), 10)); return true; }
+    // The piano keys try the instrument
+    const idx = (S.keyMode === 0 ? PT_KEYS : DMC_KEYS).indexOf(e.code);
+    if (idx < 0) return false;
+    S.testCmd = S.cmdNum + 1;
+    testNote(Math.min(LASTNOTE, (S.octave * 12 + idx) * 2), S.cmdNum + 1, S.trkCh);
+    return true;
+  }
+
   if (S.focus === 'tracks') {
     const c = S.trkCh, t = E.curTracks()[c], r = S.trkRow[c];
     if (e.code === 'Enter') {
@@ -814,6 +882,7 @@ function panelKey(e: KeyboardEvent): boolean {
 }
 
 function insertRow() {
+  if (S.focus === 'inst') return;
   if (S.focus === 'tracks') E.trackInsert();
   else if (S.focus === 'pattern') E.patternInsert();
   else if (S.focus === 'tables') E.tableInsert();
@@ -821,6 +890,7 @@ function insertRow() {
 }
 
 function deleteRow() {
+  if (S.focus === 'inst') return;
   if (S.focus === 'tracks') E.trackDelete();
   else if (S.focus === 'pattern') E.patternDelete();
   else if (S.focus === 'tables') E.tableDelete();
@@ -832,6 +902,12 @@ function onKeyDown(e: KeyboardEvent) {
   if (document.querySelector('dialog[open]')) return;
   if (target.tagName === 'INPUT' || target.tagName === 'SELECT') {
     if (e.key === 'Escape' || e.key === 'Enter') target.blur();
+    // Sliders, tick boxes and lists have no undo of their own: Ctrl+Z is the editor's
+    const typing = target.tagName === 'INPUT' && !['range', 'checkbox'].includes((target as HTMLInputElement).type);
+    if (!typing && (e.ctrlKey || e.metaKey) && (e.code === 'KeyZ' || e.code === 'KeyY')) {
+      if (e.code === 'KeyY' || e.shiftKey) E.redo(); else E.undo();
+      e.preventDefault();
+    }
     return;
   }
   ensureAudio();
@@ -884,8 +960,9 @@ function onKeyDown(e: KeyboardEvent) {
     case 'F9': playPattern(); break;
     case 'F8': openHelp(); break;
     case 'Tab': {
-      const i = PANELS.indexOf(S.focus);
-      setFocus(PANELS[(i + (e.shiftKey ? PANELS.length - 1 : 1)) % PANELS.length]);
+      const panels: Panel[] = S.sideMode === 'inst' ? ['tracks', 'pattern', 'inst'] : PANELS;
+      const i = panels.indexOf(S.focus);
+      setFocus(panels[(i + (e.shiftKey ? panels.length - 1 : 1)) % panels.length]);
       break;
     }
     case 'ArrowUp': moveRow(-1, e.shiftKey); break;
@@ -931,7 +1008,13 @@ function onMouseDown(e: MouseEvent) {
   const panelEl = target.closest<HTMLElement>('.panel');
   if (!panelEl) return;
   ensureAudio();
+  if (target.closest('svg.tg')) { graphMouseDown(e); return; }
   const panel = panelEl.dataset.panel as Panel;
+  if (panel === 'inst') {
+    // The instrument panel handles its own controls; it only needs the keyboard focus
+    if (S.focus !== 'inst') { S.focus = 'inst'; S.sel = null; E.notify(); }
+    return;
+  }
   const colEl = target.closest<HTMLElement>('.col');
   const idx = colEl?.dataset.i !== undefined ? parseInt(colEl.dataset.i, 10) : 0;
   const act = target.closest<HTMLElement>('[data-act]')?.dataset.act;
@@ -1039,6 +1122,8 @@ function wireToolbar() {
   on('btn-octnext', () => setOctave(S.octave + 1));
   on('btn-keymode', () => { S.keyMode = S.keyMode ? 0 : 1; E.notify(); });
   on('btn-help', openHelp);
+  on('btn-mode-inst', () => setSideMode('inst'));
+  on('btn-mode-classic', () => setSideMode('classic'));
   // Bar length for the bar and beat lines: remembered per song
   const barEl = $<HTMLInputElement>('in-bar');
   barEl.value = String(S.barFrames);
@@ -1125,7 +1210,14 @@ function wireToolbar() {
 // ---------------------------------------------------------------------------
 
 E.setListeners(onStateChanged, msg => showStatus(msg, true));
+try { if (localStorage.getItem('nt2studio.sideMode') === 'classic') S.sideMode = 'classic'; } catch { /* storage unavailable */ }
 wireToolbar();
+wireListSplit();
+wireInstruments({
+  test: () => { ensureAudio(); testCurrentCommand(S.cmdNum + 1); },
+  keyOff: () => engine?.testKeyOff(S.trkCh),
+  status: showStatus,
+});
 document.addEventListener('keydown', onKeyDown);
 // Releasing Enter (or leaving the window) ends held stepping
 document.addEventListener('keyup', e => { if (e.code === 'Enter' || e.code === 'NumpadEnter') heldStep = null; });
@@ -1138,6 +1230,7 @@ window.addEventListener('drop', async e => {
   if (f) openBytes(new Uint8Array(await f.arrayBuffer()), f.name);
 });
 $('main').addEventListener('mousedown', onMouseDown);
+window.addEventListener('resize', () => renderAll(engine?.state ?? null));
 window.addEventListener('beforeunload', autosave);
 
 const restored = restoreAutosave();
