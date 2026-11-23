@@ -31,6 +31,7 @@ async function initEngine() {
     engine.model = $<HTMLSelectElement>('sel-model').value as '6581' | '8580';
     engine.setSong(S.song);
     engine.onStoppedFrame = heldStepFrame;
+    applyMutes(); // a mute switch may have been clicked while the emulator was loading
     showStatus('Ready. Press F1 to play, F8 for help.');
   } catch (err) {
     showStatus(`Sound is unavailable: ${(err as Error).message}`, true);
@@ -42,6 +43,11 @@ function ensureAudio() {
   if (!engine) return;
   if (!output) output = new AudioOutput(engine);
   output.resume();
+}
+
+/** Hand the mute switches of the pattern columns to the sound engine. */
+function applyMutes() {
+  S.mute.forEach((m, v) => engine?.setMute(v, m));
 }
 
 function play() {
@@ -934,6 +940,16 @@ function onMouseDown(e: MouseEvent) {
     E.notify();
     return;
   }
+  if (act === 'mute') {
+    // Shift+click solos the channel, or brings the others back when it already is solo
+    if (e.shiftKey) {
+      const soloed = !S.mute[idx] && S.mute.every((m, c) => c === idx || m);
+      S.mute = S.mute.map((_, c) => c !== idx && !soloed);
+    } else S.mute[idx] = !S.mute[idx];
+    applyMutes();
+    E.notify();
+    return;
+  }
   if (act === 'pattprev' || act === 'pattnext') {
     S.focus = 'pattern';
     S.pattCh = idx;
@@ -1022,32 +1038,7 @@ function wireToolbar() {
   on('btn-octprev', () => setOctave(S.octave - 1));
   on('btn-octnext', () => setOctave(S.octave + 1));
   on('btn-keymode', () => { S.keyMode = S.keyMode ? 0 : 1; E.notify(); });
-  on('btn-follow', () => {
-    // Master switch: everything on, unless everything already is, then everything off
-    const allOn = S.follow.every(Boolean);
-    S.follow = [!allOn, !allOn, !allOn];
-    E.notify();
-  });
   on('btn-help', openHelp);
-  // Mute buttons; Shift+click solos a channel (or un-solos it)
-  const setMuted = (v: number, muted: boolean) => {
-    $(`btn-mute${v}`).classList.toggle('on', muted);
-    engine?.setMute(v, muted);
-  };
-  for (let v = 0; v < 3; v++) {
-    const b = $(`btn-mute${v}`);
-    b.addEventListener('click', ev => {
-      ensureAudio();
-      const isMuted = (x: number) => $(`btn-mute${x}`).classList.contains('on');
-      if ((ev as MouseEvent).shiftKey) {
-        const others = [0, 1, 2].filter(x => x !== v);
-        const soloed = !isMuted(v) && others.every(isMuted);
-        setMuted(v, false);
-        others.forEach(x => setMuted(x, !soloed));
-      } else setMuted(v, !isMuted(v));
-      b.blur();
-    });
-  }
   // Bar length for the bar and beat lines: remembered per song
   const barEl = $<HTMLInputElement>('in-bar');
   barEl.value = String(S.barFrames);

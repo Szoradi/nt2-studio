@@ -88,7 +88,7 @@ pass your own file as the first argument.
   Examples is kept under Recent. The bar length is remembered per song.
 - **Playback:** Start (F1), from the cursor (F6: the cursor row of a pattern, or the track cursor),
   loop one pattern (F9; showing another pattern in that column switches the loop to it), stop (F3).
-  Shift+click a Mute button to solo.
+  Each pattern column has a mute switch; Shift+click it to solo that channel.
 - **Follow:** each pattern column has a follow switch; editing in a channel during playback
   switches that channel's follow off until you turn it back on.
 - **Patterns:** rows show the duration they inherit, dimmed, with bar and beat lines. Duplicate

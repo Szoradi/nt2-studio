@@ -88,7 +88,8 @@ function renderPatterns() {
     let html = `<div class="col${active ? ' active' : ''}" data-i="${c}"><div class="col-head">` +
       `<button data-act="pattprev" title="Previous pattern (Ctrl+Left)">&#9664;</button><span class="num">${hex2(num)}</span>` +
       `<button data-act="pattnext" title="Next pattern (Ctrl+Right)">&#9654;</button>` +
-      `<button data-act="follow" class="fol${S.follow[c] ? ' on' : ''}" title="${S.follow[c] ? 'This channel follows the play position. Click to keep it where it is' : 'This channel stays where it is. Click to follow the play position'}">follow</button>` +
+      `<button data-act="follow" class="fol${S.follow[c] ? ' on' : ''}" title="${S.follow[c] ? 'This channel follows the play position. Click to keep it where it is' : 'This channel stays where it is. Click to follow the play position'}" aria-label="Follow the play position" aria-pressed="${S.follow[c]}">${ICON_FOLLOW}</button>` +
+      `<button data-act="mute" class="mut${S.mute[c] ? ' on' : ''}" title="${S.mute[c] ? `Channel ${c + 1} is muted. Click to hear it again` : `Mute channel ${c + 1}`} (Shift+click: solo)" aria-label="Mute channel ${c + 1}" aria-pressed="${S.mute[c]}">${S.mute[c] ? ICON_MUTED : ICON_SOUND}</button>` +
       `<span class="grow"></span>` +
       `${rows.length && !patternUsed(num) ? '<span class="warn" title="No track plays this pattern">unused</span> ' : ''}` +
       `<span class="meta" title="Packed size ${size} of ${MAX_PATTLEN} bytes, length ${total} frames (set the bar length in the toolbar)">${size}b \u00b7 ${total}f${barText}</span></div><div class="list">`;
@@ -132,6 +133,17 @@ function renderPatterns() {
 // ---------------------------------------------------------------------------
 
 const TABLE_NAMES = ['Wave', 'Pulse', 'Filter'];
+
+// Icons of the two switches in each pattern column header (drawn in the button's text colour)
+const svg = (body: string) => `<svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">${body}</svg>`;
+const LINE = 'fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"';
+/** Follow: a target, as on a map that keeps your position in view. */
+const ICON_FOLLOW = svg(`<circle cx="8" cy="8" r="4.25" ${LINE}/><circle cx="8" cy="8" r="1.6" fill="currentColor"/><path d="M8 1v2.5M8 12.5V15M1 8h2.5M12.5 8H15" ${LINE}/>`);
+const SPEAKER = '<path d="M1.5 6h2.7L8 3v10L4.2 10H1.5z" fill="currentColor"/>';
+/** Channel audible: a speaker with sound waves. */
+const ICON_SOUND = svg(`${SPEAKER}<path d="M10.4 5.8a3.2 3.2 0 0 1 0 4.4M12.4 3.9a6 6 0 0 1 0 8.2" ${LINE}/>`);
+/** Channel muted: the speaker crossed out. */
+const ICON_MUTED = svg(`${SPEAKER}<path d="M10.5 5.8l4 4.4M14.5 5.8l-4 4.4" ${LINE}/>`);
 
 export function describeTableRow(t: number, l: number, r: number): string {
   if (l === 0xff) return r ? `jump ${hex2(r)}` : 'stop';
@@ -319,13 +331,6 @@ export function renderAll(play: PlayState | null, opts: { playOnly?: boolean } =
   $('subtune').textContent = hex2(S.subtune);
   $('octave').textContent = String(S.octave);
   $('btn-keymode').textContent = S.keyMode ? 'DMC' : 'PT';
-  const followBtn = $('btn-follow');
-  const onCount = S.follow.filter(Boolean).length;
-  followBtn.classList.toggle('on', onCount === 3);
-  followBtn.classList.toggle('held', onCount > 0 && onCount < 3);
-  followBtn.title = onCount === 3
-    ? 'All channels follow the play position. Click to switch following off'
-    : 'Click to make all channels follow the play position (each pattern column has its own switch)';
   $('status-hint').textContent = HINTS[S.focus];
   document.title = `${S.dirty ? '* ' : ''}${S.fileName} - NT2 Studio`;
 }
@@ -349,7 +354,8 @@ export const HELP_HTML = `
 <tr><td>F9</td><td>Loop the current pattern on its own; edits are heard as you make them. Showing another pattern in that column (Ctrl+Left/Right) switches the loop to it at once, from its start</td></tr>
 <tr><td>F3 / Esc</td><td>Stop</td></tr>
 <tr><td>F7</td><td>Toggle fast forward</td></tr>
-<tr><td>Follow</td><td>Each pattern column has a <b>follow</b> switch: when lit, that channel's track and pattern column keep the playing pattern on screen. Moving or editing in a channel while the song plays switches its follow off, so you can work on what you see; it stays off until you click it again. The toolbar button switches all three at once</td></tr>
+<tr><td>Follow</td><td>Each pattern column has a <b>follow</b> switch (the target icon): when lit, that channel's track and pattern column keep the playing pattern on screen. Moving or editing in a channel while the song plays switches its follow off, so you can work on what you see; it stays off until you click it again</td></tr>
+<tr><td>Mute</td><td>Each pattern column has a <b>mute</b> switch (the speaker icon) that silences its channel while you listen. Shift+click solos the channel, and Shift+click again brings the others back. Muting is not saved with the song</td></tr>
 <tr><td>/</td><td>Silence test notes</td></tr>
 </table>
 <h4>General</h4>

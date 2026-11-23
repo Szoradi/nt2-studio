@@ -40,6 +40,8 @@ export const S = {
   keyMode: 0 as 0 | 1,
   /** Per channel: does its track and pattern column follow the play position? */
   follow: [true, true, true],
+  /** Per channel: silenced in the editor (playback only, not part of the song). */
+  mute: [false, false, false],
   testCmd: 1,
   sel: null as Selection | null,
 };

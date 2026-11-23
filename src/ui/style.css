@@ -158,8 +158,11 @@ input.songname { width: 11em; padding: 0 7px; color: var(--note); }
 .col-head button { padding: 0 5px; font-size: 10px; line-height: 16px; height: 18px; }
 .col-head { overflow: hidden; }
 .col-head .grow { flex: 1; }
-.col-head button.fol { margin-left: 4px; color: var(--dim); }
+.col-head button.fol { margin-left: 4px; color: var(--faint); }
+.col-head button.fol, .col-head button.mut { padding: 0 3px; display: inline-flex; align-items: center; }
 .col-head button.fol.on { background: #2b4a7a; border-color: #3d68aa; color: #fff; }
+.col-head button.mut { margin-left: 2px; color: var(--text); }
+.col-head button.mut.on { background: #7a3a2b; border-color: #aa553d; color: #fff; }
 .col-head .meta { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .col-head .warn { flex-shrink: 0; }
 .col-head .warn { color: var(--warn); overflow: hidden; text-overflow: ellipsis; }
