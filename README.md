@@ -106,6 +106,8 @@ pass your own file as the first argument.
 
 ## Credits and licences
 
+- NT2 Studio's own code is under the **MIT licence** (see `LICENSE`). The bundled parts below keep
+  their own terms; `THIRD-PARTY-NOTICES.md` lists the files.
 - NinjaTracker V2.03 playroutine, song format and example tunes: Cadaver (Lasse Öörni),
   <http://covertbitops.c64.org>. NinjaTracker is freeware; customization is allowed.
   `public/examples.d64` is the disk image from that distribution and `scripts/fixtures/gamemusic.bin`

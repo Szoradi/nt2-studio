@@ -1,6 +1,7 @@
 {
   "name": "nt2-studio",
   "private": true,
+  "license": "MIT",
   "version": "0.1.0",
   "type": "module",
   "description": "A modern cross-platform music editor for the NinjaTracker V2.03 C64 playroutine",
