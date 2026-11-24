@@ -18,7 +18,7 @@ import { wireInstruments, clearInstrument } from './ui/instrument.ts';
 import { wireKit, openKit, previewNote } from './ui/kit.ts';
 import { wireExamples, openExamples as openExampleBrowser } from './ui/examples.ts';
 import { addKitInstrument, type KitInstrument } from './core/kit.ts';
-import { renderAll, renderTime, showStatus, HELP_HTML } from './ui/view.ts';
+import { renderAll, renderTime, showStatus, HELP_HTML, FOLDS, folded, foldOf, setFolded, type Fold } from './ui/view.ts';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
 
@@ -648,6 +648,8 @@ function storeSideMode() {
 function setSideMode(mode: 'inst' | 'classic') {
   S.sideMode = mode;
   storeSideMode();
+  // Choosing what the sounds column shows also brings it back when it is hidden
+  setFolded('side', false);
   if (mode === 'inst' && (S.focus === 'tables' || S.focus === 'commands')) S.focus = 'inst';
   if (mode === 'classic' && S.focus === 'inst') S.focus = 'commands';
   E.notify();
@@ -685,6 +687,19 @@ function wireListSplit() {
     try { localStorage.removeItem(KEY); } catch { /* storage unavailable */ }
     renderAll(engine?.state ?? null);
   });
+}
+
+/** Fold a column down to its title strip. The keyboard moves to a panel that is still showing. */
+function foldPanel(g: Fold) {
+  const open = FOLDS.filter(f => !folded[f]);
+  if (folded[g] || open.length === 1) return;
+  setFolded(g, true);
+  if (foldOf(S.focus) === g) {
+    const to = g === 'pattern' ? (folded.tracks ? 'side' : 'tracks') : folded.pattern ? (g === 'tracks' ? 'side' : 'tracks') : 'pattern';
+    S.focus = to === 'side' ? (S.sideMode === 'inst' ? 'inst' : 'commands') : to;
+    S.sel = null;
+  }
+  E.notify();
 }
 
 function setFocus(p: Panel) {
@@ -969,6 +984,15 @@ function onKeyDown(e: KeyboardEvent) {
   if (document.querySelector('dialog[open]')) return;
   if (target.tagName === 'INPUT' || target.tagName === 'SELECT') {
     if (e.key === 'Escape' || e.key === 'Enter') target.blur();
+    // A number of the instrument editor takes no letters or spaces: there the letter piano keys and
+    // Space still try the sound, so a value can be changed and heard without leaving the field
+    if ((target as HTMLInputElement).type === 'number' && target.closest('#panel-inst') && S.focus === 'inst' &&
+      !e.ctrlKey && !e.metaKey && !e.altKey && (e.code === 'Space' || /^Key[A-Z]$/.test(e.code))) {
+      ensureAudio();
+      panelKey(e);
+      e.preventDefault();
+      return;
+    }
     // Sliders, tick boxes and lists have no undo of their own: Ctrl+Z is the editor's
     const typing = target.tagName === 'INPUT' && !['range', 'checkbox'].includes((target as HTMLInputElement).type);
     if (!typing && (e.ctrlKey || e.metaKey) && (e.code === 'KeyZ' || e.code === 'KeyY')) {
@@ -1027,7 +1051,8 @@ function onKeyDown(e: KeyboardEvent) {
     case 'F9': playPattern(); break;
     case 'F8': openHelp(); break;
     case 'Tab': {
-      const panels: Panel[] = S.sideMode === 'inst' ? ['tracks', 'pattern', 'inst'] : PANELS;
+      // Tab goes round the panels that are showing
+      const panels = (S.sideMode === 'inst' ? ['tracks', 'pattern', 'inst'] as Panel[] : PANELS).filter(p => !folded[foldOf(p)]);
       const i = panels.indexOf(S.focus);
       setFocus(panels[(i + (e.shiftKey ? panels.length - 1 : 1)) % panels.length]);
       break;
@@ -1150,9 +1175,52 @@ function toggleFastForward() {
 }
 
 function openHelp() {
-  $('help-body').innerHTML = HELP_HTML;
+  const body = $('help-body');
+  body.innerHTML = HELP_HTML;
   $<HTMLDialogElement>('dlg-help').showModal();
+  body.scrollLeft = 0;
 }
+// The help is pages of two columns lying side by side. It always rests on a column edge: the mouse
+// wheel and the arrow keys turn a whole page, and after the bar is dragged it settles on the
+// nearest column.
+/** Width of a help page and of one of its columns (two to a page, one in a narrow window), gap included. */
+function helpSizes(body: HTMLElement): { page: number; col: number } {
+  const cs = getComputedStyle(body);
+  const page = body.clientWidth + (parseFloat(cs.columnGap) || 0);
+  return { page, col: page / (parseInt(cs.columnCount, 10) || 1) };
+}
+function helpTurn(pages: number) {
+  const body = $('help-body');
+  const { page, col } = helpSizes(body);
+  const max = body.scrollWidth - body.clientWidth;
+  // From the column it rests on now, a whole page on
+  const to = Math.round(body.scrollLeft / col) * col + pages * page;
+  body.scrollTo({ left: Math.max(0, Math.min(max, to)), behavior: 'smooth' });
+}
+let helpTurned = 0;
+$('help-body').addEventListener('wheel', e => {
+  const body = e.currentTarget as HTMLElement;
+  if (body.scrollWidth <= body.clientWidth) return;
+  e.preventDefault();
+  // One turn for a spin of the wheel, however many events it sends
+  const d = e.deltaY || e.deltaX;
+  if (!d || performance.now() - helpTurned < 250) return;
+  helpTurned = performance.now();
+  helpTurn(d > 0 ? 1 : -1);
+}, { passive: false });
+$('help-body').addEventListener('scrollend', () => {
+  const body = $('help-body');
+  const { col } = helpSizes(body);
+  const max = body.scrollWidth - body.clientWidth;
+  const to = Math.min(max, Math.round(body.scrollLeft / col) * col);
+  if (Math.abs(to - body.scrollLeft) > 1) body.scrollTo({ left: to, behavior: 'smooth' });
+});
+$('dlg-help').addEventListener('keydown', e => {
+  const dir = ['ArrowRight', 'PageDown', 'Space'].includes(e.code) ? 1 : ['ArrowLeft', 'PageUp'].includes(e.code) ? -1 : 0;
+  if (!dir || (e.target as HTMLElement).tagName === 'BUTTON' && e.code === 'Space') return;
+  helpTurn(dir);
+  e.preventDefault();
+});
 
 function hexField(id: string, apply: (v: number) => void) {
   const el = $<HTMLInputElement>(id);
@@ -1192,6 +1260,9 @@ function wireToolbar() {
   on('btn-mode-inst', () => setSideMode('inst'));
   on('btn-mode-classic', () => setSideMode('classic'));
   on('btn-kit', () => void openKit());
+  document.querySelectorAll<HTMLButtonElement>('button[data-fold]').forEach(b => {
+    b.addEventListener('click', () => { foldPanel(b.dataset.fold as Fold); b.blur(); });
+  });
   // Bar length for the bar and beat lines: remembered per song
   const barEl = $<HTMLInputElement>('in-bar');
   barEl.value = String(S.barFrames);
@@ -1354,3 +1425,30 @@ renderAll(null);
 showStatus(restored ? `Restored ${S.fileName} from the last session. Loading sound...` : 'Loading sound...');
 void initEngine();
 requestAnimationFrame(tick);
+
+// ---------------------------------------------------------------------------
+// The splash screen: what this is, its version and whose work is in it. Shown when the app opens,
+// and again from the name in the toolbar.
+// ---------------------------------------------------------------------------
+
+declare const __APP_VERSION__: string;
+
+function openSplash() {
+  const dlg = $<HTMLDialogElement>('dlg-splash');
+  $('splash-version').textContent = __APP_VERSION__;
+  if (!dlg.open) dlg.showModal();
+  // The browser would put the keyboard on Start and draw its focus ring round it: keep it on the
+  // box itself, where Enter and Space still start
+  dlg.focus();
+}
+{
+  const dlg = $<HTMLDialogElement>('dlg-splash');
+  // A click beside the box closes it too. Closing is the first click in the app, so sound can start
+  dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+  dlg.addEventListener('close', ensureAudio);
+  dlg.addEventListener('keydown', e => {
+    if (e.target === dlg && (e.code === 'Enter' || e.code === 'NumpadEnter' || e.code === 'Space')) { dlg.close(); e.preventDefault(); }
+  });
+  $('brand').addEventListener('click', openSplash);
+  openSplash();
+}

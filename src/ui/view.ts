@@ -316,6 +316,54 @@ const HINTS: Record<string, string> = {
   commands: 'ADSR + table pointers  |  Enter: go to table  Shift+Enter: new table row  Shift+Space: test  Tab into Name to type',
 };
 
+// ---------------------------------------------------------------------------
+// Hiding panels: each of the three columns can be folded down to a strip with its title
+// ---------------------------------------------------------------------------
+
+export type Fold = 'tracks' | 'pattern' | 'side';
+export const FOLDS: Fold[] = ['tracks', 'pattern', 'side'];
+const FOLD_KEY = 'nt2studio.folded';
+
+/** Which columns are folded away. Remembered between sessions; one always stays open. */
+export const folded: Record<Fold, boolean> = { tracks: false, pattern: false, side: false };
+try {
+  for (const g of JSON.parse(localStorage.getItem(FOLD_KEY) ?? '[]') as string[]) if (g in folded) folded[g as Fold] = true;
+  if (FOLDS.every(g => folded[g])) folded.pattern = false;
+} catch { /* storage unavailable */ }
+
+/** The column a panel is in: the tables, the commands and the instrument editor share the last one. */
+export const foldOf = (panel: string): Fold => (panel === 'tracks' || panel === 'pattern' ? panel : 'side');
+
+export function setFolded(g: Fold, on: boolean) {
+  folded[g] = on;
+  try { localStorage.setItem(FOLD_KEY, JSON.stringify(FOLDS.filter(f => folded[f]))); } catch { /* storage unavailable */ }
+}
+
+/** Columns in the order they were last worked in: when the window is too narrow, the last ones give way first. */
+const recent: Fold[] = ['pattern', 'side', 'tracks'];
+/** The least width a column is useful at (the same as in the style sheet), and the width of a strip. */
+const MIN_WIDTH = { inst: { tracks: 200, pattern: 440, side: 600 }, classic: { tracks: 230, pattern: 480, side: 420 } };
+const STRIP = 28, GAP = 6;
+
+function applyFolds() {
+  // The panel with the keyboard is never hidden: jumping to a folded panel opens it
+  const focus = foldOf(S.focus);
+  if (folded[focus]) setFolded(focus, false);
+  recent.splice(recent.indexOf(focus), 1);
+  recent.unshift(focus);
+  // A narrow window shows two columns or one, never a squeezed or stacked three: the ones not
+  // used for longest become strips too, and come back when there is room again
+  const min = MIN_WIDTH[S.sideMode === 'inst' ? 'inst' : 'classic'];
+  const room = $('main').clientWidth - 2 * GAP - (FOLDS.length - 1) * GAP;
+  const shown: Fold[] = [];
+  const need = (open: Fold[]) => FOLDS.reduce((sum, g) => sum + (open.includes(g) ? min[g] : STRIP), 0);
+  // The column in use always shows; each of the others does if it still fits beside those before it
+  for (const g of recent) if (!folded[g] && (!shown.length || need([...shown, g]) <= room)) shown.push(g);
+  for (const g of FOLDS) $('main').classList.toggle(`fold-${g}`, !shown.includes(g));
+  const open = FOLDS.filter(g => !folded[g]).length;
+  document.querySelectorAll<HTMLButtonElement>('button[data-fold]').forEach(b => { b.disabled = open === 1 && !folded[b.dataset.fold as Fold]; });
+}
+
 export function renderAll(play: PlayState | null, opts: { playOnly?: boolean } = {}) {
   if (opts.playOnly) {
     // Playback moved on: nothing but the play marks changes, unless a following column now shows
@@ -330,6 +378,8 @@ export function renderAll(play: PlayState | null, opts: { playOnly?: boolean } =
   $('panel-commands').classList.toggle('hidden', inst);
   $('panel-inst').parentElement!.classList.toggle('one', inst);
   $('main').classList.toggle('inst-mode', inst);
+  // Before the panels are drawn: the instrument editor measures the room it has
+  applyFolds();
   $('btn-mode-inst').classList.toggle('on', inst);
   $('btn-mode-classic').classList.toggle('on', !inst);
   renderTracks();
@@ -373,7 +423,7 @@ export const HELP_HTML = `
 </table>
 <h4>General</h4>
 <table>
-<tr><td>Tab / Shift+Tab</td><td>Next / previous panel</td></tr>
+<tr><td>Tab / Shift+Tab</td><td>Next / previous panel (hidden panels are skipped)</td></tr>
 <tr><td>Shift+1 2 3</td><td>Tracks 1-3</td></tr>
 <tr><td>Shift+4</td><td>Patterns</td></tr>
 <tr><td>Shift+5 6 7</td><td>Wave, pulse, filter table (switches Sounds to Tables)</td></tr>
@@ -388,6 +438,7 @@ export const HELP_HTML = `
 <tr><td>Ctrl+O / Ctrl+S</td><td>Open / save song (Ctrl+Shift+S: save as)</td></tr>
 <tr><td>F8</td><td>This help</td></tr>
 </table>
+<p><b>Hiding panels</b> - the small arrow at the right of a panel title folds that column (Tracks, Patterns, or the sounds column) down to a strip with its title; click the strip to bring it back. Jumping to a hidden panel with Shift+1-8, or choosing Instruments or Tables in the toolbar, opens it too. One column always stays open, and the choice is remembered. When the window is too narrow for all three, the columns you used least recently become strips by themselves and come back when there is room.</p>
 <h4>Tracks</h4>
 <table>
 <tr><td>0-9 A-F</td><td>Edit hexadecimal data</td></tr>
@@ -423,14 +474,19 @@ export const HELP_HTML = `
 <p><b>Pulse</b> - 01-7F: modulate for that many frames, right = signed speed. 80-FE: set pulse to right. FF: jump.</p>
 <p><b>Filter</b> - 01-7F: modulate cutoff for that many frames, right = signed speed. 80-FE: set passband (left nybble - 8) and filtered channels (right nybble), right = cutoff. FF: jump.</p>
 <h4>Instruments</h4>
-<p>The <b>Sounds</b> switch in the toolbar chooses how sounds are edited. <b>Instruments</b> shows each command as an instrument: a name, an envelope with four sliders, and its waveform, pulse and filter programs as lists of steps, each with a graph of the program frame by frame. Drag a point in a graph to change its step: a round point is a set value, a diamond is the end of a sweep (sideways for its length, up or down for its speed), a pitch step moves by semitones. The shaded part is the program repeating. <b>Tables</b> shows the same data as in NinjaTracker: the three tables and the command list in hex. Both edit the same song, so you can switch at any time and nothing is converted.</p>
+<p>The <b>Sounds</b> switch in the toolbar chooses how sounds are edited. <b>Instruments</b> shows each command as an instrument: a name, an envelope with four sliders, and its waveform, pulse and filter programs as lists of steps, each with a graph of the program frame by frame. Drag a point in a graph to change its step: a round point is a set value, a diamond is the end of a sweep (sideways for its length, up or down for its speed), a pitch step moves by semitones. The shaded part is the program repeating. Pulse width is shown in per cent and filter cutoff as 0-255, on the sliders and in the graphs alike. <b>Tables</b> shows the same data as in NinjaTracker: the three tables and the command list in hex. Both edit the same song, so you can switch at any time and nothing is converted.</p>
 <table>
-<tr><td>Piano keys</td><td>Try the instrument (while the Instruments panel is active)</td></tr>
+<tr><td>Piano keys</td><td>Try the instrument (while the Instruments panel is active). With the cursor in a number field the letter keys still play, so a value can be changed and heard without leaving it; the digit keys type</td></tr>
 <tr><td>Shift+Space / Space</td><td>Test note / key off</td></tr>
+<tr><td>Hold Test</td><td>Hear the instrument with the mouse; the name and the Test button stay in view while the sections scroll</td></tr>
 <tr><td>Up / Down</td><td>Previous / next instrument</td></tr>
+<tr><td>Enter / Esc</td><td>Leave a number or name field</td></tr>
 <tr><td>Delete</td><td>Remove the selected instrument from the song (same as Clear)</td></tr>
 </table>
-<p>The instrument number is the command number to type in a pattern. <b>+</b> adds a step after a step (a copy of it), <b>&times;</b> removes one, and <b>Then</b> says what happens after the last step: stop, or repeat from a step. If two instruments use the same steps the section says <i>Shared</i>; <b>Make own copy</b> separates them. <b>Remove</b> stops using a table and deletes its steps unless something else still uses them.</p>
+<p>The instrument number is the command number to type in a pattern. <b>+</b> adds a step after a step (a copy of it) and <b>&times;</b> removes one. <b>Drag a step by its number</b> to change the order; to put a new step first, add it and drag it up. A repeat keeps naming the same step number when steps move. <b>Then</b> says what happens after the last step: stop, or repeat from a step. A vibrato or slide ends a waveform program, so only the last step can be one and it cannot be moved.</p>
+<p>If two instruments use the same steps the section says <i>Shared</i>; <b>Make own copy</b> separates them. <b>Remove</b> stops using a table and deletes its steps unless something else still uses them. A new filter is switched on for the channel the track cursor is in, where test notes play: tick the channels the instrument is used on. There is one filter for all three channels, and the instrument that set it last controls it.</p>
+<p>Warnings: <i>Not heard</i> on Pulse width means no waveform step uses the pulse waveform. <i>wraps round</i> on a sweep (and <i>wraps</i> in its graph) means it runs past the end of the range and jumps to the other side: use fewer frames or a smaller change. A typed number past its limit is set to the limit, and the status bar says so. Vibrato depth and slide speed are in SID frequency steps per frame, so the same number is a smaller change on a higher note.</p>
+<p><b>Kit</b> in the toolbar opens a browser of instruments taken from existing NinjaTracker 2 tunes: hold the mouse on one to hear it, and Enter or double-click adds it to the song.</p>
 <h4>Commands</h4>
 <table>
 <tr><td>Enter</td><td>On Wv/Pu/Fl: go to that table position</td></tr>

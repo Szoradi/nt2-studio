@@ -10,7 +10,7 @@
   <header id="toolbar">
     <!-- Row 1: the song and its files -->
     <div class="tbar">
-      <span class="brand">NT2 Studio</span>
+      <span class="brand" id="brand" title="About NT2 Studio: version and credits">NT2 Studio</span>
       <div class="group">
         <span class="cap">Song</span>
         <input id="in-name" class="songname" maxlength="32" spellcheck="false" title="Song name (used for saved and exported files)">
@@ -90,24 +90,24 @@
 
   <main id="main">
     <section class="panel" id="panel-tracks" data-panel="tracks">
-      <h2>Tracks <span id="tracks-info" class="info"></span></h2>
+      <h2>Tracks <span id="tracks-info" class="info"></span><button class="fold" data-fold="tracks" title="Hide the tracks (click the strip to show them again)">&#9664;</button></h2>
       <div class="cols" id="tracks"></div>
     </section>
     <section class="panel" id="panel-pattern" data-panel="pattern">
-      <h2>Patterns <span id="pattern-info" class="info"></span></h2>
+      <h2>Patterns <span id="pattern-info" class="info"></span><button class="fold" data-fold="pattern" title="Hide the patterns (click the strip to show them again)">&#9664;</button></h2>
       <div class="cols" id="patterns"></div>
     </section>
     <div class="side">
       <section class="panel" id="panel-inst" data-panel="inst">
-        <h2>Instruments <span class="info">the number is the command to use in a pattern</span></h2>
+        <h2>Instruments <span class="info">the number is the command to use in a pattern</span><button class="fold" data-fold="side" title="Hide the instruments (click the strip to show them again)">&#9654;</button></h2>
         <div class="inst"><div id="inst-list"></div><div id="inst-split" title="Drag to change the width of the instrument list (double-click to reset)"></div><div id="inst-editor"></div></div>
       </section>
       <section class="panel" id="panel-tables" data-panel="tables">
-        <h2>Tables</h2>
+        <h2>Tables<button class="fold" data-fold="side" title="Hide the tables and commands (click the strip to show them again)">&#9654;</button></h2>
         <div class="cols" id="tables"></div>
       </section>
       <section class="panel" id="panel-commands" data-panel="commands">
-        <h2>Commands</h2>
+        <h2>Commands<button class="fold" data-fold="side" title="Hide the tables and commands (click the strip to show them again)">&#9654;</button></h2>
         <div class="cols" id="commands"></div>
       </section>
     </div>
@@ -178,6 +178,28 @@
       <button id="kit-test" class="go" title="Hold to hear the selected instrument">&#9654; Test</button>
       <button id="kit-add" class="primary" title="Add the selected instrument to the first unused instrument of this song">Add to song</button>
       <button data-close>Close</button>
+    </div>
+  </dialog>
+
+  <dialog id="dlg-splash" tabindex="-1">
+    <div class="splash">
+      <div class="splash-head">
+        <div>
+          <div class="splash-name">NT2 Studio</div>
+          <div class="splash-ver">version <span id="splash-version"></span></div>
+        </div>
+        <img class="splash-bg" src="nt-studio-logo.png" alt="" aria-hidden="true">
+        <img class="splash-logo" src="nt-studio-logo.png" alt="NT2 Studio logo" width="72" height="72">
+      </div>
+      <p class="splash-what">A music editor for the <b>NinjaTracker V2.03</b> playroutine of the Commodore 64. Write a tune in the browser, hear it played by the original 6502 player, and export it as a .sid, a .prg or data for your own program.</p>
+      <div class="splash-credits">
+        <div><span>Playroutine and song format</span>Cadaver (Lasse &Ouml;&ouml;rni), covertbitops.c64.org</div>
+        <div><span>SID emulation</span>WebSid / Tiny'R'Sid &copy; J&uuml;rgen Wothke, CC BY-NC-SA 4.0</div>
+        <div><span>Example tunes and kit</span>the NinjaTracker 2 musicians named under Examples; each tune &copy; its author</div>
+        <div><span>Editor</span>&copy; 2026 Strepto (Balazs Szoradi), MIT licence</div>
+      </div>
+      <p class="splash-note">For non-commercial use only.</p>
+      <div class="actions"><button data-close class="primary">Start</button></div>
     </div>
   </dialog>
 

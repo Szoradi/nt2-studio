@@ -772,6 +772,28 @@ export function instDeleteStep(t: number, r: number) {
   });
 }
 
+/**
+ * The rows a step of instrument `i` can be moved between: the steps of its program, without a
+ * closing vibrato or slide, which stays the last step. Null when the step on row `r` cannot move.
+ */
+export function instStepRange(i: number, t: number, r: number): { first: number; last: number } | null {
+  const p = programAt(S.song, t, S.song.commands[i][PTR[t]]);
+  if (!p) return null;
+  const last = t === 0 && S.song.tables[t].left[p.last] >= 0xc0 ? p.last - 1 : p.last;
+  return r >= p.start && r <= last && last > p.start ? { first: p.start, last } : null;
+}
+
+/** Move the step on row `from` to row `to`; the steps between shift over. A repeat keeps naming the same step number. */
+export function instMoveStep(i: number, t: number, from: number, to: number) {
+  edit(() => {
+    const range = instStepRange(i, t, from);
+    if (!range || to < range.first || to > range.last || to === from) return false;
+    const tbl = S.song.tables[t];
+    tbl.left.splice(to, 0, tbl.left.splice(from, 1)[0]);
+    tbl.right.splice(to, 0, tbl.right.splice(from, 1)[0]);
+  });
+}
+
 /** What a program does after its last step: jump to a row (1-based), or 0 to stop. */
 export function instSetEnd(i: number, t: number, dest: number) {
   edit(() => {
@@ -786,11 +808,17 @@ export function instSetEnd(i: number, t: number, dest: number) {
   });
 }
 
+/**
+ * Left side of a new "set filter" step: low pass, on the channel test notes play on (the track
+ * cursor's). All three would put the whole song through the filter as soon as the note plays.
+ */
+export const newFilterSet = () => 0x90 | (1 << S.trkCh);
+
 /** What a table gets when an instrument starts using it: one step, then stop. */
-const NEW_PROGRAM: [number, number][][] = [
-  [[0x21, 0x00], [0xff, 0x00]],
-  [[0x80, 0x80], [0xff, 0x00]],
-  [[0x97, 0x80], [0xff, 0x00]],
+const NEW_PROGRAM: (() => [number, number][])[] = [
+  () => [[0x21, 0x00], [0xff, 0x00]],
+  () => [[0x80, 0x80], [0xff, 0x00]],
+  () => [[newFilterSet(), 0x80], [0xff, 0x00]],
 ];
 
 function appendProgram(song: Song, t: number, rows: [number, number][]): number {
@@ -803,8 +831,9 @@ function appendProgram(song: Song, t: number, rows: [number, number][]): number 
 /** Give an instrument a fresh program in a table it does not use yet. */
 export function instAddProgram(i: number, t: number) {
   edit(() => {
-    if (!tableRoom(S.song.tables[t], NEW_PROGRAM[t].length)) return false;
-    S.song.commands[i][PTR[t]] = appendProgram(S.song, t, NEW_PROGRAM[t]);
+    const rows = NEW_PROGRAM[t]();
+    if (!tableRoom(S.song.tables[t], rows.length)) return false;
+    S.song.commands[i][PTR[t]] = appendProgram(S.song, t, rows);
   });
 }
 
@@ -829,13 +858,33 @@ export function instOwnProgram(i: number, t: number) {
   });
 }
 
+/**
+ * Last row to delete with a program. A wave program that ends on a vibrato or slide with no jump
+ * after it may be followed by rows the player can never reach (steps that were cut off when an
+ * earlier step was made a vibrato or slide). They go with it, up to their closing jump, unless a
+ * command or a jump from elsewhere names one of them.
+ */
+function deadTailEnd(song: Song, t: number, p: Program): number {
+  const tbl = song.tables[t];
+  if (t !== 0 || p.jump >= 0 || tbl.left[p.last] < 0xc0 || tbl.left[p.end] === 0xff) return p.end;
+  let end = tbl.left.indexOf(0xff, p.end + 1);
+  if (end < 0) end = tbl.left.length - 1;
+  if (end === p.end) return p.end;
+  const tail = (r: number) => r > p.end && r <= end;
+  if (song.commands.some(c => tail(c.wave - 1))) return p.end;
+  if (tbl.left.some((l, j) => l === 0xff && (j < p.start || j > end) && tail(tbl.right[j] - 1))) return p.end;
+  return end;
+}
+
 function dropProgram(song: Song, i: number, t: number) {
   const cmd = song.commands[i];
   const p = programAt(song, t, cmd[PTR[t]]);
   cmd[PTR[t]] = 0;
   if (!p) return;
-  const users = programUsers(song, t, p, i);
-  if (!users.cmds.length && !users.jumps) deleteRows(song, t, p.start, p.end);
+  // Jumps out of the unreachable rows are not users: they go with the program
+  const all = { ...p, end: deadTailEnd(song, t, p) };
+  const users = programUsers(song, t, all, i);
+  if (!users.cmds.length && !users.jumps) deleteRows(song, t, all.start, all.end);
 }
 
 /** Take a table away from an instrument. Its rows are deleted unless something else uses them. */
@@ -846,9 +895,10 @@ export function instRemoveProgram(i: number, t: number) {
 /** Set up an unused command as a plain new instrument. */
 export function instCreate(i: number): boolean {
   return edit(() => {
-    if (!tableRoom(S.song.tables[0], NEW_PROGRAM[0].length)) return false;
+    const rows = NEW_PROGRAM[0]();
+    if (!tableRoom(S.song.tables[0], rows.length)) return false;
     const name = `inst ${(i + 1).toString(16).toUpperCase().padStart(2, '0')}`;
-    S.song.commands[i] = { ad: 0x09, sr: 0xa9, wave: appendProgram(S.song, 0, NEW_PROGRAM[0]), pulse: 0, filt: 0, name };
+    S.song.commands[i] = { ad: 0x09, sr: 0xa9, wave: appendProgram(S.song, 0, rows), pulse: 0, filt: 0, name };
   });
 }
 

@@ -22,7 +22,14 @@ interface Handle {
   x: number; y: number;
 }
 interface Mark { f: number; label: string }
-interface Sim { frames: Frame[]; handles: Handle[]; marks: Mark[]; firstPass: number; loops: boolean; first: number; last: number }
+interface Sim {
+  frames: Frame[]; handles: Handle[]; marks: Mark[]; firstPass: number; loops: boolean; first: number; last: number;
+  /** Rows whose sweep ran past the end of the range and came round the other side. */
+  wraps: Set<number>;
+}
+
+/** Per table: the rows of the graph last drawn whose sweep wraps round (the step list says so too). */
+export const wrapped: Set<number>[] = [new Set(), new Set(), new Set()];
 
 const SIM_FRAMES = 2000;
 /** A row that modulates forever has no end to drag, so its handle sits this many frames in. */
@@ -40,6 +47,15 @@ function simulate(t: number, tbl: Table, start: number, minFrames = 0): Sim {
   const hold = (row: number) => frames.push({ v, row, wave, abs, fx });
   // The pulse is kept with its nybbles swapped and added with end-around carry: modulo 255 here
   const wrap = (x: number) => (t === 1 ? (x > 255 ? x - 255 : x < 0 ? x + 255 : x) : x & 0xff);
+  const wraps = new Set<number>();
+  /** One frame of a sweep on row `r`. Running off either end is marked, once for the row. */
+  const sweep = (r: number, f: number, by: number, first: boolean) => {
+    const x = v + by;
+    if (first && (x > 255 || x < 0) && !wraps.has(r)) { wraps.add(r); marks.push({ f, label: 'wraps' }); }
+    v = wrap(x);
+  };
+  /** Where a jump goes, the way the step list numbers it. */
+  const dest = (to: number, from: number) => (!to ? 'stop' : to > start && to - 1 <= from ? `to step ${to - start}` : `to row ${hex2(to)}`);
 
   for (let f = 0; f < SIM_FRAMES; f++) {
     // Nothing past the repeat that is drawn is needed
@@ -75,7 +91,7 @@ function simulate(t: number, tbl: Table, start: number, minFrames = 0): Sim {
       if (first) handles.push({ row: r, kind: 'arp', f, v, f0: f, v0: v, n: 1, abs, x: 0, y: 0 });
       // A jump on the next row is taken at once
       if (pos < len && tbl.left[pos] === 0xff) {
-        if (first) { marks.push({ f: f + 1, label: tbl.right[pos] ? `to ${hex2(tbl.right[pos])}` : 'stop' }); last = Math.max(last, pos); }
+        if (first) { marks.push({ f: f + 1, label: dest(tbl.right[pos], pos) }); last = Math.max(last, pos); }
         pos = tbl.right[pos];
       } else pos++;
       hold(r);
@@ -83,7 +99,7 @@ function simulate(t: number, tbl: Table, start: number, minFrames = 0): Sim {
     }
 
     if (l === 0xff) {
-      if (first) marks.push({ f, label: rt ? `to ${hex2(rt)}` : 'stop' });
+      if (first) marks.push({ f, label: dest(rt, r) });
       pos = rt;
       hold(r);
     } else if (l >= 0x80) {
@@ -98,22 +114,22 @@ function simulate(t: number, tbl: Table, start: number, minFrames = 0): Sim {
         marks.push({ f, label: 'runs on' });
         firstPass = f + OPEN_MOD_FRAMES * 2;
       }
-      v = wrap(v + signed(rt));
+      sweep(r, f, signed(rt), first);
       hold(r);
     } else if (time === 0) {
       time = l;
       if (first) handles.push({ row: r, kind: 'mod', f: f + l - 1, v: 0, f0: f, v0: v, n: l, abs: false, x: 0, y: 0 });
-      v = wrap(v + signed(rt));
+      sweep(r, f, signed(rt), first);
       hold(r);
     } else {
       // The frame on which the time runs out only moves on to the next row
       if (--time === 0) pos++;
-      else v = wrap(v + signed(rt));
+      else sweep(r, f, signed(rt), first);
       hold(r);
     }
   }
   if (firstPass < 0) firstPass = SIM_FRAMES;
-  return { frames, handles, marks, firstPass, loops, first: start, last };
+  return { frames, handles, marks, firstPass, loops, first: start, last, wraps };
 }
 
 // ---------------------------------------------------------------------------
@@ -151,6 +167,7 @@ export function graphHtml(t: number, from: number, cur: number, width: number, H
   const frozen = drag && drag.geom.t === t ? drag.geom : null;
   const start = frozen ? frozen.start : from;
   const sim = simulate(t, tbl, start, frozen ? frozen.total : 0);
+  wrapped[t] = sim.wraps;
   const base = baseNote();
   const val = (fr: { v: number; abs: boolean }) => (t === 0 && fr.abs ? fr.v - base : fr.v);
 
@@ -186,7 +203,8 @@ export function graphHtml(t: number, from: number, cur: number, width: number, H
   } else {
     for (const s of [0, 0x40, 0x80, 0xc0, 0xff]) {
       g += `<line class="tg-grid${s === 0x80 ? ' major' : ''}" x1="${PL}" x2="${w - PR}" y1="${n1(Y(s))}" y2="${n1(Y(s))}"/>` +
-        `<text class="tg-lab" x="${PL - 4}" y="${n1(Y(s) + 3)}" text-anchor="end">${hex2(s)}</text>`;
+        // The same units as the sliders: pulse width in per cent, cutoff 0-255
+        `<text class="tg-lab" x="${PL - 4}" y="${n1(Y(s) + 3)}" text-anchor="end">${t === 1 ? `${Math.round(s / 255 * 100)}%` : s}</text>`;
     }
   }
   // Frame axis
@@ -224,7 +242,7 @@ export function graphHtml(t: number, from: number, cur: number, width: number, H
     }
     live.forEach((h, i) => {
       h.x = X(h.f + 0.5); h.y = Y(val(h));
-      const tip = `Row ${hex2(h.row + 1)}: ${describeTableRow(t, tbl.left[h.row], tbl.right[h.row])}` +
+      const tip = `Step ${h.row - start + 1} (table row ${hex2(h.row + 1)}): ${describeTableRow(t, tbl.left[h.row], tbl.right[h.row])}` +
         `${h.abs ? '' : ` (${noteName(Math.min(95, base + h.v) * 2)} on the test note)`}. Drag up or down`;
       if (h.row === cur) g += `<rect class="tg-cur" x="${n1(X(h.f) - 1)}" y="${n1(h.y - 5)}" width="${n1(px + 2)}" height="10" rx="2"/>`;
       hits += `<rect class="tg-hit" data-h="${i}" x="${n1(X(h.f))}" y="${n1(h.y - 8)}" width="${n1(Math.max(px, 4))}" height="16"><title>${esc(tip)}</title></rect>`;
@@ -246,7 +264,7 @@ export function graphHtml(t: number, from: number, cur: number, width: number, H
       h.v = sim.frames[h.f].v;
       h.x = X(h.f + 0.5); h.y = Y(h.v);
       const how = h.kind === 'set' ? 'Drag up or down' : h.n ? 'Drag sideways for the length, up or down for the speed' : 'Drag up or down for the speed';
-      const tip = `Row ${hex2(h.row + 1)}: ${describeTableRow(t, tbl.left[h.row], tbl.right[h.row])}. ${how}`;
+      const tip = `Step ${h.row - start + 1} (table row ${hex2(h.row + 1)}): ${describeTableRow(t, tbl.left[h.row], tbl.right[h.row])}. ${how}`;
       const c = `tg-h ${h.kind}${h.row === cur ? ' cur' : ''}`;
       g += h.kind === 'set'
         ? `<circle class="${c}" cx="${n1(h.x)}" cy="${n1(h.y)}" r="4"/>`
@@ -259,9 +277,13 @@ export function graphHtml(t: number, from: number, cur: number, width: number, H
   const legend = t === 0
     ? '<span class="tg-key"><i class="w-tri"></i>tri<i class="w-saw"></i>saw<i class="w-pul"></i>pulse<i class="w-noi"></i>noise</span>'
     : '<span class="tg-key"><i class="k-set"></i>set<i class="k-mod"></i>sweep</span>';
-  const what = t === 0 ? `semitones from the note, per frame (fixed notes against ${noteName(base * 2)})` : t === 1 ? 'pulse width per frame' : 'cutoff per frame';
-  return `<div class="tg-head"><b>${TABLE_NAMES[t]} graph</b><span>rows ${hex2(sim.first + 1)}-${hex2(sim.last + 1)}</span>` +
-    `<span class="tg-what">${what}</span><span class="grow"></span>${legend}</div>` +
+  // Short enough never to be cut off; the rest is in the tooltip
+  const what = t === 0 ? 'semitones from the note' : t === 1 ? 'pulse width per frame' : 'cutoff per frame';
+  const whatTip = t === 0 ? `One column per frame. Fixed-note steps are drawn against ${noteName(base * 2)}, the note Shift+Space tests with` : '';
+  const steps = sim.last - sim.first + (tbl.left[sim.last] === 0xff ? 0 : 1);
+  return `<div class="tg-head"><b>${TABLE_NAMES[t]} graph</b>` +
+    `<span class="tg-count" title="Table rows ${hex2(sim.first + 1)}-${hex2(sim.last + 1)}">${steps} step${steps === 1 ? '' : 's'}</span>` +
+    `<span class="tg-what" title="${whatTip}">${what}</span><span class="grow"></span>${legend}</div>` +
     `<svg class="tg${drag ? ' dragging' : ''}" data-t="${t}" width="${w}" height="${H}" viewBox="0 0 ${w} ${H}">${g}${hits}</svg>`;
 }
 

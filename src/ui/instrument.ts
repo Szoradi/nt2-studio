@@ -8,7 +8,7 @@
 import { hex2, noteName } from '../core/song.ts';
 import * as E from './editor.ts';
 import { S } from './editor.ts';
-import { graphHtml } from './tablegraph.ts';
+import { graphHtml, wrapped } from './tablegraph.ts';
 import { morphHtml } from './morph.ts';
 
 const $ = (id: string) => document.getElementById(id)!;
@@ -83,36 +83,50 @@ function pitchControls(d: Data, right: number): string {
     (abs ? sel({ ...d, f: 'abs' }, NOTES, clamp(right, 0x8c, 0xdf)) : num({ ...d, f: 'rel' }, right, 0, 127));
 }
 
-function stepControls(t: number, r: number, l: number, right: number): string {
+/** A vibrato or slide ends a wave program: the player stays on that row, so only the last step can be one. */
+const ENDS_PROGRAM = (k: Kind) => k === 'vib' || k === 'slide';
+
+function stepControls(t: number, r: number, l: number, right: number, mid = false, wraps = false): string {
   const d = { t, r };
   const kind = kindOf(t, l);
-  let html = sel({ ...d, f: 'kind' }, KINDS[t], kind);
+  const kinds = t === 0 && mid ? KINDS[0].filter(k => !ENDS_PROGRAM(k[0])) : KINDS[t];
+  let html = sel({ ...d, f: 'kind' }, kinds, kind,
+    t === 0 && mid ? 'Vibrato and slide end the program, so only the last step can be one' : '');
   if (t === 0) {
     if (kind === 'set') {
-      html += sel({ ...d, f: 'wf' }, WAVEFORMS, l >> 4) +
+      // The four switches are one group: in a narrow panel they take a line of their own
+      html += sel({ ...d, f: 'wf' }, WAVEFORMS, l >> 4) + '<span class="bits">' +
         chk({ ...d, f: 'bit', b: 1 }, !!(l & 1), 'gate', 'Gate: on starts the envelope, off releases it') +
         chk({ ...d, f: 'bit', b: 2 }, !!(l & 2), 'sync', 'Hard sync with the previous channel') +
         chk({ ...d, f: 'bit', b: 4 }, !!(l & 4), 'ring', 'Ring modulation with the previous channel (triangle only)') +
         chk({ ...d, f: 'bit', b: 8 }, !!(l & 8), 'test', 'Test bit: stops the oscillator') +
-        pitchControls(d, right);
+        '</span>' + pitchControls(d, right);
     } else if (kind === 'wait') {
       html += num({ ...d, f: 'wait' }, l - 0x90, 0, 47, 'Frames to hold the sound as it is') + lab('frames, then') + pitchControls(d, right);
     } else if (kind === 'vib') {
-      html += lab('speed') + rng({ ...d, f: 'vs' }, l - 0xc0, 0, 31, String(l - 0xc0)) +
-        lab('depth') + rng({ ...d, f: 'vd' }, right, 0, 255, String(right));
+      html += lab('speed') + rng({ ...d, f: 'vs' }, l - 0xc0, 0, 31, String(l - 0xc0), 'How quickly the pitch turns round, 0 to 31') +
+        lab('depth') + rng({ ...d, f: 'vd' }, right, 0, 255, String(right),
+          'How far the pitch moves each frame, in SID frequency steps (0 to 255). The same number is a smaller wobble on a higher note') +
+        lab('steps/frame');
     } else {
-      html += lab('speed') + num({ ...d, f: 'sl' }, ((l - 0xe0) << 8) | right, 0, 0x1eff, 'How fast the pitch glides to the new note') +
+      html += lab('speed') + num({ ...d, f: 'sl' }, ((l - 0xe0) << 8) | right, 0, 0x1eff,
+        'How fast the pitch glides to the new note, in SID frequency steps per frame (0 to 7935). A semitone is more steps the higher the note: twice as many an octave up') +
+        lab('steps/frame,') +
         lab('then back to the last waveform step');
     }
   } else if (kind === 'sweep') {
     html += lab('for') + num({ ...d, f: 'fr' }, l, 0, 127, 'Frames (0 = keeps going for ever)') + lab(l ? 'frames by' : '(for ever) by') +
-      num({ ...d, f: 'sp' }, right < 0x80 ? right : right - 0x100, -128, 127, 'Change per frame, negative to go down') + lab('per frame');
+      num({ ...d, f: 'sp' }, right < 0x80 ? right : right - 0x100, -128, 127,
+        t === 1 ? 'Change per frame out of 255, negative to go down' : 'Change of the cutoff (0-255) per frame, negative to go down') +
+      // A pulse sweep also in the unit of the width slider and the graph
+      lab(t === 1 ? `per frame = ${((right < 0x80 ? right : right - 0x100) / 255 * 100).toFixed(1)}%` : 'per frame') +
+      (wraps ? `<span class="lb wrap" title="The sweep runs past the ${t === 1 ? 'end of the pulse width range' : 'end of the cutoff range'} and comes round the other side: the sound jumps. Use fewer frames or a smaller change">wraps round</span>` : '');
   } else if (t === 1) {
     html += rng({ ...d, f: 'val' }, right, 0, 255, `${Math.round(right / 255 * 100)}%`, 'Pulse width: 50% is a square wave');
   } else {
     html += sel({ ...d, f: 'ft' }, FILTER_TYPES, (l >> 4) & 7, 'Filter type. The resonance follows the type in this player') +
       lab('on') + [0, 1, 2].map(c => chk({ ...d, f: 'bit', b: 1 << c }, !!(l & (1 << c)), `ch ${c + 1}`, `Filter channel ${c + 1}`)).join('') +
-      lab('cutoff') + rng({ ...d, f: 'val' }, right, 0, 255, hex2(right));
+      lab('cutoff') + rng({ ...d, f: 'val' }, right, 0, 255, String(right), 'Cutoff, 0 (lowest) to 255');
   }
   return html;
 }
@@ -121,7 +135,7 @@ function stepControls(t: number, r: number, l: number, right: number): string {
 function newStep(t: number, after: number): [number, number] {
   const tbl = S.song.tables[t];
   const l = after >= 0 ? tbl.left[after] : 0xff;
-  if (l === 0xff || (t === 0 && l >= 0xc0)) return t === 0 ? [0x21, 0x00] : t === 1 ? [0x80, 0x80] : [0x97, 0x80];
+  if (l === 0xff || (t === 0 && l >= 0xc0)) return t === 0 ? [0x21, 0x00] : t === 1 ? [0x80, 0x80] : [E.newFilterSet(), 0x80];
   return [l, tbl.right[after]];
 }
 
@@ -146,12 +160,31 @@ function sectionHtml(i: number, t: number, width: number): string {
       `<button data-a="own" data-t="${t}" title="Give this instrument its own copy of these steps">Make own copy</button>`
     : '';
   const last = p.last;
+  // What stands between these steps and the ear
+  let unheard = '';
+  if (t === 1) {
+    const wp = E.programAt(S.song, 0, cmd.wave), wave = S.song.tables[0];
+    let pulse = !wp;
+    if (wp) for (let r = wp.start; r <= wp.last; r++) if (wave.left[r] < 0x90 && wave.left[r] & 0x40) pulse = true;
+    if (!pulse) unheard = `<span class="ie-note warn" title="${esc(SECTION_HELP[1])}">Not heard: no waveform step uses pulse</span>`;
+  } else if (t === 2) {
+    unheard = `<span class="ie-note" title="${esc(SECTION_HELP[2])}">One filter for all channels: the last instrument to set it wins</span>`;
+  }
+  // Drawn first: playing the program through also finds the sweeps that wrap round
+  const graph = graphHtml(t, p.start, -1, width, 112);
   let steps = '';
   for (let r = p.start; r <= last; r++) {
     const terminal = t === 0 && tbl.left[r] >= 0xc0;
-    steps += `<div class="st"><span class="rn" title="Table row ${hex2(r + 1)}">${r - p.start + 1}</span><span class="stc">${stepControls(t, r, tbl.left[r], tbl.right[r])}</span>` +
-      `${terminal ? '' : `<button class="sq" data-a="ins" data-t="${t}" data-r="${r}" title="Add a step after this one">+</button>`}` +
-      `${last > p.start ? `<button class="sq" data-a="del" data-t="${t}" data-r="${r}" title="Remove this step">&times;</button>` : ''}</div>`;
+    // Every row has the same buttons, greyed out where they do not apply, so they line up
+    const btn = (a: string, label: string, title: string, ok: boolean, cls = '') =>
+      `<button class="sq${cls}" data-a="${a}" data-t="${t}" data-r="${r}" title="${title}"${ok ? '' : ' disabled'}>${label}</button>`;
+    // The step number is the handle the row is dragged by
+    const grip = E.instStepRange(i, t, r)
+      ? `<span class="rn grip" title="Drag to change the order (table row ${hex2(r + 1)})">${r - p.start + 1}</span>`
+      : `<span class="rn" title="Table row ${hex2(r + 1)}">${r - p.start + 1}</span>`;
+    steps += `<div class="st" data-t="${t}" data-r="${r}">${grip}<span class="stc">${stepControls(t, r, tbl.left[r], tbl.right[r], r < last, wrapped[t].has(r))}</span>` +
+      btn('ins', '+', terminal ? 'A vibrato or slide is the last step' : 'Add a step after this one', !terminal) +
+      btn('del', '&times;', last > p.start ? 'Remove this step' : 'The only step: use Remove above to stop using this table', last > p.start, ' rm') + `</div>`;
   }
   if (last < p.start) steps += `<div class="st"><span class="ie-note">No steps</span><span class="grow"></span><button data-a="ins" data-t="${t}" data-r="-1">Add a step</button></div>`;
 
@@ -167,9 +200,9 @@ function sectionHtml(i: number, t: number, width: number): string {
     else if (!opts.some(o => o[0] === dest)) opts.push([dest, `jump to table row ${hex2(dest)}`]);
     end = lab('Then') + sel({ t, f: 'end' }, opts, dest);
   }
-  return `<section class="ie-sec">${head}${shared}<span class="grow"></span>` +
+  return `<section class="ie-sec">${head}${shared}${unheard}<span class="grow"></span>` +
     `<button data-a="remove" data-t="${t}" title="Stop using this table in this instrument">Remove</button>` +
-    `<div class="ig">${graphHtml(t, p.start, -1, width, 112)}</div><div class="steps">${steps}<div class="st end">${end}</div></div></section>`;
+    `<div class="ig">${graph}</div><div class="steps">${steps}<div class="st end">${end}</div></div></section>`;
 }
 
 function envelopeHtml(i: number): string {
@@ -284,8 +317,11 @@ function applyInput(el: HTMLInputElement | HTMLSelectElement, merge: boolean) {
       const was = kindOf(t, l);
       const pitch = t === 0 && (was === 'set' || was === 'wait') ? rt : 0;
       const k = el.value as Kind;
+      // On an earlier step it would cut the steps after it off from the instrument
+      const p = E.programAt(S.song, t, cmd[PTR[t]]);
+      if (t === 0 && ENDS_PROGRAM(k) && p && r < p.last) return;
       if (t === 0) [l, rt] = k === 'set' ? [0x41, pitch] : k === 'wait' ? [0x92, pitch] : k === 'vib' ? [0xc4, 0x20] : [0xe0, 0x40];
-      else [l, rt] = k === 'sweep' ? [0x10, 0x04] : [t === 1 ? 0x80 : 0x97, 0x80];
+      else [l, rt] = k === 'sweep' ? [0x10, 0x04] : [t === 1 ? 0x80 : E.newFilterSet(), 0x80];
       break;
     }
     case 'wf': l = (n << 4) | (l & 0x0f); break;
@@ -332,11 +368,80 @@ export interface InstrumentHost {
   status(msg: string, error?: boolean): void;
 }
 
+// ---------------------------------------------------------------------------
+// Dragging a step by its number to change the order
+// ---------------------------------------------------------------------------
+
+interface StepDrag { t: number; from: number; to: number; first: number; last: number }
+let stepDrag: StepDrag | null = null;
+
+const stepRows = (t: number) => [...$('inst-editor').querySelectorAll<HTMLElement>(`.st[data-t="${t}"][data-r]`)];
+
+function markStepDrag() {
+  if (!stepDrag) return;
+  const { t, from, to } = stepDrag;
+  for (const el of stepRows(t)) {
+    const r = parseInt(el.dataset.r!, 10);
+    el.classList.toggle('dragging', r === from);
+    // The line shows where the step will land
+    el.classList.toggle('drop-before', to < from && r === to);
+    el.classList.toggle('drop-after', to > from && r === to);
+  }
+}
+
+function onStepDragMove(e: MouseEvent) {
+  if (!stepDrag) return;
+  // The step lands on the row the pointer is over, or the nearest one it can go to
+  let to = stepDrag.first;
+  for (const el of stepRows(stepDrag.t)) {
+    const r = parseInt(el.dataset.r!, 10), box = el.getBoundingClientRect();
+    if (r <= stepDrag.last && e.clientY >= box.top) to = r;
+  }
+  stepDrag.to = to;
+  markStepDrag();
+}
+
+function onStepDragEnd() {
+  window.removeEventListener('mousemove', onStepDragMove);
+  window.removeEventListener('mouseup', onStepDragEnd);
+  document.body.classList.remove('step-drag');
+  const d = stepDrag;
+  stepDrag = null;
+  if (!d) return;
+  for (const el of stepRows(d.t)) el.classList.remove('dragging', 'drop-before', 'drop-after');
+  if (d.to !== d.from) E.instMoveStep(S.cmdNum, d.t, d.from, d.to);
+}
+
+function stepDragStart(e: MouseEvent, row: HTMLElement) {
+  const t = parseInt(row.dataset.t!, 10), from = parseInt(row.dataset.r!, 10);
+  const range = E.instStepRange(S.cmdNum, t, from);
+  if (!range) return;
+  stepDrag = { t, from, to: from, ...range };
+  document.body.classList.add('step-drag');
+  window.addEventListener('mousemove', onStepDragMove);
+  window.addEventListener('mouseup', onStepDragEnd);
+  markStepDrag();
+  // No text selection while dragging
+  e.preventDefault();
+}
+
 export function wireInstruments(host: InstrumentHost) {
   const panel = $('panel-inst');
+  panel.addEventListener('mousedown', e => {
+    const grip = e.button === 0 ? (e.target as HTMLElement).closest<HTMLElement>('.rn.grip') : null;
+    const row = grip?.closest<HTMLElement>('.st[data-r]');
+    if (row) stepDragStart(e, row);
+  });
   panel.addEventListener('input', onInput);
   panel.addEventListener('change', e => {
     gesture = null;
+    // A typed number past the limit is stored as the limit: say so
+    const typed = e.target as HTMLInputElement;
+    if (typed instanceof HTMLInputElement && typed.type === 'number' && typed.value !== '') {
+      const v = parseInt(typed.value, 10), lo = parseInt(typed.min, 10), hi = parseInt(typed.max, 10);
+      if (v > hi) host.status(`${v} is over the limit for this field: set to ${hi}`, true);
+      else if (v < lo) host.status(`${v} is under the limit for this field: set to ${lo}`, true);
+    }
     // Show what was stored, in case a typed number was out of range
     shownEditor = '';
     E.notify();
@@ -373,11 +478,19 @@ export function wireInstruments(host: InstrumentHost) {
         break;
       }
       case 'clear': clearInstrument(host.status); break;
-      case 'add': E.instAddProgram(i, t); break;
+      case 'add':
+        E.instAddProgram(i, t);
+        if (t === 2 && S.song.commands[i].filt) host.status(`Filter added for channel ${S.trkCh + 1}, where test notes play: tick the channels this instrument is used on`);
+        break;
       case 'remove': E.instRemoveProgram(i, t); break;
       case 'own': E.instOwnProgram(i, t); break;
       case 'ins': E.instInsertStep(i, t, r, ...newStep(t, r)); break;
-      case 'del': E.instDeleteStep(t, r); break;
+      case 'del': {
+        const p = E.programAt(S.song, t, S.song.commands[i][PTR[t]]);
+        E.instDeleteStep(t, r);
+        host.status(`Removed step ${p ? r - p.start + 1 : ''} of ${SECTION[t].toLowerCase()} (Ctrl+Z to undo)`);
+        break;
+      }
     }
     if (el instanceof HTMLButtonElement) el.blur();
   });
