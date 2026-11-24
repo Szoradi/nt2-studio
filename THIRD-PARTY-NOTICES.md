@@ -28,8 +28,8 @@ licence.
 
 ## Example tunes and the instrument kit
 
-- Files: everything under `public/examples/` (208 songs and `index.json`), everything under
-  `kit/` and `public/kit/instruments.json`
+- Files: everything under `public/examples/` (208 songs and `index.json`),
+  `public/kit/instruments.json` and `kit/report.txt`
 - These are tunes made with NinjaTracker 2 by other musicians, and instruments taken from those
   tunes. They were rebuilt from the musicians' `.sid` files by `scripts/extract-instruments.ts`;
   the `.sid` files themselves are not part of this project.

@@ -8,7 +8,8 @@
 // inside the original tables.
 //
 // Usage: node scripts/extract-instruments.ts [folder with .sid files, default ../c64music]
-//          [folder for the song files and report, default kit] [kit file, default public/kit/instruments.json]
+//          [folder for the report, default kit] [kit file, default public/kit/instruments.json]
+//          [folder for the songs that match their .sid, default public/examples]
 import { readdirSync, statSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { CPU6502 } from '../src/core/cpu6502.ts';
@@ -683,7 +684,6 @@ writeFileSync(KIT_FILE, text);
 // One song file per source tune, in a folder per musician, with that tune's instruments as named
 // commands, to try them in the editor. A song holds 127 commands and 255 rows per table and has
 // one hard restart setting, so a big soundtrack is split into numbered files.
-mkdirSync(`${OUT}/nt2`, { recursive: true });
 const nt2: string[] = [];
 let fileMismatch = 0;
 
@@ -771,7 +771,6 @@ for (const f of scanned) {
   const bad = f.modules.find(m => typeof m.song === 'string');
   if (bad) { report[f.line] += `  {instruments only: ${bad.song}}`; continue; }
   fullFiles.add(f.rel);
-  mkdirSync(`${OUT}/nt2/${f.musician}`, { recursive: true });
   let same = 0, notesOnly = 0, eventsOnly = 0, compared = 0;
   const differ: number[] = [];
   for (const m of f.modules) {
@@ -779,11 +778,10 @@ for (const f of scanned) {
     for (const [cmd, ins] of m.insOf) song.commands[cmd - 1].name = ins.name;
     const first = Math.min(...m.subtunes);
     const name = `${f.musician}/${f.rel.split('/').pop()!.replace(/\.sid$/i, '')}${f.modules.length > 1 ? '_t' + String(first).padStart(2, '0') : ''}.nt2`;
-    writeFileSync(`${OUT}/nt2/${name}`, saveSongFile(song));
     nt2.push(name);
     songFiles++;
     // Read it back as the editor does, pack it with the V2.03 player and play it against the original
-    const back = loadSongFile(new Uint8Array(readFileSync(`${OUT}/nt2/${name}`)));
+    const back = loadSongFile(saveSongFile(song));
     let packed: Uint8Array;
     const before = { differ: differ.length, close: notesOnly + eventsOnly };
     try { packed = packNormal(back, 0x1000, 0xfc).bytes; } catch { for (const t of m.subtunes) { compared++; differ.push(t); } dropped.push(`${name} (does not pack)`); continue; }
@@ -855,12 +853,10 @@ for (const m of sorted) for (const file of [...new Set(m.instruments.flatMap(i =
     }
   }
   chunks.forEach((c, k) => {
-    mkdirSync(`${OUT}/nt2/${m.id}`, { recursive: true });
     const name = `${m.id}/${file.split('/').pop()!.replace(/\.sid$/i, '')}_instruments${chunks.length > 1 ? '_' + (k + 1) : ''}.nt2`;
-    writeFileSync(`${OUT}/nt2/${name}`, saveSongFile(c.song));
     nt2.push(`${name} (${c.list.length})`);
     // Read the file back the way the editor does and play every command: it must match the instrument alone
-    const back = loadSongFile(new Uint8Array(readFileSync(`${OUT}/nt2/${name}`)));
+    const back = loadSongFile(saveSongFile(c.song));
     c.list.forEach((i, n) => {
       if (back.commands[n].name.trim() !== i.name) fileMismatch++;
       if (!i.verified) return;
@@ -899,6 +895,6 @@ for (const m of sorted) {
 console.log(`\n${total} instruments from ${sids.length} files, ${musicians.size} musicians; ${unverified} failed the stand-alone check; ${skippedEmpty} empty commands skipped`);
 console.log(`${[...examples.values()].reduce((n, l) => n + l.length, 0)} examples in ${EXAMPLES}; left out: ${dropped.join('; ') || 'none'}`);
 console.log(`merged within a musician: ${mergedSame} that sound the same, ${mergedNear} nearly the same`);
-console.log(`${songFiles} whole songs in ${OUT}/nt2 (of ${tunesCompared} subtunes: ${tunesSame} play identically to their .sid, ${tunesNotes} with identical notes but other filter or volume, ` +
+console.log(`${songFiles} whole songs rebuilt (of ${tunesCompared} subtunes: ${tunesSame} play identically to their .sid, ${tunesNotes} with identical notes but other filter or volume, ` +
   `${tunesEvents} with the same notes, commands and timing on a non-standard player, ${tunesCompared - tunesSame - tunesNotes - tunesEvents} differ); ` +
-  `${nt2.length - songFiles} instrument-only files, ${fileMismatch} commands in them differ from their instrument`);
+  `${nt2.length - songFiles} instrument-only sets, ${fileMismatch} commands in them differ from their instrument`);
