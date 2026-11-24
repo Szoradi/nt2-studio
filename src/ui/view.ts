@@ -334,6 +334,9 @@ try {
 /** The column a panel is in: the tables, the commands and the instrument editor share the last one. */
 export const foldOf = (panel: string): Fold => (panel === 'tracks' || panel === 'pattern' ? panel : 'side');
 
+/** Which columns are strips right now: the folded ones and those a narrow window has no room for. */
+export const hiddenNow: Record<Fold, boolean> = { tracks: false, pattern: false, side: false };
+
 export function setFolded(g: Fold, on: boolean) {
   folded[g] = on;
   try { localStorage.setItem(FOLD_KEY, JSON.stringify(FOLDS.filter(f => folded[f]))); } catch { /* storage unavailable */ }
@@ -359,9 +362,22 @@ function applyFolds() {
   const need = (open: Fold[]) => FOLDS.reduce((sum, g) => sum + (open.includes(g) ? min[g] : STRIP), 0);
   // The column in use always shows; each of the others does if it still fits beside those before it
   for (const g of recent) if (!folded[g] && (!shown.length || need([...shown, g]) <= room)) shown.push(g);
-  for (const g of FOLDS) $('main').classList.toggle(`fold-${g}`, !shown.includes(g));
+  for (const g of FOLDS) {
+    hiddenNow[g] = !shown.includes(g);
+    $('main').classList.toggle(`fold-${g}`, hiddenNow[g]);
+  }
   const open = FOLDS.filter(g => !folded[g]).length;
-  document.querySelectorAll<HTMLButtonElement>('button[data-fold]').forEach(b => { b.disabled = open === 1 && !folded[b.dataset.fold as Fold]; });
+  const names = { tracks: 'tracks', pattern: 'patterns', side: S.sideMode === 'inst' ? 'instruments' : 'tables and commands' };
+  document.querySelectorAll<HTMLButtonElement>('button[data-fold]').forEach(b => {
+    const g = b.dataset.fold as Fold;
+    // The same button brings a strip back, so it is only off for the last column that shows
+    b.disabled = open === 1 && !hiddenNow[g] && !folded[g];
+    b.title = hiddenNow[g] ? `Show the ${names[g]}` : `Hide the ${names[g]} (Ctrl+B hides the panel the keyboard is in; click the strip to show it again)`;
+    // The arrow points the way the column will go: away to its edge of the window, or back in
+    b.textContent = (g === 'side') === hiddenNow[g] ? '\u25C0' : '\u25B6';
+    b.setAttribute('aria-label', hiddenNow[g] ? `Show the ${names[g]}` : `Hide the ${names[g]}`);
+    b.setAttribute('aria-expanded', String(!hiddenNow[g]));
+  });
 }
 
 export function renderAll(play: PlayState | null, opts: { playOnly?: boolean } = {}) {
@@ -423,7 +439,7 @@ export const HELP_HTML = `
 </table>
 <h4>General</h4>
 <table>
-<tr><td>Tab / Shift+Tab</td><td>Next / previous panel (hidden panels are skipped)</td></tr>
+<tr><td>Tab / Shift+Tab</td><td>Next / previous panel (panels you have hidden are skipped)</td></tr>
 <tr><td>Shift+1 2 3</td><td>Tracks 1-3</td></tr>
 <tr><td>Shift+4</td><td>Patterns</td></tr>
 <tr><td>Shift+5 6 7</td><td>Wave, pulse, filter table (switches Sounds to Tables)</td></tr>
@@ -436,9 +452,10 @@ export const HELP_HTML = `
 <tr><td>, . or [ ]</td><td>Octave down / up</td></tr>
 <tr><td>F4</td><td>Switch note entry (ProTracker / DMC)</td></tr>
 <tr><td>Ctrl+O / Ctrl+S</td><td>Open / save song (Ctrl+Shift+S: save as)</td></tr>
+<tr><td>Ctrl+B</td><td>Hide the panel the keyboard is in (Shift+1-8 brings one back)</td></tr>
 <tr><td>F8</td><td>This help</td></tr>
 </table>
-<p><b>Hiding panels</b> - the small arrow at the right of a panel title folds that column (Tracks, Patterns, or the sounds column) down to a strip with its title; click the strip to bring it back. Jumping to a hidden panel with Shift+1-8, or choosing Instruments or Tables in the toolbar, opens it too. One column always stays open, and the choice is remembered. When the window is too narrow for all three, the columns you used least recently become strips by themselves and come back when there is room.</p>
+<p><b>Hiding panels</b> - the small arrow at the right of a panel title folds that column (Tracks, Patterns, or the sounds column) down to a strip with its title; click the strip, or the arrow on it, to bring it back. Jumping to a hidden panel with Shift+1-8, or choosing Instruments or Tables in the toolbar, opens it too. One column always stays open, and the choice is remembered. When the window is too narrow for all three, the columns you used least recently become strips by themselves and come back when there is room.</p>
 <h4>Tracks</h4>
 <table>
 <tr><td>0-9 A-F</td><td>Edit hexadecimal data</td></tr>
@@ -481,9 +498,10 @@ export const HELP_HTML = `
 <tr><td>Hold Test</td><td>Hear the instrument with the mouse; the name and the Test button stay in view while the sections scroll</td></tr>
 <tr><td>Up / Down</td><td>Previous / next instrument</td></tr>
 <tr><td>Enter / Esc</td><td>Leave a number or name field</td></tr>
+<tr><td>Alt+Up / Alt+Down</td><td>Move the step whose control has the keyboard up or down</td></tr>
 <tr><td>Delete</td><td>Remove the selected instrument from the song (same as Clear)</td></tr>
 </table>
-<p>The instrument number is the command number to type in a pattern. <b>+</b> adds a step after a step (a copy of it) and <b>&times;</b> removes one. <b>Drag a step by its number</b> to change the order; to put a new step first, add it and drag it up. A repeat keeps naming the same step number when steps move. <b>Then</b> says what happens after the last step: stop, or repeat from a step. A vibrato or slide ends a waveform program, so only the last step can be one and it cannot be moved.</p>
+<p>The instrument number is the command number to type in a pattern. <b>+</b> adds a step after a step (a copy of it) and <b>&times;</b> removes one. <b>Drag a step by its number</b> to change the order (Esc drops the drag); to put a new step first, add it and drag it up. A repeat keeps naming the same step number when steps move. <b>Then</b> says what happens after the last step: stop, or repeat from a step. A vibrato or slide ends a waveform program, so only the last step can be one and it cannot be moved.</p>
 <p>If two instruments use the same steps the section says <i>Shared</i>; <b>Make own copy</b> separates them. <b>Remove</b> stops using a table and deletes its steps unless something else still uses them. A new filter is switched on for the channel the track cursor is in, where test notes play: tick the channels the instrument is used on. There is one filter for all three channels, and the instrument that set it last controls it.</p>
 <p>Warnings: <i>Not heard</i> on Pulse width means no waveform step uses the pulse waveform. <i>wraps round</i> on a sweep (and <i>wraps</i> in its graph) means it runs past the end of the range and jumps to the other side: use fewer frames or a smaller change. A typed number past its limit is set to the limit, and the status bar says so. Vibrato depth and slide speed are in SID frequency steps per frame, so the same number is a smaller change on a higher note.</p>
 <p><b>Kit</b> in the toolbar opens a browser of instruments taken from existing NinjaTracker 2 tunes: hold the mouse on one to hear it, and Enter or double-click adds it to the song.</p>

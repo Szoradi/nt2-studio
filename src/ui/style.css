@@ -224,7 +224,7 @@ input.songname { width: 11em; padding: 0 7px; color: var(--note); }
 
 /* A hidden panel is a strip with its title down the side; clicking it brings the panel back */
 .panel h2 { display: flex; align-items: center; }
-.panel h2 .fold { margin-left: auto; flex-shrink: 0; height: 16px; width: 18px; padding: 0; border: 0; background: none; color: var(--dim); font-size: 9px; line-height: 16px; cursor: pointer; }
+.panel h2 .fold { margin-inline-start: auto; flex-shrink: 0; height: 16px; width: 18px; padding: 0; border: 0; background: none; color: var(--dim); font-size: 9px; line-height: 16px; cursor: pointer; }
 .panel h2 .fold:hover:not(:disabled) { color: var(--accent); }
 .panel h2 .info { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 #main.fold-tracks { --c1: 28px; }
@@ -237,7 +237,8 @@ input.songname { width: 11em; padding: 0 7px; color: var(--note); }
   writing-mode: vertical-rl; flex: 1; padding: 9px 5px; border-bottom: 0; align-items: center;
 }
 #main.fold-tracks #panel-tracks h2:hover, #main.fold-pattern #panel-pattern h2:hover, #main.fold-side .side .panel h2:hover { color: var(--accent); }
-#main.fold-tracks #panel-tracks h2 > *, #main.fold-pattern #panel-pattern h2 > *, #main.fold-side .side .panel h2 > * { display: none; }
+/* All that is left on a strip is the title and the button that brings the column back */
+#main.fold-tracks #panel-tracks h2 > :not(.fold), #main.fold-pattern #panel-pattern h2 > :not(.fold), #main.fold-side .side .panel h2 > :not(.fold) { display: none; }
 
 .inst { flex: 1; min-height: 0; display: flex; }
 #inst-split { width: 5px; flex-shrink: 0; cursor: col-resize; border-left: 1px solid var(--line); }
@@ -520,3 +521,6 @@ button:disabled { opacity: .45; cursor: not-allowed; }
 .splash > * { position: relative; z-index: 1; }
 .splash-head { position: static; }
 #dlg-splash:focus { outline: none; }
+/* The name in the toolbar is a button (it opens the splash) that looks like plain text */
+button.brand { background: none; border: 0; padding: 0; height: auto; line-height: inherit; font-weight: 600; }
+button.brand:hover { background: none; }

@@ -10,7 +10,7 @@
   <header id="toolbar">
     <!-- Row 1: the song and its files -->
     <div class="tbar">
-      <span class="brand" id="brand" title="About NT2 Studio: version and credits">NT2 Studio</span>
+      <button class="brand" id="brand" title="About NT2 Studio: version and credits">NT2 Studio</button>
       <div class="group">
         <span class="cap">Song</span>
         <input id="in-name" class="songname" maxlength="32" spellcheck="false" title="Song name (used for saved and exported files)">
@@ -181,11 +181,11 @@
     </div>
   </dialog>
 
-  <dialog id="dlg-splash" tabindex="-1">
+  <dialog id="dlg-splash" tabindex="-1" aria-labelledby="splash-name">
     <div class="splash">
       <div class="splash-head">
         <div>
-          <div class="splash-name">NT2 Studio</div>
+          <div class="splash-name" id="splash-name">NT2 Studio</div>
           <div class="splash-ver">version <span id="splash-version"></span></div>
         </div>
         <img class="splash-bg" src="nt-studio-logo.png" alt="" aria-hidden="true">

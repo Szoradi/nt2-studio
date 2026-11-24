@@ -707,10 +707,44 @@ export function programAt(song: Song, t: number, ptr: number): Program | null {
   return { start: ptr - 1, end: left.length - 1, last: left.length - 1, jump: -1 };
 }
 
-/** Who else uses the rows of a program: other commands pointing into it, and jumps from outside. */
+/**
+ * The rows the player goes through when a command starts table `t` at row `at` (0-based): on to the
+ * next row, along jumps, until it stops there. A sweep that runs for ever is never left. Neither,
+ * as far as these rows go, is a vibrato or slide (a slide ends back on the waveform row played
+ * before it, which is a row already passed or one of another instrument that cannot be known here).
+ *
+ * In the wave table a jump is only a jump on the row after a step: the player takes it at once
+ * when it has played that step. Started on a jump row, or sent to one by a jump, it does not jump
+ * again but treats the row as a slide, so the walk ends there.
+ */
+export function rowsPlayed(song: Song, t: number, at: number): Set<number> {
+  const tbl = song.tables[t], seen = new Set<number>();
+  for (let r = at; r >= 0 && r < tbl.left.length && !seen.has(r);) {
+    seen.add(r);
+    const l = tbl.left[r];
+    if (t === 0) {
+      if (l >= 0xc0) break;
+      if (tbl.left[r + 1] === 0xff) {
+        seen.add(r + 1);
+        r = tbl.right[r + 1] - 1;
+      } else r++;
+    } else if (l === 0xff) r = tbl.right[r] - 1;
+    else if (l === 0) break;
+    else r++;
+  }
+  return seen;
+}
+
+/**
+ * Who else uses the rows of a program: other commands whose own program gets to one of its rows
+ * (by starting there, running on into it or jumping into it), and jumps into it from rows outside.
+ */
 export function programUsers(song: Song, t: number, p: Program, self: number): { cmds: number[]; jumps: number } {
   const cmds: number[] = [];
-  song.commands.forEach((c, i) => { if (i !== self && c[PTR[t]] - 1 >= p.start && c[PTR[t]] - 1 <= p.end) cmds.push(i); });
+  song.commands.forEach((c, i) => {
+    if (i === self || !c[PTR[t]]) return;
+    for (const r of rowsPlayed(song, t, c[PTR[t]] - 1)) if (r >= p.start && r <= p.end) { cmds.push(i); break; }
+  });
   const tbl = song.tables[t];
   let jumps = 0;
   for (let r = 0; r < tbl.left.length; r++) {
@@ -861,35 +895,43 @@ export function instOwnProgram(i: number, t: number) {
 /**
  * Last row to delete with a program. A wave program that ends on a vibrato or slide with no jump
  * after it may be followed by rows the player can never reach (steps that were cut off when an
- * earlier step was made a vibrato or slide). They go with it, up to their closing jump, unless a
- * command or a jump from elsewhere names one of them.
+ * earlier step was made a vibrato or slide). They go with it, up to their closing jump, but only
+ * when that jump leads back into the program: rows that end any other way may be a spare program
+ * someone typed in the tables, and are left alone. Nor are they touched when a command or a jump
+ * from elsewhere names one of them.
  */
 function deadTailEnd(song: Song, t: number, p: Program): number {
   const tbl = song.tables[t];
   if (t !== 0 || p.jump >= 0 || tbl.left[p.last] < 0xc0 || tbl.left[p.end] === 0xff) return p.end;
-  let end = tbl.left.indexOf(0xff, p.end + 1);
-  if (end < 0) end = tbl.left.length - 1;
-  if (end === p.end) return p.end;
+  const end = tbl.left.indexOf(0xff, p.end + 1);
+  if (end < 0) return p.end;
+  const back = tbl.right[end] - 1;
+  if (back < p.start || back > p.end) return p.end;
   const tail = (r: number) => r > p.end && r <= end;
   if (song.commands.some(c => tail(c.wave - 1))) return p.end;
   if (tbl.left.some((l, j) => l === 0xff && (j < p.start || j > end) && tail(tbl.right[j] - 1))) return p.end;
   return end;
 }
 
-function dropProgram(song: Song, i: number, t: number) {
+/** Takes a table away from a command. Returns how many unreachable rows after its program went with it. */
+function dropProgram(song: Song, i: number, t: number): number {
   const cmd = song.commands[i];
   const p = programAt(song, t, cmd[PTR[t]]);
   cmd[PTR[t]] = 0;
-  if (!p) return;
+  if (!p) return 0;
   // Jumps out of the unreachable rows are not users: they go with the program
   const all = { ...p, end: deadTailEnd(song, t, p) };
   const users = programUsers(song, t, all, i);
-  if (!users.cmds.length && !users.jumps) deleteRows(song, t, all.start, all.end);
+  if (users.cmds.length || users.jumps) return 0;
+  deleteRows(song, t, all.start, all.end);
+  return all.end - p.end;
 }
 
 /** Take a table away from an instrument. Its rows are deleted unless something else uses them. */
-export function instRemoveProgram(i: number, t: number) {
-  edit(() => dropProgram(S.song, i, t));
+export function instRemoveProgram(i: number, t: number): number {
+  let extra = 0;
+  edit(() => { extra = dropProgram(S.song, i, t); });
+  return extra;
 }
 
 /** Set up an unused command as a plain new instrument. */
@@ -921,11 +963,13 @@ export function instDuplicate(i: number): number {
 }
 
 /** Empty an instrument, removing the programs nothing else uses. */
-export function instClear(i: number) {
+export function instClear(i: number): number {
+  let extra = 0;
   edit(() => {
-    for (let t = 0; t < 3; t++) dropProgram(S.song, i, t);
+    for (let t = 0; t < 3; t++) extra += dropProgram(S.song, i, t);
     S.song.commands[i] = emptyCommand();
   });
+  return extra;
 }
 
 /** Number of pattern rows that name a command (plain or legato). */

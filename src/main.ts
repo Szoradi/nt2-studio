@@ -18,7 +18,7 @@ import { wireInstruments, clearInstrument } from './ui/instrument.ts';
 import { wireKit, openKit, previewNote } from './ui/kit.ts';
 import { wireExamples, openExamples as openExampleBrowser } from './ui/examples.ts';
 import { addKitInstrument, type KitInstrument } from './core/kit.ts';
-import { renderAll, renderTime, showStatus, HELP_HTML, FOLDS, folded, foldOf, setFolded, type Fold } from './ui/view.ts';
+import { renderAll, renderTime, showStatus, HELP_HTML, FOLDS, folded, hiddenNow, foldOf, setFolded, type Fold } from './ui/view.ts';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
 
@@ -690,16 +690,29 @@ function wireListSplit() {
 }
 
 /** Fold a column down to its title strip. The keyboard moves to a panel that is still showing. */
-function foldPanel(g: Fold) {
+function foldPanel(g: Fold, panel?: Panel) {
+  // On a strip the same button brings the column back, with the keyboard in it: in the panel the
+  // button is on (the sounds column has two with the tables showing)
+  if (hiddenNow[g]) {
+    setFolded(g, false);
+    S.focus = g !== 'side' ? g : panel && foldOf(panel) === 'side' ? panel : S.sideMode === 'inst' ? 'inst' : 'commands';
+    S.sel = null;
+    E.notify();
+    return;
+  }
   const open = FOLDS.filter(f => !folded[f]);
   if (folded[g] || open.length === 1) return;
   setFolded(g, true);
-  if (foldOf(S.focus) === g) {
-    const to = g === 'pattern' ? (folded.tracks ? 'side' : 'tracks') : folded.pattern ? (g === 'tracks' ? 'side' : 'tracks') : 'pattern';
-    S.focus = to === 'side' ? (S.sideMode === 'inst' ? 'inst' : 'commands') : to;
-    S.sel = null;
-  }
+  focusOpenPanel();
   E.notify();
+}
+
+/** If the keyboard is in a column that is folded away, move it to one that shows (Patterns first). */
+function focusOpenPanel() {
+  if (!folded[foldOf(S.focus)]) return;
+  const to = (['pattern', 'tracks', 'side'] as Fold[]).find(g => !folded[g]) ?? 'pattern';
+  S.focus = to === 'side' ? (S.sideMode === 'inst' ? 'inst' : 'commands') : to;
+  S.sel = null;
 }
 
 function setFocus(p: Panel) {
@@ -1015,6 +1028,8 @@ function onKeyDown(e: KeyboardEvent) {
       case 'KeyV': E.paste(); break;
       case 'KeyS': void saveSong(e.shiftKey); break;
       case 'KeyO': void openFile(); break;
+      // Fold away the column the keyboard is in (it moves on to one that shows)
+      case 'KeyB': foldPanel(foldOf(S.focus)); break;
       case 'KeyD':
         if (S.focus === 'pattern') {
           const n = E.patternDuplicate();
@@ -1100,6 +1115,8 @@ function onMouseDown(e: MouseEvent) {
   const panelEl = target.closest<HTMLElement>('.panel');
   if (!panelEl) return;
   ensureAudio();
+  // Folding a column away is not working in it: the keyboard stays where it is
+  if (target.closest('button[data-fold]')) return;
   if (target.closest('svg.tg')) { graphMouseDown(e); return; }
   const panel = panelEl.dataset.panel as Panel;
   if (panel === 'inst') {
@@ -1197,16 +1214,19 @@ function helpTurn(pages: number) {
   const to = Math.round(body.scrollLeft / col) * col + pages * page;
   body.scrollTo({ left: Math.max(0, Math.min(max, to)), behavior: 'smooth' });
 }
-let helpTurned = 0;
+let helpWheeled = 0;
 $('help-body').addEventListener('wheel', e => {
   const body = e.currentTarget as HTMLElement;
-  if (body.scrollWidth <= body.clientWidth) return;
+  // Ctrl+wheel is the browser's zoom
+  if (e.ctrlKey || body.scrollWidth <= body.clientWidth) return;
   e.preventDefault();
-  // One turn for a spin of the wheel, however many events it sends
   const d = e.deltaY || e.deltaX;
-  if (!d || performance.now() - helpTurned < 250) return;
-  helpTurned = performance.now();
-  helpTurn(d > 0 ? 1 : -1);
+  if (!d) return;
+  // One turn for one movement of the wheel or the touchpad, however long its events keep coming:
+  // the next turn needs a pause first
+  const now = performance.now(), paused = now - helpWheeled > 150;
+  helpWheeled = now;
+  if (paused) helpTurn(d > 0 ? 1 : -1);
 }, { passive: false });
 $('help-body').addEventListener('scrollend', () => {
   const body = $('help-body');
@@ -1261,7 +1281,7 @@ function wireToolbar() {
   on('btn-mode-classic', () => setSideMode('classic'));
   on('btn-kit', () => void openKit());
   document.querySelectorAll<HTMLButtonElement>('button[data-fold]').forEach(b => {
-    b.addEventListener('click', () => { foldPanel(b.dataset.fold as Fold); b.blur(); });
+    b.addEventListener('click', () => { foldPanel(b.dataset.fold as Fold, b.closest<HTMLElement>('.panel')?.dataset.panel as Panel | undefined); b.blur(); });
   });
   // Bar length for the bar and beat lines: remembered per song
   const barEl = $<HTMLInputElement>('in-bar');
@@ -1417,6 +1437,8 @@ $('main').addEventListener('mousedown', onMouseDown);
 window.addEventListener('resize', () => renderAll(engine?.state ?? null));
 window.addEventListener('beforeunload', autosave);
 
+// The app starts with the keyboard in Patterns: if that column was left folded, start in one that shows
+focusOpenPanel();
 const restored = restoreAutosave();
 applyBarForSong();
 E.syncPatternsFromTracks();
@@ -1449,6 +1471,7 @@ function openSplash() {
   dlg.addEventListener('keydown', e => {
     if (e.target === dlg && (e.code === 'Enter' || e.code === 'NumpadEnter' || e.code === 'Space')) { dlg.close(); e.preventDefault(); }
   });
-  $('brand').addEventListener('click', openSplash);
+  // Without the keyboard staying on the name, or Space would open it again
+  $('brand').addEventListener('click', () => { $('brand').blur(); openSplash(); });
   openSplash();
 }

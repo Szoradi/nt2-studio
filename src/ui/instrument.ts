@@ -163,9 +163,10 @@ function sectionHtml(i: number, t: number, width: number): string {
   // What stands between these steps and the ear
   let unheard = '';
   if (t === 1) {
-    const wp = E.programAt(S.song, 0, cmd.wave), wave = S.song.tables[0];
-    let pulse = !wp;
-    if (wp) for (let r = wp.start; r <= wp.last; r++) if (wave.left[r] < 0x90 && wave.left[r] & 0x40) pulse = true;
+    // Every waveform row the note goes through, also the ones a jump leads to
+    const wave = S.song.tables[0];
+    let pulse = !E.programAt(S.song, 0, cmd.wave);
+    if (!pulse) for (const r of E.rowsPlayed(S.song, 0, cmd.wave - 1)) if (wave.left[r] < 0x90 && wave.left[r] & 0x40) pulse = true;
     if (!pulse) unheard = `<span class="ie-note warn" title="${esc(SECTION_HELP[1])}">Not heard: no waveform step uses pulse</span>`;
   } else if (t === 2) {
     unheard = `<span class="ie-note" title="${esc(SECTION_HELP[2])}">One filter for all channels: the last instrument to set it wins</span>`;
@@ -348,6 +349,9 @@ function applyInput(el: HTMLInputElement | HTMLSelectElement, merge: boolean) {
   if (l !== tbl.left[r] || rt !== tbl.right[r]) E.tableSetRow(t, r, l, rt, merge);
 }
 
+/** Said when rows the player could never reach were deleted along with a program. */
+const alsoRemoved = (rows: number) => (rows ? `, and ${rows} unreachable table row${rows === 1 ? '' : 's'} left after its last step` : '');
+
 /** Empty the selected instrument (the Clear button and the Delete key). Asks first when patterns use it. */
 export function clearInstrument(status: (msg: string, error?: boolean) => void) {
   const i = S.cmdNum;
@@ -357,8 +361,8 @@ export function clearInstrument(status: (msg: string, error?: boolean) => void) 
   const name = S.song.commands[i].name ? ` "${S.song.commands[i].name}"` : '';
   if (uses && !confirm(`Instrument ${hex2(i + 1)}${name} is used on ${uses} pattern row${uses === 1 ? '' : 's'}.\n\n` +
     'Those rows keep their command number and will play an empty instrument.\n\nClear it anyway?')) return;
-  E.instClear(i);
-  status(`Removed instrument ${hex2(i + 1)}${name} (Ctrl+Z to undo)`);
+  const extra = E.instClear(i);
+  status(`Removed instrument ${hex2(i + 1)}${name}${alsoRemoved(extra)} (Ctrl+Z to undo)`);
 }
 
 export interface InstrumentHost {
@@ -372,7 +376,7 @@ export interface InstrumentHost {
 // Dragging a step by its number to change the order
 // ---------------------------------------------------------------------------
 
-interface StepDrag { t: number; from: number; to: number; first: number; last: number }
+interface StepDrag { t: number; from: number; to: number; first: number; last: number; /** The instrument, the song and the edit count when it began. */ i: number; edits: number; song: unknown }
 let stepDrag: StepDrag | null = null;
 
 const stepRows = (t: number) => [...$('inst-editor').querySelectorAll<HTMLElement>(`.st[data-t="${t}"][data-r]`)];
@@ -401,25 +405,61 @@ function onStepDragMove(e: MouseEvent) {
   markStepDrag();
 }
 
-function onStepDragEnd() {
+function endStepDrag(commit: boolean) {
   window.removeEventListener('mousemove', onStepDragMove);
   window.removeEventListener('mouseup', onStepDragEnd);
+  window.removeEventListener('keydown', onStepDragKey, true);
+  window.removeEventListener('blur', onStepDragCancel);
   document.body.classList.remove('step-drag');
   const d = stepDrag;
   stepDrag = null;
   if (!d) return;
   for (const el of stepRows(d.t)) el.classList.remove('dragging', 'drop-before', 'drop-after');
-  if (d.to !== d.from) E.instMoveStep(S.cmdNum, d.t, d.from, d.to);
+  // Not if the song or the instrument changed under the drag: the rows it was about are no longer
+  // the same. An edit raises the count; an undo or redo puts another song object in place
+  if (commit && d.to !== d.from && S.cmdNum === d.i && E.edits === d.edits && S.song === d.song) E.instMoveStep(d.i, d.t, d.from, d.to);
+}
+/** Letting go of the button the drag began with drops the step; another button going up is not that. */
+function onStepDragEnd(e: MouseEvent) { if (e.button === 0) endStepDrag(true); }
+/** Leaving the window drops the drag: the mouse button may be let go where it cannot be seen. */
+function onStepDragCancel() { endStepDrag(false); }
+/** Esc drops the drag, and nothing else (it does not stop the song as well). */
+function onStepDragKey(e: KeyboardEvent) {
+  if (e.key !== 'Escape') return;
+  endStepDrag(false);
+  e.preventDefault();
+  e.stopPropagation();
+}
+
+/** Alt+Up / Alt+Down in a control of a step: move that step, and keep the keyboard on the control. */
+function onStepKey(e: KeyboardEvent) {
+  if (!e.altKey || (e.code !== 'ArrowUp' && e.code !== 'ArrowDown')) return;
+  const el = e.target as HTMLElement, row = el.closest<HTMLElement>('.st[data-r]');
+  if (!row) return;
+  // Alt+Down would otherwise open a list
+  e.preventDefault();
+  e.stopPropagation();
+  const t = parseInt(row.dataset.t!, 10), r = parseInt(row.dataset.r!, 10), to = r + (e.code === 'ArrowUp' ? -1 : 1);
+  const range = E.instStepRange(S.cmdNum, t, r);
+  if (!range || to < range.first || to > range.last) return;
+  // A field that has the keyboard keeps what it shows through a redraw: leave it first, or the row
+  // it is in would go on showing the value of the step that moved away
+  el.blur();
+  E.instMoveStep(S.cmdNum, t, r, to);
+  const key = el.dataset.f ? `[data-f="${el.dataset.f}"]${el.dataset.b ? `[data-b="${el.dataset.b}"]` : ''}` : el.dataset.a ? `[data-a="${el.dataset.a}"]` : '';
+  if (key) $('inst-editor').querySelector<HTMLElement>(`.st[data-t="${t}"][data-r="${to}"] ${key}`)?.focus();
 }
 
 function stepDragStart(e: MouseEvent, row: HTMLElement) {
   const t = parseInt(row.dataset.t!, 10), from = parseInt(row.dataset.r!, 10);
   const range = E.instStepRange(S.cmdNum, t, from);
   if (!range) return;
-  stepDrag = { t, from, to: from, ...range };
+  stepDrag = { t, from, to: from, ...range, i: S.cmdNum, edits: E.edits, song: S.song };
   document.body.classList.add('step-drag');
   window.addEventListener('mousemove', onStepDragMove);
   window.addEventListener('mouseup', onStepDragEnd);
+  window.addEventListener('keydown', onStepDragKey, true);
+  window.addEventListener('blur', onStepDragCancel);
   markStepDrag();
   // No text selection while dragging
   e.preventDefault();
@@ -432,6 +472,7 @@ export function wireInstruments(host: InstrumentHost) {
     const row = grip?.closest<HTMLElement>('.st[data-r]');
     if (row) stepDragStart(e, row);
   });
+  panel.addEventListener('keydown', onStepKey);
   panel.addEventListener('input', onInput);
   panel.addEventListener('change', e => {
     gesture = null;
@@ -482,13 +523,25 @@ export function wireInstruments(host: InstrumentHost) {
         E.instAddProgram(i, t);
         if (t === 2 && S.song.commands[i].filt) host.status(`Filter added for channel ${S.trkCh + 1}, where test notes play: tick the channels this instrument is used on`);
         break;
-      case 'remove': E.instRemoveProgram(i, t); break;
+      case 'remove': {
+        // Its steps stay in the table while something else still plays them: say which it was
+        const p = E.programAt(S.song, t, S.song.commands[i][PTR[t]]);
+        const users = p ? E.programUsers(S.song, t, p, i) : { cmds: [], jumps: 0 };
+        const extra = E.instRemoveProgram(i, t);
+        const what = SECTION[t].toLowerCase();
+        if (users.cmds.length || users.jumps) {
+          const who = users.cmds.length ? `instrument ${users.cmds.map(c => hex2(c + 1)).join(', ')}` : 'another program';
+          host.status(`Took ${what} off this instrument; its steps stay in the table because ${who} still uses them (Ctrl+Z to undo)`);
+        } else host.status(`Removed ${what}${alsoRemoved(extra)} (Ctrl+Z to undo)`);
+        break;
+      }
       case 'own': E.instOwnProgram(i, t); break;
       case 'ins': E.instInsertStep(i, t, r, ...newStep(t, r)); break;
       case 'del': {
         const p = E.programAt(S.song, t, S.song.commands[i][PTR[t]]);
+        const before = E.edits;
         E.instDeleteStep(t, r);
-        host.status(`Removed step ${p ? r - p.start + 1 : ''} of ${SECTION[t].toLowerCase()} (Ctrl+Z to undo)`);
+        if (p && E.edits !== before) host.status(`Removed step ${r - p.start + 1} of ${SECTION[t].toLowerCase()} (Ctrl+Z to undo)`);
         break;
       }
     }

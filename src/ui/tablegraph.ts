@@ -5,7 +5,7 @@
 // first pass gets a handle; dragging it rewrites that row, so the hex list and the sound follow.
 
 import { type Table, hex2, noteName } from '../core/song.ts';
-import { S, tableSetRow, notify } from './editor.ts';
+import { S, tableSetRow, notify, programAt } from './editor.ts';
 import { describeTableRow } from './view.ts';
 
 type Kind = 'set' | 'mod' | 'arp';
@@ -23,7 +23,7 @@ interface Handle {
 }
 interface Mark { f: number; label: string }
 interface Sim {
-  frames: Frame[]; handles: Handle[]; marks: Mark[]; firstPass: number; loops: boolean; first: number; last: number;
+  frames: Frame[]; handles: Handle[]; marks: Mark[]; firstPass: number; loops: boolean;
   /** Rows whose sweep ran past the end of the range and came round the other side. */
   wraps: Set<number>;
 }
@@ -42,24 +42,31 @@ function simulate(t: number, tbl: Table, start: number, minFrames = 0): Sim {
   const len = tbl.left.length;
   const frames: Frame[] = [], handles: Handle[] = [], marks: Mark[] = [];
   const seen = new Set<number>();
-  let pos = start + 1, time = 0, firstPass = -1, loops = false, last = start;
+  let pos = start + 1, time = 0, firstPass = -1, loops = false;
   let v = t === 1 ? 0x80 : 0, wave = 0, abs = false, fx = false;
-  const hold = (row: number) => frames.push({ v, row, wave, abs, fx });
+  /** Past what is drawn the program is only played on to see whether a sweep wraps round later. */
+  let quiet = false;
+  const hold = (row: number) => { if (!quiet) frames.push({ v, row, wave, abs, fx }); };
   // The pulse is kept with its nybbles swapped and added with end-around carry: modulo 255 here
   const wrap = (x: number) => (t === 1 ? (x > 255 ? x - 255 : x < 0 ? x + 255 : x) : x & 0xff);
   const wraps = new Set<number>();
   /** One frame of a sweep on row `r`. Running off either end is marked, once for the row. */
-  const sweep = (r: number, f: number, by: number, first: boolean) => {
+  const sweep = (r: number, f: number, by: number, flag = true) => {
     const x = v + by;
-    if (first && (x > 255 || x < 0) && !wraps.has(r)) { wraps.add(r); marks.push({ f, label: 'wraps' }); }
+    // On any pass: a repeating sweep that drifts wraps on a later one
+    if (flag && (x > 255 || x < 0) && !wraps.has(r)) { wraps.add(r); marks.push({ f, label: 'wraps' }); }
     v = wrap(x);
   };
   /** Where a jump goes, the way the step list numbers it. */
   const dest = (to: number, from: number) => (!to ? 'stop' : to > start && to - 1 <= from ? `to step ${to - start}` : `to row ${hex2(to)}`);
 
   for (let f = 0; f < SIM_FRAMES; f++) {
-    // Nothing past the repeat that is drawn is needed
-    if (firstPass >= 0 && f >= Math.max(firstPass + 100, 32, minFrames)) break;
+    // Nothing past the repeat that is drawn is needed for the picture. A pulse or filter program
+    // that is still running is played on without being kept, to find a sweep that wraps later
+    if (firstPass >= 0 && f >= Math.max(firstPass + 100, 32, minFrames)) {
+      if (t === 0 || pos === 0 || pos > len) break;
+      quiet = true;
+    }
     if (fx || pos === 0 || pos > len) {
       if (firstPass < 0) firstPass = f;
       hold(fx ? pos - 1 : -1);
@@ -69,7 +76,7 @@ function simulate(t: number, tbl: Table, start: number, minFrames = 0): Sim {
     const live = firstPass < 0;
     if (time === 0 && live) {
       if (seen.has(r)) { firstPass = f; loops = true; }
-      else { seen.add(r); last = Math.max(last, r); }
+      else seen.add(r);
     }
     const first = firstPass < 0;
 
@@ -91,7 +98,7 @@ function simulate(t: number, tbl: Table, start: number, minFrames = 0): Sim {
       if (first) handles.push({ row: r, kind: 'arp', f, v, f0: f, v0: v, n: 1, abs, x: 0, y: 0 });
       // A jump on the next row is taken at once
       if (pos < len && tbl.left[pos] === 0xff) {
-        if (first) { marks.push({ f: f + 1, label: dest(tbl.right[pos], pos) }); last = Math.max(last, pos); }
+        if (first) marks.push({ f: f + 1, label: dest(tbl.right[pos], pos) });
         pos = tbl.right[pos];
       } else pos++;
       hold(r);
@@ -114,22 +121,23 @@ function simulate(t: number, tbl: Table, start: number, minFrames = 0): Sim {
         marks.push({ f, label: 'runs on' });
         firstPass = f + OPEN_MOD_FRAMES * 2;
       }
-      sweep(r, f, signed(rt), first);
+      // A sweep that runs for ever goes round by design: that is not a mistake to warn about
+      sweep(r, f, signed(rt), false);
       hold(r);
     } else if (time === 0) {
       time = l;
       if (first) handles.push({ row: r, kind: 'mod', f: f + l - 1, v: 0, f0: f, v0: v, n: l, abs: false, x: 0, y: 0 });
-      sweep(r, f, signed(rt), first);
+      sweep(r, f, signed(rt));
       hold(r);
     } else {
       // The frame on which the time runs out only moves on to the next row
       if (--time === 0) pos++;
-      else sweep(r, f, signed(rt), first);
+      else sweep(r, f, signed(rt));
       hold(r);
     }
   }
   if (firstPass < 0) firstPass = SIM_FRAMES;
-  return { frames, handles, marks, firstPass, loops, first: start, last, wraps };
+  return { frames, handles, marks, firstPass, loops, wraps };
 }
 
 // ---------------------------------------------------------------------------
@@ -280,9 +288,12 @@ export function graphHtml(t: number, from: number, cur: number, width: number, H
   // Short enough never to be cut off; the rest is in the tooltip
   const what = t === 0 ? 'semitones from the note' : t === 1 ? 'pulse width per frame' : 'cutoff per frame';
   const whatTip = t === 0 ? `One column per frame. Fixed-note steps are drawn against ${noteName(base * 2)}, the note Shift+Space tests with` : '';
-  const steps = sim.last - sim.first + (tbl.left[sim.last] === 0xff ? 0 : 1);
+  // The steps of the program itself, as the list under the graph counts them (a jump may lead the
+  // picture on into rows of another program)
+  const prog = programAt(S.song, t, start + 1);
+  const steps = prog ? prog.last - prog.start + 1 : 0;
   return `<div class="tg-head"><b>${TABLE_NAMES[t]} graph</b>` +
-    `<span class="tg-count" title="Table rows ${hex2(sim.first + 1)}-${hex2(sim.last + 1)}">${steps} step${steps === 1 ? '' : 's'}</span>` +
+    `<span class="tg-count" title="Table rows ${hex2(start + 1)}-${hex2((prog ? prog.end : start) + 1)}">${steps} step${steps === 1 ? '' : 's'}</span>` +
     `<span class="tg-what" title="${whatTip}">${what}</span><span class="grow"></span>${legend}</div>` +
     `<svg class="tg${drag ? ' dragging' : ''}" data-t="${t}" width="${w}" height="${H}" viewBox="0 0 ${w} ${H}">${g}${hits}</svg>`;
 }
