@@ -201,7 +201,7 @@ export function assemble(source: string, origin: number, predefined: Record<stri
       const v = ev(it.expr!);
       if (mode === 'rel') {
         const d = v - (it.addr + 2);
-        if (d < -128 || d > 127) throw new Error(`Line ${it.line}: branch out of range`);
+        if (d < -128 || d > 127) throw new Error(`Line ${it.line}: branch out of range (${d} bytes, "${lines[it.line - 1].trim()}")`);
         bytes[o++] = d & 0xff;
       } else if (MODE_SIZE[mode] === 2) bytes[o++] = v & 0xff;
       else { bytes[o++] = v & 0xff; bytes[o++] = (v >> 8) & 0xff; }

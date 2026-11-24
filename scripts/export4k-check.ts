@@ -48,16 +48,21 @@ for (const file of files) {
 
   // The export as it is written, then the fallback paths: every feature with the column layout and
   // the full frequency table, and every feature with the generated frequency table forced on
+  // Then the long player, which a tune under 256 rows would not get by itself: as written, and
+  // with every feature in the column layout, the last also with the jump used when the row code
+  // outgrows its branch
   const variants: Parameters<typeof export4k>[1][] = [{}, { allFeatures: true, layout: 'columns', freqTable: 'full' }, { allFeatures: true, freqTable: 'seed' }];
+  variants.push({ forceLong: true }, { forceLong: true, allFeatures: true, layout: 'columns', freqTable: 'full' },
+    { forceLong: true, farBranch: true, allFeatures: true, layout: 'columns', freqTable: 'full' });
   for (const variant of variants) {
     const allFeatures = !!variant!.allFeatures;
     let ex;
     try { ex = export4k(song, { name, ...variant }); }
-    catch (err) { if (!allFeatures) console.log(`skip  ${name}: ${(err as Error).message}`); break; }
+    catch (err) { failures++; console.log(`FAIL  ${name} (${JSON.stringify(variant)}): ${(err as Error).message}`); continue; }
     const asm = assemble(ex.dasm, ORG);
     const v = verify4k(song, ex, 0, frames);
     const bad = v.ok ? -1 : v.frame!;
-    const shape = `${ex.layout}, ${ex.needsInit ? `seed table with ${ex.freqFixups} fixups` : 'full table'}`;
+    const shape = `${ex.player === 'short' ? '' : variant!.farBranch ? 'long player with jump, ' : 'long player, '}${ex.layout}, ${ex.needsInit ? `seed table with ${ex.freqFixups} fixups` : 'full table'}`;
     const what = allFeatures ? `all features forced on, ${shape}` : `${shape}; features: ${Object.entries(ex.features).filter(e => e[1]).map(e => e[0]).join(' ') || 'none'}`;
     if (bad >= 0) {
       failures++;
@@ -66,9 +71,10 @@ for (const file of files) {
       console.log(`PASS  ${name} (${what}): ${frames} frames identical${v.silentFrames ? ` (${v.silentFrames} with a never-keyed voice's frequency differing)` : ''}; ${normal.stats.totalBytes} -> ${ex.totalBytes} bytes (code ${ex.codeBytes}, data ${ex.dataBytes}), ${ex.rows} rows, ${ex.freqEntries} freqs`);
     }
     if (allFeatures) continue;
+    const tag = variant!.forceLong ? `${name}-long` : name;
     if (outDir) {
-      writeFileSync(join(outDir, `${name}.asm`), ex.source);
-      writeFileSync(join(outDir, `${name}.bin`), asm.bytes);
+      writeFileSync(join(outDir, `${tag}.asm`), ex.source);
+      writeFileSync(join(outDir, `${tag}.bin`), asm.bytes);
     }
     if (kickass) {
       const dir = mkdtempSync(join(tmpdir(), 'nt2-4k-'));
@@ -79,12 +85,12 @@ for (const file of files) {
       catch (err) { log = String((err as { stdout?: string }).stdout ?? err); }
       if (!existsSync(join(dir, 'main.prg'))) {
         failures++;
-        console.log(`FAIL  ${name}: KickAssembler did not assemble it\n${log}`);
+        console.log(`FAIL  ${tag}: KickAssembler did not assemble it\n${log}`);
       } else {
         const prg = new Uint8Array(readFileSync(join(dir, 'main.prg'))).subarray(2);
         const same = prg.length === asm.bytes.length && prg.every((v, i) => v === asm.bytes[i]);
         if (!same) failures++;
-        console.log(`${same ? 'PASS' : 'FAIL'}  ${name}: KickAssembler output ${same ? 'is byte-identical to the built-in assembler' : `differs (${prg.length} vs ${asm.bytes.length} bytes)`}`);
+        console.log(`${same ? 'PASS' : 'FAIL'}  ${tag}: KickAssembler output ${same ? 'is byte-identical to the built-in assembler' : `differs (${prg.length} vs ${asm.bytes.length} bytes)`}`);
       }
     }
   }

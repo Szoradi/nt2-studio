@@ -63,13 +63,17 @@ packed tunes run in a 6502 core. `scripts/websid-smoke.ts` runs the playback eng
 ## 4k intro export
 
 For intros where every byte counts. The export writes one `.asm` file in KickAssembler syntax:
-`jsr nt_init` once, then `jsr nt_play` once per frame. It holds one subtune of at most 255
-pattern rows and plays once from a freshly loaded copy (there is no restart).
+`jsr nt_init` once, then `jsr nt_play` once per frame. It holds one subtune and plays once from a freshly
+loaded copy (there is no restart).
 
 - Player code for unused features (filter, pulse, slide, vibrato, wave delay, legato, transpose)
   is left out; unused patterns, commands and table rows are dropped and renumbered.
 - Patterns are a note stream with command prefix bytes and a duration column, addressed by one
   8-bit offset. Tunes with legato commands or more than 31 commands get three columns instead.
+- A tune of up to 255 pattern rows gets that short player. A longer one gets the long player,
+  where every pattern has an address and a row is an offset inside its pattern (a pattern whose
+  note stream is over 256 bytes puts the tune in the column layout). It keeps the pattern addresses in zeropage pointers and uses 4 zeropage bytes;
+  it is about 9 to 21 bytes longer than the short player, plus one more byte per pattern.
 - The frequency table is stored as its highest used octave and halved down by `nt_init`, when
   that is smaller than the full table with unused entries zeroed.
 - Before saving, the editor plays the export next to the normal one in a 6502 core and compares

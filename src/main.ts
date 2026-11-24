@@ -6,7 +6,7 @@ import { loadSongFile, saveSongFile, isSongFile } from './core/songfile.ts';
 import { isD64, d64Directory, d64ReadFile } from './core/d64.ts';
 import { importPacked } from './core/sidimport.ts';
 import { packNormal, packGamemusic, makeSid, withLoadAddress } from './core/packer.ts';
-import { export4k, type Export4k } from './core/export4k.ts';
+import { export4k, MAX_4K_ROWS, type Export4k } from './core/export4k.ts';
 import { verify4k } from './core/verify4k.ts';
 import { WebSid, loadWebSidModule } from './audio/websid.ts';
 import { Engine } from './audio/engine.ts';
@@ -540,19 +540,27 @@ async function saveSong(saveAs = false) {
 // Export dialog
 // ---------------------------------------------------------------------------
 
+const ZP_ERROR = 'Zeropage address must be between 02 and FE';
+const zpValid = (zp: number) => zp >= 2 && zp <= 0xfe;
+
 function exportParams() {
   const format = $<HTMLSelectElement>('ex-format').value;
   const addr = parseInt($<HTMLInputElement>('ex-addr').value, 16);
   const zp = parseInt($<HTMLInputElement>('ex-zp').value, 16);
   if (format !== '4k' && !(addr >= 0x0200 && addr <= 0xffff)) throw new Error('Start address must be between 0200 and FFFF');
-  if (format !== 'game' && !(zp >= 2 && zp <= 0xfe)) throw new Error('Zeropage address must be between 02 and FE');
+  if (format !== 'game' && format !== '4k' && !zpValid(zp)) throw new Error(ZP_ERROR);
   return { format, addr, zp };
 }
 
 function buildExport(): { bytes: Uint8Array; ext: string; info: string; x4k?: Export4k } {
   const { format, addr, zp } = exportParams();
   if (format === '4k') {
-    const x = export4k(S.song, { zp, name: S.fileName });
+    // A 4k export without slide, vibrato or the long player uses no zeropage: the field is then ignored
+    const x = export4k(S.song, { zp: zpValid(zp) ? zp : 2, name: S.fileName });
+    if (x.zpBytes && !zpValid(zp)) throw new Error(ZP_ERROR);
+    const playerLine = x.player === 'short'
+      ? `Player: short (the tune fits its ${MAX_4K_ROWS} rows)`
+      : `Player: long (more than ${MAX_4K_ROWS} rows), pattern addresses in zeropage pointers`;
     const on = Object.entries(x.features).filter(e => e[1]).map(e => e[0]);
     const off = Object.entries(x.features).filter(e => !e[1]).map(e => e[0]);
     const more = scanUsage(S.song).lastSong > 0 ? '\nOnly subtune 00 is exported' : '';
@@ -560,13 +568,14 @@ function buildExport(): { bytes: Uint8Array; ext: string; info: string; x4k?: Ex
       bytes: new TextEncoder().encode(x.source),
       ext: 'asm',
       x4k: x,
-      info: `${x.patterns} patterns, ${x.rows} of 255 rows, ${x.commands} commands, ${x.freqEntries} of 84 frequencies kept\n` +
+      info: `${x.patterns} patterns, ${x.rows} rows, ${x.commands} commands, ${x.freqEntries} of 84 frequencies kept\n` +
         (x.droppedCommands || x.droppedRows ? `Dropped as unused: ${x.droppedCommands} commands, ${x.droppedRows} table rows\n` : '') +
+        `${playerLine}\n` +
         `Player ${x.codeBytes} bytes, data ${x.dataBytes} bytes, total ${x.totalBytes} bytes before crunching\n` +
         `Player parts kept: ${on.join(', ') || 'basics only'}${off.length ? '; left out: ' + off.join(', ') : ''}\n` +
         x.warnings.map(w => `Warning: ${w}\n`).join('') +
         `Patterns: ${x.layout === 'stream' ? 'note stream with command prefixes' : `columns (${x.layoutReason})`}\n` +
-        `JSR nt_init once${x.needsInit ? '' : ' (does nothing for this tune)'}, then JSR nt_play once per frame${x.usesZeropage ? `, zeropage $${hex2(zp)}-$${hex2(zp + 1)}` : ', no zeropage used'}${more}\n` +
+        `JSR nt_init once${x.needsInit ? '' : ' (does nothing for this tune)'}, then JSR nt_play once per frame${x.usesZeropage ? `, zeropage $${hex2(zp)}-$${hex2(zp + x.zpBytes - 1)}` : ', no zeropage used'}${more}\n` +
         'Saving first plays it against the normal export and compares every SID write',
     };
   }
@@ -609,8 +618,11 @@ function refreshExport() {
   document.querySelectorAll<HTMLElement>('.ex-addr').forEach(el => el.classList.toggle('hidden', format === '4k'));
   document.querySelectorAll<HTMLElement>('.ex-game').forEach(el => el.classList.toggle('hidden', format !== 'game'));
   const info = $('ex-info');
+  $('ex-zp-label').textContent = format === '4k' ? 'Zeropage' : 'Zeropage (2 bytes)';
   try {
-    info.textContent = buildExport().info;
+    const out = buildExport();
+    if (out.x4k) $('ex-zp-label').textContent = out.x4k.zpBytes ? `Zeropage (${out.x4k.zpBytes} bytes)` : 'Zeropage (not used)';
+    info.textContent = out.info;
     info.classList.remove('err');
   } catch (err) {
     info.textContent = (err as Error).message;

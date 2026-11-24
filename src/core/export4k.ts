@@ -10,6 +10,9 @@
 //   or in full with unused entries zero when that is smaller.
 // - The player variables are assembled in their start state, so nt_init never has to reset them.
 //
+// Tunes with more than 255 pattern rows get the long player: every pattern has an address, and a
+// row is an offset inside its pattern. The address goes into two zeropage pointers.
+//
 // The player is written in the DASM subset of asm6502.ts so it can be assembled and run here;
 // toKickAss() rewrites it to KickAssembler syntax.
 
@@ -19,7 +22,11 @@ import {
   FIRSTNOTE, KEYOFF, KEYON, TBL_WAVE, hex2,
 } from './song.ts';
 
+/** Rows the short player holds; a tune with more gets the long player. */
 export const MAX_4K_ROWS = 255;
+/** Long player: bytes of one pattern in the note stream (the offset inside a pattern is 8 bits).
+ *  A pattern has at most MAX_PATTLEN (192) rows, so only command prefixes can take it past this. */
+export const MAX_LONG_PATTERN = 256;
 
 export interface Features {
   filter: boolean; pulse: boolean; slide: boolean; vibrato: boolean;
@@ -32,9 +39,14 @@ const FEATURE_TEXT: Record<keyof Features, string> = {
 
 export interface Export4kOptions {
   subtune?: number;
-  /** Two zeropage bytes; only used when the song has slides or vibrato. */
+  /** First zeropage byte. The short player uses two bytes, and only when the song has slides or
+   *  vibrato; the long player always uses four. */
   zp?: number;
   name?: string;
+  /** Test hook: use the long player even when the tune fits the short one. */
+  forceLong?: boolean;
+  /** Test hook: jump around the row code even when a branch reaches. */
+  farBranch?: boolean;
   /** Test hook: keep the code for every feature even if the song does not use it. */
   allFeatures?: boolean;
   /** Test hook: 'columns' forces the three-column pattern layout. */
@@ -50,6 +62,10 @@ export interface Export4k {
   dasm: string;
   features: Features;
   usesZeropage: boolean;
+  /** Zeropage bytes used, starting at the zp option: 0, 2 or 4. */
+  zpBytes: number;
+  /** short: one 8-bit offset for all rows (up to 255); long: pattern addresses in zeropage pointers. */
+  player: 'short' | 'long';
   /** stream: commands are prefix bytes in the note stream; columns: note, command and duration columns. */
   layout: 'stream' | 'columns';
   /** Why the column layout was used, when it was. */
@@ -124,28 +140,35 @@ nt_play:        ldx #$00
                 ldx #$0e
 
 nt_chnexec:     inc nt_chncounter,x
-                bne nt_nopattern
+[!far]                bne nt_nopattern
+[far]                beq nt_getrow
+[far]                jmp nt_nopattern        ;too far away for a branch in this build
+[far]nt_getrow:
 
-        ;Get a row: nt_chnpattpos is the global row number, 0 = start of the pattern in nt_chnpattnum
-
-                ldy nt_chnpattpos,x
-                bne nt_gotrow
-                ldy nt_chnpattnum,x
-                lda nt_pattstart-1,y
-                tay
-nt_gotrow:      lda nt_rownote-1,y
+[!long]        ;Get a row: nt_chnpattpos is the global row number, 0 = start of the pattern in nt_chnpattnum
+[!long]
+[!long]                ldy nt_chnpattpos,x
+[!long]                bne nt_gotrow
+[!long]                ldy nt_chnpattnum,x
+[!long]                lda nt_pattstart-1,y
+[!long]                tay
+[!long]nt_gotrow:      lda nt_rownote-1,y
+[long]@PATTADDR
+[long]                lda (nt_noteptr),y
 [stream]                cmp #$e0
 [stream]                bcc nt_norowcmd
 [stream]                sbc #$e0
 [stream]                sta nt_chncmd,x
 [stream]                iny
-[stream]                lda nt_rownote-1,y
+[!long&stream]                lda nt_rownote-1,y
+[long&stream]                lda (nt_noteptr),y
 [stream]nt_norowcmd:
                 and #$7f
                 sta nt_chnnewnote,x
                 cmp #NT_FIRSTNOTE/2
                 bcc nt_gatectrl
-[!stream]                lda nt_rowcmd-1,y
+[!long&!stream]                lda nt_rowcmd-1,y
+[long&!stream]                lda (nt_cmdptr),y
 [!stream]                bne nt_setcmd
 [!stream]                lda nt_chncmd,x
 [!stream]nt_setcmd:      sta nt_chncmd,x
@@ -155,17 +178,31 @@ nt_gotrow:      lda nt_rownote-1,y
                 sta $d405,x
                 lda #NT_HRPARAM
                 sta $d406,x
-nt_rest:        lda nt_rowdur-1,y
+[!long]nt_rest:        lda nt_rowdur-1,y
+[long&stream]nt_rest:        lda (nt_durptr),y
+[long&!stream]nt_rest:        clc                     ;every way here has read the command column:
+[long&!stream]                lda nt_cmdptr           ;move its pointer on to the duration column
+[long&!stream]                adc #<NT_COLSIZE
+[long&!stream]                sta nt_cmdptr
+[long&!stream]                lda nt_cmdptr+1
+[long&!stream]                adc #>NT_COLSIZE
+[long&!stream]                sta nt_cmdptr+1
+[long&!stream]                lda (nt_cmdptr),y
                 beq nt_nonewdur
                 sta nt_chnduration,x
-        ;At offset 255 the INY wraps to 0 and the flag test reads a wrong byte, but 0 is stored either
-        ;way, and 0 is right: offset 255 can only be the last row of the last pattern
-
-nt_nonewdur:    iny
-                lda nt_rownote-2,y
-                bpl nt_notlastrow
-                ldy #$00
-nt_notlastrow:  tya
+[!long]        ;At offset 255 the INY wraps to 0 and the flag test reads a wrong byte, but 0 is stored either
+[!long]        ;way, and 0 is right: offset 255 can only be the last row of the last pattern
+[!long]
+[!long]nt_nonewdur:    iny
+[!long]                lda nt_rownote-2,y
+[!long]                bpl nt_notlastrow
+[!long]                ldy #$00
+[!long]nt_notlastrow:  tya
+[long]nt_nonewdur:    lda (nt_noteptr),y
+[long]                bpl nt_notlastrow
+[long]                ldy #$ff
+[long]nt_notlastrow:  iny
+[long]                tya
                 sta nt_chnpattpos,x
                 jmp nt_waveexec
 
@@ -173,7 +210,8 @@ nt_notlastrow:  tya
 
 [!stream]nt_gatectrl:    ora #$fc
 [!stream]                sta nt_chngate,x
-[!stream]                lda nt_rowcmd-1,y
+[!long&!stream]                lda nt_rowcmd-1,y
+[long&!stream]                lda (nt_cmdptr),y
 [!stream]                beq nt_gatenocmd
 [!stream]                sta nt_chncmd,x
 [!stream]                bne nt_rest
@@ -397,7 +435,39 @@ nt_vibnodir2:   sbc #$02
                 sta nt_temp1`;
 
 /** Features plus the pattern layout: stream = command prefix bytes in the note stream. */
-type Flags = Features & { stream: boolean };
+type Flags = Features & {
+  stream: boolean; long: boolean;
+  /** The row code is too long for the branch around it, which becomes a jump. */
+  far: boolean;
+};
+
+/**
+ * Long player: sets the address of the current pattern's columns for this row, then Y = offset in
+ * the pattern. The columns follow each other and are NT_COLSIZE bytes each, so the command and
+ * duration addresses are the note address plus that. With three columns the second pointer starts
+ * at the commands and is moved on to the durations at nt_rest.
+ */
+function pattAddrCode(f: Flags): string[] {
+  const note = 'nt_noteptr';
+  const next = f.stream ? 'nt_durptr' : 'nt_cmdptr';
+  const op = (text: string) => '                ' + text;
+  const out = [
+    '        ;Get a row: set the address of the pattern in nt_chnpattnum, nt_chnpattpos is the offset in it',
+    '',
+    op('ldy nt_chnpattnum,x'),
+    op('clc'),
+    op('lda nt_pattlo-1,y'),
+    op(`sta ${note}`),
+    op('adc #<NT_COLSIZE'),
+    op(`sta ${next}`),
+    op('lda nt_patthi-1,y'),
+    op(`sta ${note}+1`),
+    op('adc #>NT_COLSIZE'),
+    op(`sta ${next}+1`),
+  ];
+  out.push(op('ldy nt_chnpattpos,x'));
+  return out;
+}
 
 function featureOn(cond: string, f: Flags): boolean {
   const term = (t: string) => (t.startsWith('!') ? !f[t.slice(1) as keyof Flags] : f[t as keyof Flags]);
@@ -413,6 +483,10 @@ function playerCode(f: Flags): string[] {
     if (m) {
       if (!featureOn(m[1], f)) continue;
       line = line.slice(m[0].length);
+    }
+    if (line.trim() === '@PATTADDR') {
+      out.push(...pattAddrCode(f));
+      continue;
     }
     if (line.trim() === '@VIBRATO') {
       if (f.vibrato) out.push(...VIBRATO.split('\n').slice(1));
@@ -763,23 +837,37 @@ export function export4k(song: Song, opts: Export4kOptions = {}): Export4k {
   song = { ...song, commands: p.commands, tables: p.tables }; // everything below sees the pruned song
   const f = detectFeatures(song, p);
   if (opts.allFeatures) for (const k of Object.keys(f) as (keyof Features)[]) f[k] = true;
-  const usesZeropage = f.slide || f.vibrato;
+
+  // Player. Up to 255 rows fit the short player, which finds every row with one 8-bit offset.
+  // Above that each pattern has an address and a row is an offset inside its pattern.
+  const allRows = p.patterns.flat();
+  const rowCount = allRows.length;
+  const long = rowCount > MAX_4K_ROWS || !!opts.forceLong;
+  const player: Export4k['player'] = long ? 'long' : 'short';
 
   // Pattern layout. Stream: a row with a command is a prefix byte ($E0 + command) followed by the
   // note byte, and there is no command column. It needs commands 1-31 without legato and an
-  // 8-bit stream offset; otherwise the three-column layout is used.
-  const allRows = p.patterns.flat();
-  const rowCount = allRows.length;
-  if (rowCount > MAX_4K_ROWS) {
-    throw new Error(`The 4k export holds at most ${MAX_4K_ROWS} pattern rows; the patterns this subtune uses have ${rowCount}`);
-  }
-  const streamBytes = rowCount + allRows.filter(r => r.cmd).length;
+  // 8-bit stream offset (in the long player: inside each pattern); otherwise the three-column
+  // layout is used.
+  const streamLen = (rows: Row[]) => rows.length + rows.filter(r => r.cmd).length;
+  const streamBytes = streamLen(allRows);
+  const longestStream = Math.max(...p.patterns.map(streamLen));
   const layoutReason = opts.layout === 'columns' ? 'forced'
     : allRows.some(r => r.cmd >= 0x80) ? 'the tune uses legato commands'
     : p.commands.length > 31 ? `the tune uses ${p.commands.length} commands, more than 31`
-    : streamBytes > MAX_4K_ROWS ? `rows plus command prefixes are ${streamBytes} bytes, more than ${MAX_4K_ROWS}`
+    : !long && streamBytes > MAX_4K_ROWS ? `rows plus command prefixes are ${streamBytes} bytes, more than ${MAX_4K_ROWS}`
+    : long && longestStream > MAX_LONG_PATTERN ? `rows plus command prefixes of one pattern are ${longestStream} bytes, more than ${MAX_LONG_PATTERN}`
     : '';
   const stream = !layoutReason;
+
+  // Zeropage: two scratch bytes for slide / vibrato; the long player keeps two pattern
+  // pointers there instead, and slide / vibrato share the first one (it is only needed
+  // while a row is read)
+  const zpBytes = long ? 4 : f.slide || f.vibrato ? 2 : 0;
+  const usesZeropage = zpBytes > 0;
+  if (zp + zpBytes > 0x100) {
+    throw new Error(`This export uses ${zpBytes} zeropage bytes; they do not fit at ${hex2(zp)}, use ${hex2(0x100 - zpBytes)} or lower`);
+  }
 
   const rowNote: number[] = [], rowCmd: number[] = [], rowDur: number[] = [], pattStart: number[] = [];
   const pattLen: number[] = [];
@@ -827,6 +915,11 @@ export function export4k(song: Song, opts: Export4kOptions = {}): Export4k {
   const L: string[] = [];
   L.push(`; ${opts.name ?? 'Untitled'} - NinjaTracker 2 tune, 4k intro export from NT2 Studio`);
   L.push(';');
+  if (long) {
+    L.push(`; Long player: ${rowCount > MAX_4K_ROWS ? `the tune has ${rowCount} pattern rows, the short player holds ${MAX_4K_ROWS}` : 'forced'}.`);
+    L.push(`; Pattern addresses are kept in zeropage pointers: ${zpBytes} zeropage bytes from ${h(zp)}.`);
+    L.push(';');
+  }
   if (seed) {
     L.push('; Import this file where the music should be, call nt_init once, then nt_play once per frame.');
     L.push('; nt_init only builds the frequency table from its top octave. The variables at the end are');
@@ -843,7 +936,7 @@ export function export4k(song: Song, opts: Export4kOptions = {}): Export4k {
   L.push(`; Left out (unused):    ${off.length ? off.join(', ') : 'nothing'}`);
   L.push(`; ${p.patterns.length} patterns, ${rowCount} rows, ${cmds.length} commands, ${usedFreq.size} of ${FREQ.length} frequencies`);
   L.push(stream
-    ? `; Patterns: note stream with command prefix bytes, ${rowNote.length} of ${MAX_4K_ROWS} bytes`
+    ? `; Patterns: note stream with command prefix bytes, ${long ? `${rowNote.length} bytes, longest pattern ${longestStream} of ${MAX_LONG_PATTERN}` : `${rowNote.length} of ${MAX_4K_ROWS} bytes`}`
     : `; Patterns: note, command and duration columns (${layoutReason})`);
   L.push(seed
     ? `; Frequency table: octave ${seed.row + 1} stored, ${seed.row} lower octave(s) built by nt_init, ${seed.fixups.length} value(s) corrected`
@@ -859,13 +952,33 @@ export function export4k(song: Song, opts: Export4kOptions = {}): Export4k {
   L.push(`NT_FIRSTNOTE = ${h(FIRSTNOTE)}`);
   L.push(`NT_HRPARAM = ${h(song.hrParam)}`);
   L.push(`NT_FIRSTWAVE = ${h(song.firstWave)}`);
-  if (usesZeropage) {
-    L.push(`nt_temp1 = ${h(zp)}                 ; two zeropage bytes for slide / vibrato`);
+  if (long) L.push(`NT_COLSIZE = ${rowNote.length}            ; bytes in each pattern column: the next column is this much further on`);
+  if (long) {
+    L.push(`nt_noteptr = ${h(zp)}               ; zeropage pointers to the current pattern, two bytes each`);
+    L.push(stream ? `nt_durptr = ${h(zp + 2)}` : `nt_cmdptr = ${h(zp + 2)}                ; command column, then moved on to the duration column`);
+  }
+  if (f.slide || f.vibrato) {
+    L.push(long
+      ? `nt_temp1 = ${h(zp)}                 ; slide / vibrato work bytes, shared with nt_noteptr`
+      : `nt_temp1 = ${h(zp)}                 ; two zeropage bytes for slide / vibrato`);
     L.push(`nt_temp2 = ${h((zp + 1) & 0xff)}`);
   }
   L.push('');
   const codeStart = L.length;
-  L.push(...playerCode({ ...f, stream }));
+  const flags: Flags = { ...f, stream, long, far: !!opts.farBranch };
+  if (long && !flags.far) {
+    // The long player's row code can outgrow the branch that skips it
+    const trial = playerCode(flags);
+    const consts = { NT_FIRSTNOTE: FIRSTNOTE, NT_HRPARAM: 0, NT_FIRSTWAVE: 0, NT_COLSIZE: 0 };
+    const zps = { nt_temp1: zp, nt_temp2: zp + 1, nt_noteptr: zp, nt_cmdptr: zp + 2, nt_durptr: zp + 2 };
+    try {
+      assemble(trial.join('\n') + '\n' + stubSymbols(trial), 0x1000, { ...consts, ...zps });
+    } catch (err) {
+      if (!/branch out of range.*nt_nopattern/.test((err as Error).message)) throw err;
+      flags.far = true;
+    }
+  }
+  L.push(...playerCode(flags));
   if (seed) L.push('', '        ;Call once before nt_play: halves the stored octave down into the lower ones', '', ...seedInit(seed));
   const codeEnd = L.length;
   if (!seed) L.push('', 'nt_init = nt_cmdexecuted     ; nothing to set up for this tune: nt_init is just an RTS');
@@ -909,24 +1022,43 @@ export function export4k(song: Song, opts: Export4kOptions = {}): Export4k {
     base += len;
   });
 
-  const perPattern = (label: string, data: number[]) => p.patterns.forEach((_, i) => {
-    const s = pattStart[i] - 1;
-    L.push(...byteLines(i === 0 ? label : '', data.slice(s, s + pattLen[i]), 32).map(l => l.replace(/^:/, ' ')));
-  });
+  // Long player: the first column has a label per pattern (nt_p01...), which the address table uses
+  const pattLabel = (i: number) => `nt_p${hex2(i + 1).toLowerCase()}`;
+  const perPattern = (label: string, data: number[], first = false) => {
+    if (long) L.push(`${label}:`);
+    p.patterns.forEach((_, i) => {
+      const s = pattStart[i] - 1;
+      const name = long ? (first ? pattLabel(i) : '') : i === 0 ? label : '';
+      L.push(...byteLines(name, data.slice(s, s + pattLen[i]), 32).map(l => l.replace(/^:/, ' ')));
+    });
+  };
+  const pattTable = () => {
+    if (!long) { L.push(...byteLines('nt_pattstart', pattStart)); return; }
+    for (const [label, op] of [['nt_pattlo', '<'], ['nt_patthi', '>']]) {
+      for (let i = 0; i < p.patterns.length; i += 8) {
+        const chunk = p.patterns.slice(i, i + 8).map((_, k) => op + pattLabel(i + k)).join(',');
+        L.push(`${i === 0 ? (label + ':').padEnd(16) : ' '.repeat(16)}dc.b ${chunk}`);
+      }
+    }
+  };
   if (stream) {
-    L.push('', '        ;Patterns. nt_pattstart = offset of each pattern in the note stream (offsets count from 1)', '');
-    L.push(...byteLines('nt_pattstart', pattStart));
+    L.push('', long
+      ? '        ;Patterns. nt_pattlo / nt_patthi = address of each pattern in the note stream'
+      : '        ;Patterns. nt_pattstart = offset of each pattern in the note stream (offsets count from 1)', '');
+    pattTable();
     L.push('', '        ;Note stream: E1-FF = command 01-1F for the row whose note byte follows,');
     L.push('        ;02 = keyoff, 03 = keyon, 06 / 07 = the same on a row with a command, 0C-5F = note,');
     L.push('        ;+80 on the note byte of the last row of a pattern', '');
-    perPattern('nt_rownote', rowNote);
+    perPattern('nt_rownote', rowNote, true);
     L.push('', '        ;Durations, one per stream byte (00 at prefix bytes): 00 = unchanged, else 255 - (frames - 3)', '');
     perPattern('nt_rowdur', rowDur);
   } else {
-    L.push('', '        ;Patterns as columns. nt_pattstart = first row of each pattern (rows count from 1)', '');
-    L.push(...byteLines('nt_pattstart', pattStart));
+    L.push('', long
+      ? '        ;Patterns as columns. nt_pattlo / nt_patthi = address of each pattern in the note column'
+      : '        ;Patterns as columns. nt_pattstart = first row of each pattern (rows count from 1)', '');
+    pattTable();
     L.push('', '        ;Note column: 02 = keyoff, 03 = keyon, 0C-5F = note, +80 on the last row of a pattern', '');
-    perPattern('nt_rownote', rowNote);
+    perPattern('nt_rownote', rowNote, true);
     L.push('', '        ;Command column: 00 = none, 01-7F = command, 81-FF = command in legato mode', '');
     perPattern('nt_rowcmd', rowCmd);
     L.push('', '        ;Duration column: 00 = unchanged, else 255 - (frames - 3)', '');
@@ -972,6 +1104,8 @@ export function export4k(song: Song, opts: Export4kOptions = {}): Export4k {
     dasm,
     features: f,
     usesZeropage,
+    zpBytes,
+    player,
     layout: stream ? 'stream' : 'columns',
     layoutReason,
     needsInit: !!seed,
@@ -997,5 +1131,5 @@ function stubSymbols(code: string[]): string {
     if (m) defined.add(m[1]);
     for (const s of line.replace(/;.*/, '').match(/\bnt_[a-z0-9]+\b/g) ?? []) usedSyms.add(s);
   }
-  return [...usedSyms].filter(s => !defined.has(s) && s !== 'nt_temp1' && s !== 'nt_temp2').map(s => `${s} = $4000`).join('\n');
+  return [...usedSyms].filter(s => !defined.has(s) && !/^nt_(temp1|temp2|noteptr|cmdptr|durptr)$/.test(s)).map(s => `${s} = $4000`).join('\n');
 }
