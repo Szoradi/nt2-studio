@@ -14,7 +14,10 @@ import { AudioOutput, OUTPUT_RATE } from './audio/output.ts';
 import * as E from './ui/editor.ts';
 import { S, PANELS, CMD_NAME_COL, type Panel } from './ui/editor.ts';
 import { graphMouseDown } from './ui/tablegraph.ts';
-import { wireInstruments } from './ui/instrument.ts';
+import { wireInstruments, clearInstrument } from './ui/instrument.ts';
+import { wireKit, openKit, previewNote } from './ui/kit.ts';
+import { wireExamples, openExamples as openExampleBrowser } from './ui/examples.ts';
+import { addKitInstrument, type KitInstrument } from './core/kit.ts';
 import { renderAll, renderTime, showStatus, HELP_HTML } from './ui/view.ts';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -122,6 +125,36 @@ function testNote(note: number, cmd: number, channel: number) {
   engine.testNote(channel, note, cmd);
 }
 
+// The kit browser plays an instrument without adding it: the emulator is given a copy of the song
+// with the instrument in it, and gets the real song back when the browser closes.
+let kitPreviewing = false;
+
+function kitPreview(ins: KitInstrument): boolean {
+  if (!engine) return false;
+  if (engine.state.playing) { showStatus('Stop the song (F3) to hear kit instruments', true); return false; }
+  ensureAudio();
+  let temp = structuredClone(S.song);
+  let n = addKitInstrument(temp, ins);
+  if (typeof n === 'string') {
+    // No room in this song: it can still be heard in an empty one
+    temp = newSong();
+    temp.hrParam = S.song.hrParam; temp.firstWave = S.song.firstWave;
+    n = addKitInstrument(temp, ins);
+    if (typeof n === 'string') return false;
+  }
+  engine.updateSong(temp);
+  kitPreviewing = true;
+  engine.testNote(S.trkCh, previewNote(ins), n + 1);
+  return true;
+}
+
+function kitPreviewEnd() {
+  if (!kitPreviewing) return;
+  kitPreviewing = false;
+  engine?.silence();
+  engine?.updateSong(S.song);
+}
+
 function testChannel(): number {
   return S.focus === 'pattern' ? S.pattCh : S.trkCh;
 }
@@ -183,6 +216,7 @@ function retargetLoop() {
 }
 
 function syncGlobals() {
+  syncExampleLock();
   const hr = $<HTMLInputElement>('in-hr'), fw = $<HTMLInputElement>('in-fw'), name = $<HTMLInputElement>('in-name');
   if (document.activeElement !== name) name.value = S.fileName;
   if (document.activeElement !== hr) hr.value = hex2(S.song.hrParam);
@@ -197,7 +231,31 @@ const STORE_KEY = 'nt2studio.song';
 const RECENT_KEY = 'nt2studio.recent';
 const MAX_RECENT = 12;
 
-interface StoredSong { name: string; data: string; time?: number }
+interface StoredSong { name: string; data: string; time?: number; example?: string }
+
+/**
+ * Set while the song in the editor is one of the bundled examples ("title by author"): another
+ * musician's tune, to study and play with, but not to save or export. It stays set through
+ * edits, the autosave and Recent, and ends when another song is opened or a new one started.
+ */
+let exampleOf = '';
+const EXAMPLE_SAVE_TIP = 'This is an example tune by another musician: it can be played and changed, but not saved or exported';
+
+function refuseForExample(what: string): boolean {
+  if (!exampleOf) return false;
+  showStatus(`${exampleOf} is an example tune: it can be played and changed here, but not ${what}. Use the Kit to take its instruments into a song of your own.`, true);
+  return true;
+}
+
+function syncExampleLock() {
+  const save = $<HTMLButtonElement>('btn-save'), exp = $<HTMLButtonElement>('btn-export');
+  if (save.disabled === !!exampleOf) return;
+  for (const b of [save, exp]) {
+    if (!b.dataset.tip) b.dataset.tip = b.title;
+    b.disabled = !!exampleOf;
+    b.title = exampleOf ? EXAMPLE_SAVE_TIP : b.dataset.tip;
+  }
+}
 
 const toBase64 = (bytes: Uint8Array) => {
   let bin = '';
@@ -266,7 +324,9 @@ function applyBarForSong() {
 
 function autosave() {
   try {
-    localStorage.setItem(STORE_KEY, JSON.stringify({ name: S.fileName, data: toBase64(saveSongFile(S.song)) }));
+    const stored: StoredSong = { name: S.fileName, data: toBase64(saveSongFile(S.song)) };
+    if (exampleOf) stored.example = exampleOf;
+    localStorage.setItem(STORE_KEY, JSON.stringify(stored));
   } catch { /* storage may be unavailable */ }
 }
 
@@ -274,8 +334,9 @@ function restoreAutosave(): boolean {
   try {
     const raw = localStorage.getItem(STORE_KEY);
     if (!raw) return false;
-    const { name, data } = JSON.parse(raw) as StoredSong;
+    const { name, data, example } = JSON.parse(raw) as StoredSong;
     E.replaceSong(loadSongFile(fromBase64(data)), name);
+    exampleOf = example ?? '';
     return true;
   } catch {
     return false;
@@ -297,7 +358,9 @@ function keepInRecent(): boolean {
     const data = toBase64(saveSongFile(S.song));
     if (data === EMPTY_SONG_DATA) return false;
     const list = readRecent().filter(r => !(r.name === S.fileName && r.data === data));
-    list.unshift({ name: S.fileName, data, time: Date.now() });
+    const entry: StoredSong = { name: S.fileName, data, time: Date.now() };
+    if (exampleOf) entry.example = exampleOf;
+    list.unshift(entry);
     localStorage.setItem(RECENT_KEY, JSON.stringify(list.slice(0, MAX_RECENT)));
     return true;
   } catch {
@@ -308,6 +371,7 @@ function keepInRecent(): boolean {
 /** Replace the song in the editor. Returns true if the previous song was kept under Recent. */
 function setSong(song: Song, name: string, handle: FileHandle | null = null): boolean {
   const kept = keepInRecent();
+  exampleOf = ''; // whoever loads an example sets it again
   engine?.stop();
   E.replaceSong(song, name);
   applyBarForSong();
@@ -370,6 +434,7 @@ function openRecent() {
       dlg.close();
       try {
         setSong(loadSongFile(fromBase64(r.data)), r.name);
+        if (r.example) { exampleOf = r.example; autosave(); syncGlobals(); }
         showStatus(`Restored ${r.name} from Recent`);
       } catch (err) { showStatus((err as Error).message, true); }
     };
@@ -424,7 +489,7 @@ async function openFile() {
   input.click();
 }
 
-async function openExamples() {
+async function openExampleDisk() {
   try {
     const res = await fetch(import.meta.env.BASE_URL + 'examples.d64');
     if (!res.ok) throw new Error('could not fetch the example disk');
@@ -434,6 +499,7 @@ async function openExamples() {
 
 /** Save writes back to the file the song was opened from or last saved to; Save As picks a new one. */
 async function saveSong(saveAs = false) {
+  if (refuseForExample('saved')) return;
   const bytes = saveSongFile(S.song);
   try {
     if ((saveAs || !fileHandle) && fsApi.showSaveFilePicker) {
@@ -546,6 +612,7 @@ function refreshExport() {
 }
 
 function openExport() {
+  if (refuseForExample('exported')) return;
   const title = $<HTMLInputElement>('ex-title');
   if (!title.value) title.value = S.fileName;
   refreshExport();
@@ -974,7 +1041,7 @@ function onKeyDown(e: KeyboardEvent) {
     case 'ArrowLeft': moveCol(-1); break;
     case 'ArrowRight': moveCol(1); break;
     case 'Insert': insertRow(); break;
-    case 'Delete': deleteRow(); break;
+    case 'Delete': if (S.focus === 'inst') clearInstrument(showStatus); else deleteRow(); break;
     default: handled = false;
   }
 
@@ -1108,7 +1175,7 @@ function wireToolbar() {
     showStatus(n ? `Duplicated to pattern ${hex2(n)}` : 'Nothing to duplicate, or no free pattern', !n);
   });
   on('btn-clearmusic', () => { E.clearMusic(); showStatus('Cleared all patterns and tracks; tables and commands are kept (Ctrl+Z to undo)'); });
-  on('btn-examples', () => void openExamples());
+  on('btn-examples', () => void openExampleBrowser());
   on('btn-save', () => void saveSong(false));
   on('btn-export', openExport);
   on('btn-play', play);
@@ -1124,6 +1191,7 @@ function wireToolbar() {
   on('btn-help', openHelp);
   on('btn-mode-inst', () => setSideMode('inst'));
   on('btn-mode-classic', () => setSideMode('classic'));
+  on('btn-kit', () => void openKit());
   // Bar length for the bar and beat lines: remembered per song
   const barEl = $<HTMLInputElement>('in-bar');
   barEl.value = String(S.barFrames);
@@ -1217,6 +1285,51 @@ wireInstruments({
   test: () => { ensureAudio(); testCurrentCommand(S.cmdNum + 1); },
   keyOff: () => engine?.testKeyOff(S.trkCh),
   status: showStatus,
+});
+wireExamples({
+  base: import.meta.env.BASE_URL + 'examples/',
+  openDisk: () => void openExampleDisk(),
+  status: showStatus,
+  load: (tune, bytes) => {
+    try {
+      const kept = setSong(loadSongFile(bytes), tune.file.split('/').pop()!.replace(/\.nt2$/i, ''));
+      exampleOf = `${tune.title} by ${tune.author}`;
+      autosave();
+      syncGlobals();
+      // Keep the credit with the song for a later export, and play it on the chip it was made for
+      $<HTMLInputElement>('ex-title').value = tune.title.slice(0, 31);
+      $<HTMLInputElement>('ex-author').value = tune.author.slice(0, 31);
+      $<HTMLInputElement>('ex-released').value = tune.released.slice(0, 31);
+      if (tune.model === '6581' || tune.model === '8580') {
+        $<HTMLSelectElement>('sel-model').value = tune.model;
+        engine?.setModel(tune.model);
+      }
+      renderAll(null);
+      showStatus(`Loaded ${tune.title} by ${tune.author}${tune.released ? ` (${tune.released})` : ''}.` +
+        `${tune.check === 'close' ? ' It was made with a modified player, so it may sound slightly different here.' : ''}` +
+        ` Examples cannot be saved or exported.${keptNote(kept)}`);
+    } catch (err) { showStatus((err as Error).message, true); }
+  },
+});
+wireKit({
+  url: import.meta.env.BASE_URL + 'kit/instruments.json',
+  preview: kitPreview,
+  previewOff: () => engine?.testKeyOff(S.trkCh),
+  add: (ins, mus) => {
+    let n = -1, why = '';
+    E.edit(() => {
+      const r = addKitInstrument(S.song, ins);
+      if (typeof r === 'string') { why = r; return false; }
+      n = r;
+    });
+    if (n < 0) { showStatus(`${ins.name} was not added: ${why}`, true); return 0; }
+    kitPreviewing = false; // the edit already gave the emulator the real song
+    S.cmdNum = n;
+    E.notify();
+    showStatus(`Added ${ins.name} (${mus.name}) as instrument ${hex2(n + 1)}: use command ${hex2(n + 1)} in a pattern. Ctrl+Z takes it out again.`);
+    return n + 1;
+  },
+  closed: kitPreviewEnd,
 });
 document.addEventListener('keydown', onKeyDown);
 // Releasing Enter (or leaving the window) ends held stepping

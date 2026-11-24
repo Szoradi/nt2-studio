@@ -1,0 +1,108 @@
+ok   DEMOS/A-F/Balju.sid: 2 instruments from 1 table set, 1 subtune  {song data in 1 file: 0 of 1 subtune play identically to the .sid, 1 more with identical notes but different filter or volume}
+ok   DEMOS/S-Z/Secret_of_Monkey_Island.sid: 73 instruments from 9 table sets, 9 subtunes  {song data in 9 files: 6 of 9 subtunes play identically to the .sid, 3 more with the same notes, commands and timing (the original player is not the standard V2.03 one, so the registers cannot match)}
+ok   DEMOS/S-Z/Ultimate_Intro_12.sid: 10 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   DEMOS/S-Z/Ultomato.sid: 12 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   GAMES/M-R/Mimizuku_Saga_4K.sid: 4 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   GAMES/S-Z/Secret_of_Monkey_Island_tune_5.sid: 20 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   GAMES/S-Z/Secret_of_Monkey_Island_tune_9.sid: 11 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/A/Aomeba/AUX64.sid: 20 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/A/Aomeba/Hi_Five_tune_1.sid: 45 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/A/Aomeba/Lucky.sid: 21 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/A/Avory_Sarah_Jane/Briley_Witch_Chronicles.sid: 177 instruments from 23 table sets, 34 subtunes  {song data in 23 files: 0 of 34 subtunes play identically to the .sid, 33 more with the same notes, commands and timing (the original player is not the standard V2.03 one, so the registers cannot match), differing: 26}
+ok   MUSICIANS/A/Avory_Sarah_Jane/Neutron.sid: 16 instruments from 1 table set, 6 subtunes  {song data in 1 file: 0 of 6 subtunes play identically to the .sid, 6 more with the same notes, commands and timing (the original player is not the standard V2.03 one, so the registers cannot match)}
+ok   MUSICIANS/A/Avory_Sarah_Jane/Santron.sid: 12 instruments from 1 table set, 8 subtunes  {song data in 1 file: 0 of 8 subtunes play identically to the .sid, 8 more with the same notes, commands and timing (the original player is not the standard V2.03 one, so the registers cannot match)}
+ok   MUSICIANS/A/Avory_Sarah_Jane/Soul_Force.sid: 308 instruments from 25 table sets, 43 subtunes  {song data in 25 files: 0 of 43 subtunes play identically to the .sid, 42 more with the same notes, commands and timing (the original player is not the standard V2.03 one, so the registers cannot match), differing: 27}
+ok   MUSICIANS/A/Avory_Sarah_Jane/Zeta_Wing.sid: 51 instruments from 3 table sets, 10 subtunes  {song data in 3 files: 0 of 10 subtunes play identically to the .sid, 10 more with the same notes, commands and timing (the original player is not the standard V2.03 one, so the registers cannot match)}
+ok   MUSICIANS/C/Cadaver/Fight_the_Machine.sid: 25 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/C/Cadaver/Hessian.sid: 298 instruments from 14 table sets, 21 subtunes  {song data in 14 files: 21 of 21 subtunes play identically to the .sid}
+ok   MUSICIANS/C/Cadaver/Hessian_Testmusic.sid: 2 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/C/Cadaver/Little_Sentient_Hatchback_VS_the_Hordes_of_Tacgnol.sid: 33 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/C/Cadaver/Steel_Ranger.sid: 287 instruments from 12 table sets, 26 subtunes  {song data in 12 files: 26 of 26 subtunes play identically to the .sid}
+ok   MUSICIANS/F/Fade/Charflasher.sid: 8 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/F/Freqvibez/Cordis_Monophonous.sid: 4 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/H/Heinmueck/Enforcer_2_Level_2_preview.sid: 7 instruments from 1 table set, 2 subtunes  {song data in 1 file: 1 of 2 subtunes play identically to the .sid, differing: 2}
+ok   MUSICIANS/H/Holt_Hein/ZXQL3000.sid: 23 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/J/Jellica/Party_Bit_3SID.sid: 4 instruments from 1 table set, 1 subtune  {song data in 1 file: 0 of 1 subtune play identically to the .sid, 1 more with the same notes, commands and timing (the original player is not the standard V2.03 one, so the registers cannot match)}
+ok   MUSICIANS/J/Julian_Jaymz/Stupid_Bitmap_and_Scroll.sid: 12 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/M/MAT64/Adventure_1.sid: 53 instruments from 7 table sets, 7 subtunes  {song data in 7 files: 0 of 7 subtunes play identically to the .sid, 7 more with the same notes, commands and timing (the original player is not the standard V2.03 one, so the registers cannot match)}
+ok   MUSICIANS/M/MAT64/Avril_64th.sid: 1 instruments from 1 table set, 1 subtune  {song data in 1 file: 0 of 1 subtune play identically to the .sid, 1 more with the same notes, commands and timing (the original player is not the standard V2.03 one, so the registers cannot match)}
+ok   MUSICIANS/M/MAT64/CBM_Master_Theme.sid: 14 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/M/MAT64/Commodorish.sid: 9 instruments from 1 table set, 1 subtune  {song data in 1 file: 0 of 1 subtune play identically to the .sid, 1 more with the same notes, commands and timing (the original player is not the standard V2.03 one, so the registers cannot match)}
+ok   MUSICIANS/M/MAT64/Crashed_and_Damaged.sid: 5 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/M/MAT64/Gaiares-Mission_2.sid: 9 instruments from 1 table set, 1 subtune  {song data in 1 file: 0 of 1 subtune play identically to the .sid, 1 more with the same notes, commands and timing (the original player is not the standard V2.03 one, so the registers cannot match)}
+ok   MUSICIANS/M/MAT64/Sid_and_Bob_Highscores.sid: 8 instruments from 1 table set, 1 subtune  {song data in 1 file: 0 of 1 subtune play identically to the .sid, 1 more with the same notes, commands and timing (the original player is not the standard V2.03 one, so the registers cannot match)}
+ok   MUSICIANS/M/MAT64/Strawberry_Strings.sid: 31 instruments from 2 table sets, 2 subtunes  {song data in 2 files: 0 of 2 subtunes play identically to the .sid, 2 more with the same notes, commands and timing (the original player is not the standard V2.03 one, so the registers cannot match)}
+ok   MUSICIANS/M/MAT64/Uridium_2.sid: 6 instruments from 1 table set, 1 subtune  {song data in 1 file: 0 of 1 subtune play identically to the .sid, 1 more with the same notes, commands and timing (the original player is not the standard V2.03 one, so the registers cannot match)}
+ok   MUSICIANS/M/MAT64/Zylophobia.sid: 11 instruments from 1 table set, 1 subtune  {song data in 1 file: 0 of 1 subtune play identically to the .sid, 1 more with the same notes, commands and timing (the original player is not the standard V2.03 one, so the registers cannot match)}
+ok   MUSICIANS/M/Mermaid/DOG_note.sid: 7 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/M/Mermaid/Snusbrun_Intro.sid: 6 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/M/Morton_Adam/EfnCold.sid: 23 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/N/NecroPolo/071D.sid: 7 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/N/NecroPolo/Bricks_n_Balls.sid: 5 instruments from 1 table set, 15 subtunes  [1 of 15 subtunes play notes through a NinjaTracker 2 player]  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/N/NecroPolo/Fender_of_the_Crown.sid: 18 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/N/NecroPolo/Minorita.sid: 20 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/N/NecroPolo/Ninfa_intro.sid: 14 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/N/NecroPolo/Ninfa_main_tune_2.sid: 16 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/N/NecroPolo/Ninfa_main_tune_2_ext.sid: 16 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/N/NecroPolo/Ninfa_outro.sid: 16 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/N/NecroPolo/Pink_Shuriken_Part_2.sid: 15 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/N/NecroPolo/Rising_Sun.sid: 19 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/N/NecroPolo/S-Blox.sid: 19 instruments from 1 table set, 3 subtunes  {song data in 1 file: 2 of 3 subtunes play identically to the .sid, 1 more with the same notes, commands and timing (the original player is not the standard V2.03 one, so the registers cannot match)}
+ok   MUSICIANS/N/NecroPolo/Strauss.sid: 2 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/N/NecroPolo/Test_NT.sid: 20 instruments from 1 table set, 3 subtunes  {song data in 1 file: 3 of 3 subtunes play identically to the .sid}
+ok   MUSICIANS/N/NecroPolo/Time_Paradox_tune_7.sid: 6 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/N/NecroPolo/Wavemode.sid: 23 instruments from 1 table set, 1 subtune  {song data in 1 file: 0 of 1 subtune play identically to the .sid, 1 more with the same notes, commands and timing (the original player is not the standard V2.03 one, so the registers cannot match)}
+ok   MUSICIANS/N/No-XS/Postex_2018.sid: 11 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/SIDwave/Electronic_Groove.sid: 14 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/SIDwave/Valerion.sid: 7 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Saimo/QUOD_INIT_EXIT_IIo_preview.sid: 21 instruments from 2 table sets, 4 subtunes  [3 of 4 subtunes play notes through a NinjaTracker 2 player]  {song data in 2 files: 3 of 3 subtunes play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/Cheesetro_Tune.sid: 16 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/Connect_Me.sid: 26 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/DaSoundHolyGhost.sid: 13 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/Final_Boss_Defeated.sid: 20 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/Glitch4K.sid: 12 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/Grillende_Zirpe.sid: 13 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/I_Did_It_Thy_Way.sid: 16 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/I_Held_That_Cheese_for_2_Mins_and_Then_I_Ate_It.sid: 22 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/Introtune.sid: 13 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/Island_Quereleien.sid: 11 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/Mega_Man_3-Spark_Man.sid: 9 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/Megalovania.sid: 25 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/Mein_Verlies.sid: 24 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/Meine_kleine_Tanzmusik.sid: 19 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/Oldskewl_Vibrators.sid: 21 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/Popnudel.sid: 14 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/Pushing_Onwards.sid: 15 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/Red_Serpent_Intro.sid: 21 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/Red_Serpent_preview.sid: 12 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/Simple_Tune.sid: 22 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/Speedtro_Tune.sid: 11 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/SpiderBot_Harddrive_Cleanup.sid: 16 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/Steppa.sid: 9 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/Sunday.sid: 12 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/Trafolta.sid: 11 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/Tutti_Frutti_64.sid: 12 instruments from 3 table sets, 6 subtunes  {song data in 3 files: 6 of 6 subtunes play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/Tutti_Frutti_64_Intro.sid: 5 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/We_Cracks_from_the_Countryside.sid: 26 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/S/Spider_Jerusalem/Week_in_Progress.sid: 24 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/T/Taxim/Sams_Journey.sid: 423 instruments from 19 table sets, 19 subtunes  {song data in 19 files: 0 of 19 subtunes play identically to the .sid, 19 more with the same notes, commands and timing (the original player is not the standard V2.03 one, so the registers cannot match)}
+ok   MUSICIANS/V/Vincenzo/Fancy_4k_Stuff.sid: 12 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/V/Vincenzo/Pink_Shuriken_Part_1.sid: 17 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/V/Vincenzo/Plasma_Ninja.sid: 11 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/V/Vincenzo/Skotkockas_Pled.sid: 6 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/V/Vincenzo/Transelites.sid: 7 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/V/Vincenzo/Wavemode_Endpart.sid: 7 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/V/Vincenzo/Wives_Unchained.sid: 11 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/V/Vincenzo/Wives_Unchained_Remix.sid: 9 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/W/Widding_Roy_Johan/Captain_Cloudberry.sid: 12 instruments from 1 table set, 11 subtunes  {song data in 1 file: 10 of 11 subtunes play identically to the .sid, 1 more with the same notes, commands and timing (the original player is not the standard V2.03 one, so the registers cannot match)}
+ok   MUSICIANS/W/Widding_Roy_Johan/Dodge.sid: 10 instruments from 1 table set, 2 subtunes  {song data in 1 file: 2 of 2 subtunes play identically to the .sid}
+ok   MUSICIANS/W/Widding_Roy_Johan/Gridlock.sid: 33 instruments from 1 table set, 6 subtunes  [1 of 6 subtunes play notes through a NinjaTracker 2 player]  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/W/Widding_Roy_Johan/Jolly_Jumper.sid: 17 instruments from 1 table set, 3 subtunes  {song data in 1 file: 3 of 3 subtunes play identically to the .sid}
+ok   MUSICIANS/W/Widding_Roy_Johan/Kalle_Kloakk_4k.sid: 6 instruments from 1 table set, 1 subtune  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/W/Widding_Roy_Johan/Mancave.sid: 31 instruments from 1 table set, 18 subtunes  [1 of 18 subtunes play notes through a NinjaTracker 2 player]  {song data in 1 file: 1 of 1 subtune play identically to the .sid}
+ok   MUSICIANS/W/Widding_Roy_Johan/Tombstones_Soundtrack.sid: 33 instruments from 1 table set, 5 subtunes  {song data in 1 file: 5 of 5 subtunes play identically to the .sid}
+
+Left out of the examples:
+  Avory_Sarah_Jane/Briley_Witch_Chronicles_t26.nt2 (subtune 26 differs from the .sid)
+  Avory_Sarah_Jane/Soul_Force_t27.nt2 (subtune 27 differs from the .sid)
+  Heinmueck/Enforcer_2_Level_2_preview.nt2 (subtune 2 differs from the .sid)

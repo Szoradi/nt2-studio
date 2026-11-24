@@ -1,0 +1,2022 @@
+{
+ "format": "nt2-examples",
+ "about": "Songs rebuilt from NinjaTracker 2 .sid files, each checked against the .sid it came from. check \"exact\": every SID register matches on every frame; \"close\": same notes, commands and timing, but the original was made with a modified player.",
+ "musicians": [
+  {
+   "id": "Aomeba",
+   "name": "Jaakko Viitalähde (Aomeba)",
+   "tunes": [
+    {
+     "file": "Aomeba/AUX64.nt2",
+     "title": "AUX64",
+     "author": "Jaakko Viitalähde (Aomeba)",
+     "released": "2020 Artline Designs",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Aomeba/Hi_Five_tune_1.nt2",
+     "title": "Hi Five (tune 1)",
+     "author": "Jaakko Viitalähde (Aomeba)",
+     "released": "2018 Siesta",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Aomeba/Lucky.nt2",
+     "title": "Lucky",
+     "author": "Jaakko Viitalähde (Aomeba)",
+     "released": "2021 Aomeba",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    }
+   ]
+  },
+  {
+   "id": "Avory_Sarah_Jane",
+   "name": "Sarah Jane Avory",
+   "tunes": [
+    {
+     "file": "Avory_Sarah_Jane/Briley_Witch_Chronicles_t01.nt2",
+     "title": "Briley Witch Chronicles (tune 1)",
+     "author": "Sarah Jane Avory",
+     "released": "2021 Witchsoft",
+     "model": "6581/8580",
+     "subtunes": 3,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Briley_Witch_Chronicles_t03.nt2",
+     "title": "Briley Witch Chronicles (tune 3)",
+     "author": "Sarah Jane Avory",
+     "released": "2021 Witchsoft",
+     "model": "6581/8580",
+     "subtunes": 4,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Briley_Witch_Chronicles_t06.nt2",
+     "title": "Briley Witch Chronicles (tune 6)",
+     "author": "Sarah Jane Avory",
+     "released": "2021 Witchsoft",
+     "model": "6581/8580",
+     "subtunes": 2,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Briley_Witch_Chronicles_t08.nt2",
+     "title": "Briley Witch Chronicles (tune 8)",
+     "author": "Sarah Jane Avory",
+     "released": "2021 Witchsoft",
+     "model": "6581/8580",
+     "subtunes": 2,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Briley_Witch_Chronicles_t10.nt2",
+     "title": "Briley Witch Chronicles (tune 10)",
+     "author": "Sarah Jane Avory",
+     "released": "2021 Witchsoft",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Briley_Witch_Chronicles_t11.nt2",
+     "title": "Briley Witch Chronicles (tune 11)",
+     "author": "Sarah Jane Avory",
+     "released": "2021 Witchsoft",
+     "model": "6581/8580",
+     "subtunes": 5,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Briley_Witch_Chronicles_t14.nt2",
+     "title": "Briley Witch Chronicles (tune 14)",
+     "author": "Sarah Jane Avory",
+     "released": "2021 Witchsoft",
+     "model": "6581/8580",
+     "subtunes": 2,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Briley_Witch_Chronicles_t16.nt2",
+     "title": "Briley Witch Chronicles (tune 16)",
+     "author": "Sarah Jane Avory",
+     "released": "2021 Witchsoft",
+     "model": "6581/8580",
+     "subtunes": 2,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Briley_Witch_Chronicles_t17.nt2",
+     "title": "Briley Witch Chronicles (tune 17)",
+     "author": "Sarah Jane Avory",
+     "released": "2021 Witchsoft",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Briley_Witch_Chronicles_t18.nt2",
+     "title": "Briley Witch Chronicles (tune 18)",
+     "author": "Sarah Jane Avory",
+     "released": "2021 Witchsoft",
+     "model": "6581/8580",
+     "subtunes": 3,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Briley_Witch_Chronicles_t21.nt2",
+     "title": "Briley Witch Chronicles (tune 21)",
+     "author": "Sarah Jane Avory",
+     "released": "2021 Witchsoft",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Briley_Witch_Chronicles_t22.nt2",
+     "title": "Briley Witch Chronicles (tune 22)",
+     "author": "Sarah Jane Avory",
+     "released": "2021 Witchsoft",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Briley_Witch_Chronicles_t23.nt2",
+     "title": "Briley Witch Chronicles (tune 23)",
+     "author": "Sarah Jane Avory",
+     "released": "2021 Witchsoft",
+     "model": "6581/8580",
+     "subtunes": 2,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Briley_Witch_Chronicles_t25.nt2",
+     "title": "Briley Witch Chronicles (tune 25)",
+     "author": "Sarah Jane Avory",
+     "released": "2021 Witchsoft",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Briley_Witch_Chronicles_t27.nt2",
+     "title": "Briley Witch Chronicles (tune 27)",
+     "author": "Sarah Jane Avory",
+     "released": "2021 Witchsoft",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Briley_Witch_Chronicles_t28.nt2",
+     "title": "Briley Witch Chronicles (tune 28)",
+     "author": "Sarah Jane Avory",
+     "released": "2021 Witchsoft",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Briley_Witch_Chronicles_t29.nt2",
+     "title": "Briley Witch Chronicles (tune 29)",
+     "author": "Sarah Jane Avory",
+     "released": "2021 Witchsoft",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Briley_Witch_Chronicles_t30.nt2",
+     "title": "Briley Witch Chronicles (tune 30)",
+     "author": "Sarah Jane Avory",
+     "released": "2021 Witchsoft",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Briley_Witch_Chronicles_t31.nt2",
+     "title": "Briley Witch Chronicles (tune 31)",
+     "author": "Sarah Jane Avory",
+     "released": "2021 Witchsoft",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Briley_Witch_Chronicles_t32.nt2",
+     "title": "Briley Witch Chronicles (tune 32)",
+     "author": "Sarah Jane Avory",
+     "released": "2021 Witchsoft",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Briley_Witch_Chronicles_t33.nt2",
+     "title": "Briley Witch Chronicles (tune 33)",
+     "author": "Sarah Jane Avory",
+     "released": "2021 Witchsoft",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Briley_Witch_Chronicles_t34.nt2",
+     "title": "Briley Witch Chronicles (tune 34)",
+     "author": "Sarah Jane Avory",
+     "released": "2021 Witchsoft",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Neutron.nt2",
+     "title": "Neutron",
+     "author": "Sarah Jane Avory",
+     "released": "2019 Protovision",
+     "model": "6581",
+     "subtunes": 7,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Santron.nt2",
+     "title": "Santron",
+     "author": "Sarah Jane Avory",
+     "released": "2019 Protovision",
+     "model": "6581",
+     "subtunes": 9,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Soul_Force_t01.nt2",
+     "title": "Soul Force (tune 1)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovison",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Soul_Force_t02.nt2",
+     "title": "Soul Force (tune 2)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovison",
+     "model": "8580",
+     "subtunes": 2,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Soul_Force_t03.nt2",
+     "title": "Soul Force (tune 3)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovison",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Soul_Force_t04.nt2",
+     "title": "Soul Force (tune 4)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovison",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Soul_Force_t05.nt2",
+     "title": "Soul Force (tune 5)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovison",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Soul_Force_t06.nt2",
+     "title": "Soul Force (tune 6)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovison",
+     "model": "8580",
+     "subtunes": 3,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Soul_Force_t08.nt2",
+     "title": "Soul Force (tune 8)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovison",
+     "model": "8580",
+     "subtunes": 3,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Soul_Force_t10.nt2",
+     "title": "Soul Force (tune 10)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovison",
+     "model": "8580",
+     "subtunes": 2,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Soul_Force_t12.nt2",
+     "title": "Soul Force (tune 12)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovison",
+     "model": "8580",
+     "subtunes": 2,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Soul_Force_t14.nt2",
+     "title": "Soul Force (tune 14)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovison",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Soul_Force_t15.nt2",
+     "title": "Soul Force (tune 15)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovison",
+     "model": "8580",
+     "subtunes": 2,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Soul_Force_t17.nt2",
+     "title": "Soul Force (tune 17)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovison",
+     "model": "8580",
+     "subtunes": 2,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Soul_Force_t19.nt2",
+     "title": "Soul Force (tune 19)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovison",
+     "model": "8580",
+     "subtunes": 3,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Soul_Force_t21.nt2",
+     "title": "Soul Force (tune 21)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovison",
+     "model": "8580",
+     "subtunes": 2,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Soul_Force_t23.nt2",
+     "title": "Soul Force (tune 23)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovison",
+     "model": "8580",
+     "subtunes": 2,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Soul_Force_t25.nt2",
+     "title": "Soul Force (tune 25)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovison",
+     "model": "8580",
+     "subtunes": 2,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Soul_Force_t29.nt2",
+     "title": "Soul Force (tune 29)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovison",
+     "model": "8580",
+     "subtunes": 2,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Soul_Force_t31.nt2",
+     "title": "Soul Force (tune 31)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovison",
+     "model": "8580",
+     "subtunes": 2,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Soul_Force_t33.nt2",
+     "title": "Soul Force (tune 33)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovison",
+     "model": "8580",
+     "subtunes": 2,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Soul_Force_t35.nt2",
+     "title": "Soul Force (tune 35)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovison",
+     "model": "8580",
+     "subtunes": 3,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Soul_Force_t37.nt2",
+     "title": "Soul Force (tune 37)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovison",
+     "model": "8580",
+     "subtunes": 2,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Soul_Force_t39.nt2",
+     "title": "Soul Force (tune 39)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovison",
+     "model": "8580",
+     "subtunes": 2,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Soul_Force_t41.nt2",
+     "title": "Soul Force (tune 41)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovison",
+     "model": "8580",
+     "subtunes": 2,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Soul_Force_t43.nt2",
+     "title": "Soul Force (tune 43)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovison",
+     "model": "8580",
+     "subtunes": 2,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Zeta_Wing_t01.nt2",
+     "title": "Zeta Wing (tune 1)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovision",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Zeta_Wing_t02.nt2",
+     "title": "Zeta Wing (tune 2)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovision",
+     "model": "6581/8580",
+     "subtunes": 6,
+     "check": "close"
+    },
+    {
+     "file": "Avory_Sarah_Jane/Zeta_Wing_t08.nt2",
+     "title": "Zeta Wing (tune 8)",
+     "author": "Sarah Jane Avory",
+     "released": "2020 Protovision",
+     "model": "6581/8580",
+     "subtunes": 3,
+     "check": "close"
+    }
+   ]
+  },
+  {
+   "id": "Bago_Zonde",
+   "name": "Bartosz Zolynski (Bago Zonde)",
+   "tunes": [
+    {
+     "file": "Bago_Zonde/Mimizuku_Saga_4K.nt2",
+     "title": "Mimizuku Saga 4K",
+     "author": "Bartosz Zolynski (Bago Zonde)",
+     "released": "2022 Commocore",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    }
+   ]
+  },
+  {
+   "id": "Barney_Gumble",
+   "name": "Barney Gumble",
+   "tunes": [
+    {
+     "file": "Barney_Gumble/Ultimate_Intro_12.nt2",
+     "title": "Ultimate Intro 12",
+     "author": "Barney Gumble",
+     "released": "2020 Ultimate",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Barney_Gumble/Ultomato.nt2",
+     "title": "Ultomato",
+     "author": "Barney Gumble",
+     "released": "2024 Ultimate",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    }
+   ]
+  },
+  {
+   "id": "Cadaver",
+   "name": "Lasse Öörni (Cadaver)",
+   "tunes": [
+    {
+     "file": "Cadaver/Fight_the_Machine.nt2",
+     "title": "Fight the Machine",
+     "author": "Lasse Öörni (Cadaver)",
+     "released": "2006 Covert Bitops",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Hessian_t01.nt2",
+     "title": "Hessian (tune 1)",
+     "author": "Lasse Öörni(Cadaver) & NecroPolo",
+     "released": "2016 Covert Bitops",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Hessian_t02.nt2",
+     "title": "Hessian (tune 2)",
+     "author": "Lasse Öörni(Cadaver) & NecroPolo",
+     "released": "2016 Covert Bitops",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Hessian_t03.nt2",
+     "title": "Hessian (tune 3)",
+     "author": "Lasse Öörni(Cadaver) & NecroPolo",
+     "released": "2016 Covert Bitops",
+     "model": "6581",
+     "subtunes": 2,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Hessian_t04.nt2",
+     "title": "Hessian (tune 4)",
+     "author": "Lasse Öörni(Cadaver) & NecroPolo",
+     "released": "2016 Covert Bitops",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Hessian_t05.nt2",
+     "title": "Hessian (tune 5)",
+     "author": "Lasse Öörni(Cadaver) & NecroPolo",
+     "released": "2016 Covert Bitops",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Hessian_t06.nt2",
+     "title": "Hessian (tune 6)",
+     "author": "Lasse Öörni(Cadaver) & NecroPolo",
+     "released": "2016 Covert Bitops",
+     "model": "6581",
+     "subtunes": 2,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Hessian_t07.nt2",
+     "title": "Hessian (tune 7)",
+     "author": "Lasse Öörni(Cadaver) & NecroPolo",
+     "released": "2016 Covert Bitops",
+     "model": "6581",
+     "subtunes": 2,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Hessian_t08.nt2",
+     "title": "Hessian (tune 8)",
+     "author": "Lasse Öörni(Cadaver) & NecroPolo",
+     "released": "2016 Covert Bitops",
+     "model": "6581",
+     "subtunes": 2,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Hessian_t09.nt2",
+     "title": "Hessian (tune 9)",
+     "author": "Lasse Öörni(Cadaver) & NecroPolo",
+     "released": "2016 Covert Bitops",
+     "model": "6581",
+     "subtunes": 2,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Hessian_t10.nt2",
+     "title": "Hessian (tune 10)",
+     "author": "Lasse Öörni(Cadaver) & NecroPolo",
+     "released": "2016 Covert Bitops",
+     "model": "6581",
+     "subtunes": 2,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Hessian_t11.nt2",
+     "title": "Hessian (tune 11)",
+     "author": "Lasse Öörni(Cadaver) & NecroPolo",
+     "released": "2016 Covert Bitops",
+     "model": "6581",
+     "subtunes": 2,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Hessian_t19.nt2",
+     "title": "Hessian (tune 19)",
+     "author": "Lasse Öörni(Cadaver) & NecroPolo",
+     "released": "2016 Covert Bitops",
+     "model": "6581",
+     "subtunes": 2,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Hessian_t20.nt2",
+     "title": "Hessian (tune 20)",
+     "author": "Lasse Öörni(Cadaver) & NecroPolo",
+     "released": "2016 Covert Bitops",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Hessian_t21.nt2",
+     "title": "Hessian (tune 21)",
+     "author": "Lasse Öörni(Cadaver) & NecroPolo",
+     "released": "2016 Covert Bitops",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Hessian_Testmusic.nt2",
+     "title": "Hessian Testmusic",
+     "author": "Lasse Öörni (Cadaver)",
+     "released": "2012 Covert Bitops",
+     "model": "8580",
+     "subtunes": 2,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Little_Sentient_Hatchback_VS_the_Hordes_of_Tacgnol.nt2",
+     "title": "Little Sentient Hatchback VS ...",
+     "author": "Lasse Öörni (Cadaver)",
+     "released": "2014 Covert Bitops",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Steel_Ranger_t01.nt2",
+     "title": "Steel Ranger (tune 1)",
+     "author": "Lasse Öörni (Cadaver)",
+     "released": "2018 Psytronik/Covert Bitops",
+     "model": "6581/8580",
+     "subtunes": 3,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Steel_Ranger_t03.nt2",
+     "title": "Steel Ranger (tune 3)",
+     "author": "Lasse Öörni (Cadaver)",
+     "released": "2018 Psytronik/Covert Bitops",
+     "model": "6581/8580",
+     "subtunes": 3,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Steel_Ranger_t05.nt2",
+     "title": "Steel Ranger (tune 5)",
+     "author": "Lasse Öörni (Cadaver)",
+     "released": "2018 Psytronik/Covert Bitops",
+     "model": "6581/8580",
+     "subtunes": 3,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Steel_Ranger_t07.nt2",
+     "title": "Steel Ranger (tune 7)",
+     "author": "Lasse Öörni (Cadaver)",
+     "released": "2018 Psytronik/Covert Bitops",
+     "model": "6581/8580",
+     "subtunes": 4,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Steel_Ranger_t10.nt2",
+     "title": "Steel Ranger (tune 10)",
+     "author": "Lasse Öörni (Cadaver)",
+     "released": "2018 Psytronik/Covert Bitops",
+     "model": "6581/8580",
+     "subtunes": 3,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Steel_Ranger_t12.nt2",
+     "title": "Steel Ranger (tune 12)",
+     "author": "Lasse Öörni (Cadaver)",
+     "released": "2018 Psytronik/Covert Bitops",
+     "model": "6581/8580",
+     "subtunes": 2,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Steel_Ranger_t13.nt2",
+     "title": "Steel Ranger (tune 13)",
+     "author": "Lasse Öörni (Cadaver)",
+     "released": "2018 Psytronik/Covert Bitops",
+     "model": "6581/8580",
+     "subtunes": 2,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Steel_Ranger_t14.nt2",
+     "title": "Steel Ranger (tune 14)",
+     "author": "Lasse Öörni (Cadaver)",
+     "released": "2018 Psytronik/Covert Bitops",
+     "model": "6581/8580",
+     "subtunes": 3,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Steel_Ranger_t16.nt2",
+     "title": "Steel Ranger (tune 16)",
+     "author": "Lasse Öörni (Cadaver)",
+     "released": "2018 Psytronik/Covert Bitops",
+     "model": "6581/8580",
+     "subtunes": 3,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Steel_Ranger_t18.nt2",
+     "title": "Steel Ranger (tune 18)",
+     "author": "Lasse Öörni (Cadaver)",
+     "released": "2018 Psytronik/Covert Bitops",
+     "model": "6581/8580",
+     "subtunes": 4,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Steel_Ranger_t21.nt2",
+     "title": "Steel Ranger (tune 21)",
+     "author": "Lasse Öörni (Cadaver)",
+     "released": "2018 Psytronik/Covert Bitops",
+     "model": "6581/8580",
+     "subtunes": 4,
+     "check": "exact"
+    },
+    {
+     "file": "Cadaver/Steel_Ranger_t24.nt2",
+     "title": "Steel Ranger (tune 24)",
+     "author": "Lasse Öörni (Cadaver)",
+     "released": "2018 Psytronik/Covert Bitops",
+     "model": "6581/8580",
+     "subtunes": 4,
+     "check": "exact"
+    }
+   ]
+  },
+  {
+   "id": "Fade",
+   "name": "Sean McKenzie (Fade)",
+   "tunes": [
+    {
+     "file": "Fade/Charflasher.nt2",
+     "title": "Charflasher",
+     "author": "Sean McKenzie (Fade)",
+     "released": "2025 Onslaught",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "exact"
+    }
+   ]
+  },
+  {
+   "id": "Freqvibez",
+   "name": "Alex Brem (freQvibez)",
+   "tunes": [
+    {
+     "file": "Freqvibez/Cordis_Monophonous.nt2",
+     "title": "Cordis Monophonous",
+     "author": "Alex Brem (freQvibez)",
+     "released": "2020 Offence",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "exact"
+    }
+   ]
+  },
+  {
+   "id": "Gylby_Dynnyri",
+   "name": "Gylby Dynnyri",
+   "tunes": [
+    {
+     "file": "Gylby_Dynnyri/Balju.nt2",
+     "title": "Balju",
+     "author": "Gylby Dynnyri",
+     "released": "2022 The Philishave Grew",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    }
+   ]
+  },
+  {
+   "id": "Holt_Hein",
+   "name": "Hein Holt",
+   "tunes": [
+    {
+     "file": "Holt_Hein/ZXQL3000.nt2",
+     "title": "ZXQL3000",
+     "author": "Hein Holt",
+     "released": "2018 SCS*TRC",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    }
+   ]
+  },
+  {
+   "id": "Jellica",
+   "name": "Jake Manley (Jellica)",
+   "tunes": [
+    {
+     "file": "Jellica/Party_Bit_3SID.nt2",
+     "title": "Party Bit",
+     "author": "Jake Manley (Jellica)",
+     "released": "2013 Ate Bit/Hack 'n Trade",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    }
+   ]
+  },
+  {
+   "id": "Julian_Jaymz",
+   "name": "Jaymz Julian (A Life in Hell)",
+   "tunes": [
+    {
+     "file": "Julian_Jaymz/Stupid_Bitmap_and_Scroll.nt2",
+     "title": "Stupid Bitmap and Scroll",
+     "author": "Jaymz Julian (A Life in Hell)",
+     "released": "2015 Duck and Chicken",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "exact"
+    }
+   ]
+  },
+  {
+   "id": "La_Vaca_Blasa",
+   "name": "Pedro (La Vaca Blasa)",
+   "tunes": [
+    {
+     "file": "La_Vaca_Blasa/Secret_of_Monkey_Island_t01.nt2",
+     "title": "The Secret of Monkey Island (tune 1)",
+     "author": "Pedro (La Vaca Blasa)",
+     "released": "2022 La Vaca Blasa",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "La_Vaca_Blasa/Secret_of_Monkey_Island_t02.nt2",
+     "title": "The Secret of Monkey Island (tune 2)",
+     "author": "Pedro (La Vaca Blasa)",
+     "released": "2022 La Vaca Blasa",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "La_Vaca_Blasa/Secret_of_Monkey_Island_t03.nt2",
+     "title": "The Secret of Monkey Island (tune 3)",
+     "author": "Pedro (La Vaca Blasa)",
+     "released": "2022 La Vaca Blasa",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "La_Vaca_Blasa/Secret_of_Monkey_Island_t04.nt2",
+     "title": "The Secret of Monkey Island (tune 4)",
+     "author": "Pedro (La Vaca Blasa)",
+     "released": "2022 La Vaca Blasa",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "La_Vaca_Blasa/Secret_of_Monkey_Island_t05.nt2",
+     "title": "The Secret of Monkey Island (tune 5)",
+     "author": "Pedro (La Vaca Blasa)",
+     "released": "2022 La Vaca Blasa",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "La_Vaca_Blasa/Secret_of_Monkey_Island_t06.nt2",
+     "title": "The Secret of Monkey Island (tune 6)",
+     "author": "Pedro (La Vaca Blasa)",
+     "released": "2022 La Vaca Blasa",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "La_Vaca_Blasa/Secret_of_Monkey_Island_t07.nt2",
+     "title": "The Secret of Monkey Island (tune 7)",
+     "author": "Pedro (La Vaca Blasa)",
+     "released": "2022 La Vaca Blasa",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "La_Vaca_Blasa/Secret_of_Monkey_Island_t08.nt2",
+     "title": "The Secret of Monkey Island (tune 8)",
+     "author": "Pedro (La Vaca Blasa)",
+     "released": "2022 La Vaca Blasa",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "La_Vaca_Blasa/Secret_of_Monkey_Island_t09.nt2",
+     "title": "The Secret of Monkey Island (tune 9)",
+     "author": "Pedro (La Vaca Blasa)",
+     "released": "2022 La Vaca Blasa",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    }
+   ]
+  },
+  {
+   "id": "MAT64",
+   "name": "Mauro Staci (MAT64)",
+   "tunes": [
+    {
+     "file": "MAT64/Adventure_1_t01.nt2",
+     "title": "Adventure 1 (tune 1)",
+     "author": "Mauro Staci (MAT64)",
+     "released": "2023 MAT64",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "MAT64/Adventure_1_t02.nt2",
+     "title": "Adventure 1 (tune 2)",
+     "author": "Mauro Staci (MAT64)",
+     "released": "2023 MAT64",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "MAT64/Adventure_1_t03.nt2",
+     "title": "Adventure 1 (tune 3)",
+     "author": "Mauro Staci (MAT64)",
+     "released": "2023 MAT64",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "MAT64/Adventure_1_t04.nt2",
+     "title": "Adventure 1 (tune 4)",
+     "author": "Mauro Staci (MAT64)",
+     "released": "2023 MAT64",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "MAT64/Adventure_1_t05.nt2",
+     "title": "Adventure 1 (tune 5)",
+     "author": "Mauro Staci (MAT64)",
+     "released": "2023 MAT64",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "MAT64/Adventure_1_t06.nt2",
+     "title": "Adventure 1 (tune 6)",
+     "author": "Mauro Staci (MAT64)",
+     "released": "2023 MAT64",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "MAT64/Adventure_1_t07.nt2",
+     "title": "Adventure 1 (tune 7)",
+     "author": "Mauro Staci (MAT64)",
+     "released": "2023 MAT64",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "MAT64/Avril_64th.nt2",
+     "title": "Avril 64th",
+     "author": "Mauro Staci (MAT64)",
+     "released": "2024 MAT64",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "MAT64/CBM_Master_Theme.nt2",
+     "title": "CBM Master Theme",
+     "author": "Mauro Staci (MAT64)",
+     "released": "2005 MAT64",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "MAT64/Commodorish.nt2",
+     "title": "Commodorish",
+     "author": "Mauro Staci (MAT64)",
+     "released": "2005 MAT64",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "MAT64/Crashed_and_Damaged.nt2",
+     "title": "Crashed and Damaged",
+     "author": "Mauro Staci (MAT64)",
+     "released": "1999 MAT64",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "MAT64/Gaiares-Mission_2.nt2",
+     "title": "Gaiares - Mission 2",
+     "author": "Mauro Staci (MAT64)",
+     "released": "2008 MAT64",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "MAT64/Sid_and_Bob_Highscores.nt2",
+     "title": "Sid and Bob Highscores",
+     "author": "Mauro Staci (MAT64)",
+     "released": "2006 MAT64",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "MAT64/Strawberry_Strings_t01.nt2",
+     "title": "Strawberry Strings (tune 1)",
+     "author": "Mauro Staci (MAT64)",
+     "released": "2022 MAT64",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "MAT64/Strawberry_Strings_t02.nt2",
+     "title": "Strawberry Strings (tune 2)",
+     "author": "Mauro Staci (MAT64)",
+     "released": "2022 MAT64",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "MAT64/Uridium_2.nt2",
+     "title": "Uridium 2",
+     "author": "Mauro Staci (MAT64)",
+     "released": "2021 MAT64",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "MAT64/Zylophobia.nt2",
+     "title": "Zylophobia",
+     "author": "Mauro Staci (MAT64)",
+     "released": "1999 MAT64",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "close"
+    }
+   ]
+  },
+  {
+   "id": "Mermaid",
+   "name": "Vanja Utne",
+   "tunes": [
+    {
+     "file": "Mermaid/DOG_note.nt2",
+     "title": "DOG (note)",
+     "author": "Vanja Utne",
+     "released": "2016 Privy Software",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Mermaid/Snusbrun_Intro.nt2",
+     "title": "Snusbrun Intro",
+     "author": "Vanja Utne (Mermaid)",
+     "released": "2012 Genesis Project",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "exact"
+    }
+   ]
+  },
+  {
+   "id": "Morton_Adam",
+   "name": "Adam Morton",
+   "tunes": [
+    {
+     "file": "Morton_Adam/EfnCold.nt2",
+     "title": "EfnCold",
+     "author": "Adam Morton",
+     "released": "2009 Bug! South Australia",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "exact"
+    }
+   ]
+  },
+  {
+   "id": "NecroPolo",
+   "name": "Péter Nagy-Miklós (NecroPolo)",
+   "tunes": [
+    {
+     "file": "NecroPolo/071D.nt2",
+     "title": "071D",
+     "author": "Péter Nagy-Miklós (NecroPolo)",
+     "released": "2010 Ancients Pledge Inc.",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "NecroPolo/Bricks_n_Balls.nt2",
+     "title": "Bricks'n'Balls",
+     "author": "Péter Nagy-Miklós (NecroPolo)",
+     "released": "2026 Avatar",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "NecroPolo/Minorita.nt2",
+     "title": "Minorita",
+     "author": "Péter Nagy-Miklós (NecroPolo)",
+     "released": "2009 Ancients Pledge Inc.",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "NecroPolo/Ninfa_intro.nt2",
+     "title": "Ninfa (intro)",
+     "author": "Péter Nagy-Miklós (NecroPolo)",
+     "released": "2012 Level 64",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "NecroPolo/Ninfa_main_tune_2_ext.nt2",
+     "title": "Ninfa (main tune 2, ext)",
+     "author": "Péter Nagy-Miklós (NecroPolo)",
+     "released": "2012 Level 64",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "NecroPolo/Ninfa_main_tune_2.nt2",
+     "title": "Ninfa (main tune 2)",
+     "author": "Péter Nagy-Miklós (NecroPolo)",
+     "released": "2012 Level 64",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "NecroPolo/Ninfa_outro.nt2",
+     "title": "Ninfa (outro)",
+     "author": "Péter Nagy-Miklós (NecroPolo)",
+     "released": "2012 Level 64",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "NecroPolo/Pink_Shuriken_Part_2.nt2",
+     "title": "Pink Shuriken Part 2",
+     "author": "Péter Nagy-Miklós (NecroPolo)",
+     "released": "2021 NecroPolo",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "NecroPolo/Rising_Sun.nt2",
+     "title": "Rising Sun",
+     "author": "Péter Nagy-Miklós (NecroPolo)",
+     "released": "2010 Hokuto Force",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "NecroPolo/S-Blox.nt2",
+     "title": "S-Blox",
+     "author": "Péter Nagy-Miklós (NecroPolo)",
+     "released": "2013 Avatar",
+     "model": "8580",
+     "subtunes": 3,
+     "check": "close"
+    },
+    {
+     "file": "NecroPolo/Strauss.nt2",
+     "title": "Strauss",
+     "author": "Péter Nagy-Miklós (NecroPolo)",
+     "released": "2010 Ancients Pledge Inc.",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "NecroPolo/Test_NT.nt2",
+     "title": "Test NT",
+     "author": "Péter Nagy-Miklós (NecroPolo)",
+     "released": "2010 NecroPolo",
+     "model": "8580",
+     "subtunes": 3,
+     "check": "exact"
+    },
+    {
+     "file": "NecroPolo/Fender_of_the_Crown.nt2",
+     "title": "The Fender of the Crown",
+     "author": "Péter Nagy-Miklós (NecroPolo)",
+     "released": "2010 Samar/Onslaught",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "NecroPolo/Time_Paradox_tune_7.nt2",
+     "title": "Time Paradox (tune 7)",
+     "author": "Péter Nagy-Miklós (NecroPolo)",
+     "released": "2026 Level 64",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "NecroPolo/Wavemode.nt2",
+     "title": "Wavemode",
+     "author": "Péter Nagy-Miklós (NecroPolo)",
+     "released": "2025 Lethargy",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    }
+   ]
+  },
+  {
+   "id": "No-XS",
+   "name": "Marc van den Bovenkamp (No-XS)",
+   "tunes": [
+    {
+     "file": "No-XS/Postex_2018.nt2",
+     "title": "Postex 2018",
+     "author": "Marc van den Bovenkamp (No-XS)",
+     "released": "2018 Desire",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    }
+   ]
+  },
+  {
+   "id": "Saimo",
+   "name": "Simone Bevilacqua (Saimo)",
+   "tunes": [
+    {
+     "file": "Saimo/QUOD_INIT_EXIT_IIo_preview_t02.nt2",
+     "title": "QUOD INIT EXIT IIo (preview) (tune 2)",
+     "author": "Simone Bevilacqua (Saimo)",
+     "released": "2020 Retream",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Saimo/QUOD_INIT_EXIT_IIo_preview_t03.nt2",
+     "title": "QUOD INIT EXIT IIo (preview) (tune 3)",
+     "author": "Simone Bevilacqua (Saimo)",
+     "released": "2020 Retream",
+     "model": "6581/8580",
+     "subtunes": 2,
+     "check": "exact"
+    }
+   ]
+  },
+  {
+   "id": "SIDwave",
+   "name": "Jan Diabelez Arent Harries",
+   "tunes": [
+    {
+     "file": "SIDwave/Electronic_Groove.nt2",
+     "title": "Electronic Groove",
+     "author": "Jan Diabelez Arent Harries",
+     "released": "2010 SIDwave",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "SIDwave/Valerion.nt2",
+     "title": "Valerion",
+     "author": "Jan D. Arent Harries (SIDwave)",
+     "released": "2011 DaCapo",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "exact"
+    }
+   ]
+  },
+  {
+   "id": "Spider_Jerusalem",
+   "name": "Jan Rödig (Spider Jerusalem)",
+   "tunes": [
+    {
+     "file": "Spider_Jerusalem/Cheesetro_Tune.nt2",
+     "title": "Cheesetro Tune",
+     "author": "Jan Rödig (Spider Jerusalem)",
+     "released": "2017 Mayday!",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Connect_Me.nt2",
+     "title": "Connect Me",
+     "author": "J. Wassermann (Spider Jerusalem)",
+     "released": "2019 Abyss Connection/TRSI",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/DaSoundHolyGhost.nt2",
+     "title": "DaSoundHolyGhost",
+     "author": "J. Wassermann (Spider Jerusalem)",
+     "released": "2024 Mayday!",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Final_Boss_Defeated.nt2",
+     "title": "Final Boss Defeated",
+     "author": "Jan Rödig (Spider Jerusalem)",
+     "released": "2017 Mayday!",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Glitch4K.nt2",
+     "title": "Glitch4K",
+     "author": "Jan Rödig (Spider Jerusalem)",
+     "released": "2014 Mayday!",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Grillende_Zirpe.nt2",
+     "title": "Grillende Zirpe",
+     "author": "Jan Rödig (Spider Jerusalem)",
+     "released": "2017 Mayday!",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/I_Did_It_Thy_Way.nt2",
+     "title": "I Did It Thy Way",
+     "author": "Jan Rödig (Spider Jerusalem)",
+     "released": "2017 Spider Jerusalem",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/I_Held_That_Cheese_for_2_Mins_and_Then_I_Ate_It.nt2",
+     "title": "I Held That Cheese for 2 Mins...",
+     "author": "J. Wassermann (Spider Jerusalem)",
+     "released": "2019 Spider Jerusalem",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Introtune.nt2",
+     "title": "Introtune",
+     "author": "Jan Rödig (Spider Jerusalem)",
+     "released": "2017 Spider Jerusalem",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Island_Quereleien.nt2",
+     "title": "Island Quereleien",
+     "author": "J. Wassermann (Spider Jerusalem)",
+     "released": "2023 Mayday!",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Mega_Man_3-Spark_Man.nt2",
+     "title": "Mega Man 3 - Spark Man",
+     "author": "Jan Rödig (Spider Jerusalem)",
+     "released": "2015 Spider Jerusalem",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Megalovania.nt2",
+     "title": "Megalovania",
+     "author": "J. Wassermann (Spider Jerusalem)",
+     "released": "2021 Mayday!",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Mein_Verlies.nt2",
+     "title": "Mein Verlies",
+     "author": "J. Wassermann (Spider Jerusalem)",
+     "released": "2019 Spider Jerusalem",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Meine_kleine_Tanzmusik.nt2",
+     "title": "Meine kleine Tanzmusik",
+     "author": "J. Wassermann (Spider Jerusalem)",
+     "released": "2021 Mayday!",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Oldskewl_Vibrators.nt2",
+     "title": "Oldskewl Vibrators",
+     "author": "J. Wassermann (Spider Jerusalem)",
+     "released": "2019 Abyss Connection",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Popnudel.nt2",
+     "title": "Popnudel",
+     "author": "Jan Rödig (Spider Jerusalem)",
+     "released": "2017 Mayday!",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Pushing_Onwards.nt2",
+     "title": "Pushing Onwards",
+     "author": "J. Wassermann (Spider Jerusalem)",
+     "released": "2023 Mayday!",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Red_Serpent_preview.nt2",
+     "title": "Red Serpent (preview)",
+     "author": "J. Wassermann (Spider Jerusalem)",
+     "released": "2022 Tristar & Red Sector Inc.",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Red_Serpent_Intro.nt2",
+     "title": "Red Serpent Intro",
+     "author": "J. Wassermann (Spider Jerusalem)",
+     "released": "2022 Tristar & Red Sector Inc.",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Simple_Tune.nt2",
+     "title": "Simple Tune",
+     "author": "J. Wassermann (Spider Jerusalem)",
+     "released": "2019 Mayday!",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Speedtro_Tune.nt2",
+     "title": "Speedtro Tune",
+     "author": "Jan Rödig (Spider Jerusalem)",
+     "released": "2017 Spider Jerusalem",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/SpiderBot_Harddrive_Cleanup.nt2",
+     "title": "SpiderBot Harddrive Cleanup",
+     "author": "J. Wassermann (Spider Jerusalem)",
+     "released": "2022 Mayday!",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Steppa.nt2",
+     "title": "Steppa",
+     "author": "Jan Rödig (Spider Jerusalem)",
+     "released": "2017 Spider Jerusalem",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Sunday.nt2",
+     "title": "Sunday",
+     "author": "J. Wassermann (Spider Jerusalem)",
+     "released": "2022 Mayday!",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Trafolta.nt2",
+     "title": "Trafolta",
+     "author": "Jan Rödig (Spider Jerusalem)",
+     "released": "2017 Mayday!",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Tutti_Frutti_64_t01.nt2",
+     "title": "Tutti Frutti 64 (tune 1)",
+     "author": "Jan Rödig (Spider Jerusalem)",
+     "released": "2014 Mayday!",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Tutti_Frutti_64_t02.nt2",
+     "title": "Tutti Frutti 64 (tune 2)",
+     "author": "Jan Rödig (Spider Jerusalem)",
+     "released": "2014 Mayday!",
+     "model": "8580",
+     "subtunes": 4,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Tutti_Frutti_64_t03.nt2",
+     "title": "Tutti Frutti 64 (tune 3)",
+     "author": "Jan Rödig (Spider Jerusalem)",
+     "released": "2014 Mayday!",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Tutti_Frutti_64_Intro.nt2",
+     "title": "Tutti Frutti 64 Intro",
+     "author": "Jan Rödig (Spider Jerusalem)",
+     "released": "2014 Mayday!",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/We_Cracks_from_the_Countryside.nt2",
+     "title": "We Cracks from the Countryside",
+     "author": "Jan Rödig (Spider Jerusalem)",
+     "released": "2017 Spider Jerusalem",
+     "model": "6581/8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Spider_Jerusalem/Week_in_Progress.nt2",
+     "title": "Week in Progress",
+     "author": "J. Wassermann (Spider Jerusalem)",
+     "released": "2019 Mayday!",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    }
+   ]
+  },
+  {
+   "id": "Taxim",
+   "name": "Alexander Ney",
+   "tunes": [
+    {
+     "file": "Taxim/Sams_Journey_t01.nt2",
+     "title": "Sam's Journey (tune 1)",
+     "author": "Alexander Ney",
+     "released": "2017 Protovision",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Taxim/Sams_Journey_t02.nt2",
+     "title": "Sam's Journey (tune 2)",
+     "author": "Alexander Ney",
+     "released": "2017 Protovision",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Taxim/Sams_Journey_t03.nt2",
+     "title": "Sam's Journey (tune 3)",
+     "author": "Alexander Ney",
+     "released": "2017 Protovision",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Taxim/Sams_Journey_t04.nt2",
+     "title": "Sam's Journey (tune 4)",
+     "author": "Alexander Ney",
+     "released": "2017 Protovision",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Taxim/Sams_Journey_t05.nt2",
+     "title": "Sam's Journey (tune 5)",
+     "author": "Alexander Ney",
+     "released": "2017 Protovision",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Taxim/Sams_Journey_t06.nt2",
+     "title": "Sam's Journey (tune 6)",
+     "author": "Alexander Ney",
+     "released": "2017 Protovision",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Taxim/Sams_Journey_t07.nt2",
+     "title": "Sam's Journey (tune 7)",
+     "author": "Alexander Ney",
+     "released": "2017 Protovision",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Taxim/Sams_Journey_t08.nt2",
+     "title": "Sam's Journey (tune 8)",
+     "author": "Alexander Ney",
+     "released": "2017 Protovision",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Taxim/Sams_Journey_t09.nt2",
+     "title": "Sam's Journey (tune 9)",
+     "author": "Alexander Ney",
+     "released": "2017 Protovision",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Taxim/Sams_Journey_t10.nt2",
+     "title": "Sam's Journey (tune 10)",
+     "author": "Alexander Ney",
+     "released": "2017 Protovision",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Taxim/Sams_Journey_t11.nt2",
+     "title": "Sam's Journey (tune 11)",
+     "author": "Alexander Ney",
+     "released": "2017 Protovision",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Taxim/Sams_Journey_t12.nt2",
+     "title": "Sam's Journey (tune 12)",
+     "author": "Alexander Ney",
+     "released": "2017 Protovision",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Taxim/Sams_Journey_t13.nt2",
+     "title": "Sam's Journey (tune 13)",
+     "author": "Alexander Ney",
+     "released": "2017 Protovision",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Taxim/Sams_Journey_t14.nt2",
+     "title": "Sam's Journey (tune 14)",
+     "author": "Alexander Ney",
+     "released": "2017 Protovision",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Taxim/Sams_Journey_t15.nt2",
+     "title": "Sam's Journey (tune 15)",
+     "author": "Alexander Ney",
+     "released": "2017 Protovision",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Taxim/Sams_Journey_t16.nt2",
+     "title": "Sam's Journey (tune 16)",
+     "author": "Alexander Ney",
+     "released": "2017 Protovision",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Taxim/Sams_Journey_t17.nt2",
+     "title": "Sam's Journey (tune 17)",
+     "author": "Alexander Ney",
+     "released": "2017 Protovision",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Taxim/Sams_Journey_t18.nt2",
+     "title": "Sam's Journey (tune 18)",
+     "author": "Alexander Ney",
+     "released": "2017 Protovision",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    },
+    {
+     "file": "Taxim/Sams_Journey_t19.nt2",
+     "title": "Sam's Journey (tune 19)",
+     "author": "Alexander Ney",
+     "released": "2017 Protovision",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "close"
+    }
+   ]
+  },
+  {
+   "id": "Unknown",
+   "name": "Unknown",
+   "tunes": [
+    {
+     "file": "Unknown/Secret_of_Monkey_Island_tune_5.nt2",
+     "title": "Secret of Monkey Island (tune 5)",
+     "author": "<?>",
+     "released": "2023 Bolzgramm",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Unknown/Secret_of_Monkey_Island_tune_9.nt2",
+     "title": "Secret of Monkey Island (tune 9)",
+     "author": "<?>",
+     "released": "2023 Bolzgramm",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    }
+   ]
+  },
+  {
+   "id": "Vincenzo",
+   "name": "László Vincze (Vincenzo)",
+   "tunes": [
+    {
+     "file": "Vincenzo/Fancy_4k_Stuff.nt2",
+     "title": "Fancy 4k Stuff",
+     "author": "László Vincze (Vincenzo)",
+     "released": "2022 Lethargy",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Vincenzo/Pink_Shuriken_Part_1.nt2",
+     "title": "Pink Shuriken Part 1",
+     "author": "László Vincze (Vincenzo)",
+     "released": "2021 Lethargy",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Vincenzo/Plasma_Ninja.nt2",
+     "title": "Plasma Ninja",
+     "author": "László Vincze (Vincenzo)",
+     "released": "2022 Resource",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Vincenzo/Skotkockas_Pled.nt2",
+     "title": "Skotkockas Pled",
+     "author": "László Vincze (Vincenzo)",
+     "released": "2022 Lethargy",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Vincenzo/Transelites.nt2",
+     "title": "Transelites",
+     "author": "László Vincze (Vincenzo)",
+     "released": "2023 Lethargy",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Vincenzo/Wavemode_Endpart.nt2",
+     "title": "Wavemode Endpart",
+     "author": "László Vincze (Vincenzo)",
+     "released": "2025 Lethargy",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Vincenzo/Wives_Unchained.nt2",
+     "title": "Wives Unchained",
+     "author": "László Vincze (Vincenzo)",
+     "released": "2020 Lethargy",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Vincenzo/Wives_Unchained_Remix.nt2",
+     "title": "Wives Unchained Remix",
+     "author": "László Vincze (Vincenzo)",
+     "released": "2021 Lethargy",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "exact"
+    }
+   ]
+  },
+  {
+   "id": "Widding_Roy_Johan",
+   "name": "Roy Johan Widding (Rotteroy)",
+   "tunes": [
+    {
+     "file": "Widding_Roy_Johan/Captain_Cloudberry.nt2",
+     "title": "Captain Cloudberry",
+     "author": "Roy Johan Widding (Rotteroy)",
+     "released": "2017 Megastyle",
+     "model": "6581",
+     "subtunes": 11,
+     "check": "close"
+    },
+    {
+     "file": "Widding_Roy_Johan/Dodge.nt2",
+     "title": "Dodge",
+     "author": "Roy Johan Widding (Rotteroy)",
+     "released": "2018 Megastyle",
+     "model": "6581",
+     "subtunes": 2,
+     "check": "exact"
+    },
+    {
+     "file": "Widding_Roy_Johan/Gridlock.nt2",
+     "title": "Gridlock",
+     "author": "Roy Johan Widding (Rotteroy)",
+     "released": "2024 Megastyle",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Widding_Roy_Johan/Jolly_Jumper.nt2",
+     "title": "Jolly Jumper",
+     "author": "Roy Johan Widding (Rotteroy)",
+     "released": "2022 Megastyle",
+     "model": "8580",
+     "subtunes": 3,
+     "check": "exact"
+    },
+    {
+     "file": "Widding_Roy_Johan/Kalle_Kloakk_4k.nt2",
+     "title": "Kalle Kloakk 4k",
+     "author": "Roy Johan Widding (Rotteroy)",
+     "released": "2018 Megastyle",
+     "model": "6581",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Widding_Roy_Johan/Mancave.nt2",
+     "title": "Mancave",
+     "author": "Roy Johan Widding & Vidar Bang",
+     "released": "2019 Megastyle",
+     "model": "8580",
+     "subtunes": 1,
+     "check": "exact"
+    },
+    {
+     "file": "Widding_Roy_Johan/Tombstones_Soundtrack.nt2",
+     "title": "Tombstones Soundtrack",
+     "author": "Roy Johan Widding (Rotteroy)",
+     "released": "2017 Megastyle",
+     "model": "6581",
+     "subtunes": 5,
+     "check": "exact"
+    }
+   ]
+  }
+ ]
+}

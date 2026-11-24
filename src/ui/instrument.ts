@@ -226,7 +226,7 @@ export function renderInstruments() {
       `<button data-a="test" class="go" title="Hold to hear the instrument (or play the piano keys while this panel is active)">&#9654; Test</button>` +
       `<span class="ie-note">${uses ? `used on ${uses} pattern row${uses === 1 ? '' : 's'}` : 'not used in a pattern yet'}</span><span class="grow"></span>` +
       `<button data-a="dup" title="Copy to the first unused instrument, with its own copies of the steps">Duplicate</button>` +
-      `<button data-a="clear" class="danger" title="Empty this instrument (Ctrl+Z to undo)">Clear</button></div>` +
+      `<button data-a="clear" class="danger" title="Remove this instrument from the song (Del; Ctrl+Z to undo)">Clear</button></div>` +
       envelopeHtml(i) + sectionHtml(i, 0, width) + sectionHtml(i, 1, width) + sectionHtml(i, 2, width);
   }
   if (html !== shownEditor) morphHtml($('inst-editor'), shownEditor = html);
@@ -312,6 +312,19 @@ function applyInput(el: HTMLInputElement | HTMLSelectElement, merge: boolean) {
   if (l !== tbl.left[r] || rt !== tbl.right[r]) E.tableSetRow(t, r, l, rt, merge);
 }
 
+/** Empty the selected instrument (the Clear button and the Delete key). Asks first when patterns use it. */
+export function clearInstrument(status: (msg: string, error?: boolean) => void) {
+  const i = S.cmdNum;
+  if (!E.commandUsed(S.song.commands[i])) return;
+  // Patterns keep the command number, so their notes would play an empty instrument
+  const uses = E.commandUseCount(i + 1);
+  const name = S.song.commands[i].name ? ` "${S.song.commands[i].name}"` : '';
+  if (uses && !confirm(`Instrument ${hex2(i + 1)}${name} is used on ${uses} pattern row${uses === 1 ? '' : 's'}.\n\n` +
+    'Those rows keep their command number and will play an empty instrument.\n\nClear it anyway?')) return;
+  E.instClear(i);
+  status(`Removed instrument ${hex2(i + 1)}${name} (Ctrl+Z to undo)`);
+}
+
 export interface InstrumentHost {
   /** Start and stop the test note for the current instrument. */
   test(): void;
@@ -359,16 +372,7 @@ export function wireInstruments(host: InstrumentHost) {
         host.status(`Copied to instrument ${hex2(n + 1)}`);
         break;
       }
-      case 'clear': {
-        // Patterns keep the command number, so their notes would play an empty instrument
-        const uses = E.commandUseCount(i + 1);
-        const name = S.song.commands[i].name ? ` "${S.song.commands[i].name}"` : '';
-        if (uses && !confirm(`Instrument ${hex2(i + 1)}${name} is used on ${uses} pattern row${uses === 1 ? '' : 's'}.\n\n` +
-          'Those rows keep their command number and will play an empty instrument.\n\nClear it anyway?')) break;
-        E.instClear(i);
-        host.status(`Cleared instrument ${hex2(i + 1)} (Ctrl+Z to undo)`);
-        break;
-      }
+      case 'clear': clearInstrument(host.status); break;
       case 'add': E.instAddProgram(i, t); break;
       case 'remove': E.instRemoveProgram(i, t); break;
       case 'own': E.instOwnProgram(i, t); break;

@@ -343,6 +343,46 @@ dialog .list button { display: block; width: 100%; text-align: left; margin-bott
 #ex-info.err { color: var(--warn); }
 .hidden { display: none !important; }
 
+/* Example and instrument kit browsers */
+#dlg-kit, #dlg-examples { width: min(1180px, 96vw); max-width: 96vw; user-select: none; }
+#dlg-examples { width: min(980px, 96vw); }
+#exm-musicians { flex: 0 0 250px; max-height: none; min-width: 0; border: 1px solid var(--line); border-radius: 6px; padding: 4px; }
+#exm-musicians .il { font-family: system-ui, sans-serif; font-size: 13px; }
+#exm-musicians .il.none { color: var(--faint); }
+#exm-musicians .il[data-disk] { color: var(--accent); margin-bottom: 4px; }
+#exm-search { flex: 1; min-width: 120px; height: 26px; padding: 0 8px; background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 4px; }
+#exm-list { max-height: none; min-width: 0; border: 1px solid var(--line); border-radius: 6px; padding: 4px; }
+#exm-list .kr { font-family: system-ui, sans-serif; font-size: 13px; line-height: 22px; }
+.exm-title { flex: 0 1 46%; min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--note); }
+.exm-sub { flex: 0 0 9ch; font-size: 12px; color: var(--dim); text-align: right; }
+.exm-check { flex: 0 0 2ch; color: var(--cmd); text-align: center; }
+#dlg-kit h3 .info, #dlg-examples h3 .info { font-weight: normal; color: var(--dim); font-size: 12px; margin-left: 8px; }
+.kit { display: flex; gap: 12px; height: min(620px, 68vh); }
+#kit-musicians { flex: 0 0 250px; max-height: none; min-width: 0; border: 1px solid var(--line); border-radius: 6px; padding: 4px; }
+#kit-musicians .il { font-family: system-ui, sans-serif; font-size: 13px; }
+#kit-musicians .il.none { color: var(--faint); }
+.kit-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.kit-bar { display: flex; gap: 10px; align-items: center; }
+#kit-search { flex: 1; min-width: 120px; height: 26px; padding: 0 8px; background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 4px; }
+#kit-list { max-height: none; min-width: 0; border: 1px solid var(--line); border-radius: 6px; padding: 4px; }
+.kr { display: flex; gap: 10px; align-items: baseline; padding: 2px 6px; border-radius: 4px; cursor: pointer; white-space: nowrap; }
+.kr:hover { background: var(--rowcur); }
+.kr.cur { background: var(--cursor); color: #fff; }
+.kr-name { flex: 0 0 9ch; color: var(--note); }
+.kr-cat { flex: 0 0 8ch; font-size: 11px; color: var(--dim); }
+.kr-cat.c-drum { color: #ff9d7a; } .kr-cat.c-bass { color: #8fd694; } .kr-cat.c-lead { color: #6cb6ff; }
+.kr-cat.c-pad { color: #c9a0ff; } .kr-cat.c-chord { color: #ffcf70; }
+.kr-desc { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; font-family: system-ui, sans-serif; font-size: 12.5px; }
+.kr-src { flex: 0 0 auto; max-width: 34%; overflow: hidden; text-overflow: ellipsis; font-family: system-ui, sans-serif; font-size: 12px; color: var(--dim); }
+.kr-src b { color: var(--dur); font-weight: 600; }
+.kr.cur .kr-cat, .kr.cur .kr-src, .kr.cur .kr-src b { color: #dbe7ff; }
+.kit-more { padding: 10px 8px; color: var(--dim); font-family: system-ui, sans-serif; }
+.kit-more.err { color: var(--warn); }
+#kit-detail { flex: 0 0 auto; min-height: 96px; max-height: 150px; overflow-y: auto; font-size: 12.5px; line-height: 1.55; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; user-select: text; }
+#kit-detail .dim, .kit-hint { color: var(--dim); }
+.kit-bytes { font-family: var(--mono); font-size: 12px; margin-top: 2px; overflow-wrap: anywhere; }
+.kit-hint { margin-right: auto; font-size: 12px; align-self: center; }
+
 .help { overflow-y: auto; max-height: 68vh; padding-right: 8px; columns: 2; column-gap: 28px; font-size: 12.5px; }
 .help h4 { margin: 10px 0 4px; color: var(--accent); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; break-after: avoid; }
 .help h4:first-child { margin-top: 0; }
@@ -406,3 +446,5 @@ input[type=checkbox]:focus-visible { outline: 2px solid var(--accent); outline-o
 .cmd-head { display: flex; white-space: pre; padding: 3px 6px; font-family: var(--mono); font-size: 13px; line-height: 18px; color: var(--dim); border-bottom: 1px solid var(--line); }
 .cmd-head .hc { width: calc(2ch + 4px); text-align: center; }
 .cmd-head .name { color: var(--dim); }
+
+button:disabled { opacity: .45; cursor: not-allowed; }

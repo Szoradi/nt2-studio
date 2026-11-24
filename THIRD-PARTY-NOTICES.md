@@ -26,6 +26,30 @@ licence.
 - Terms, from the distribution's readme: "NinjaTracker is freeware; customization is allowed and
   recommended."
 
+## Example tunes and the instrument kit
+
+- Files: everything under `public/examples/` (208 songs and `index.json`), everything under
+  `kit/` and `public/kit/instruments.json`
+- These are tunes made with NinjaTracker 2 by other musicians, and instruments taken from those
+  tunes. They were rebuilt from the musicians' `.sid` files by `scripts/extract-instruments.ts`;
+  the `.sid` files themselves are not part of this project.
+- Each tune remains © its author. The MIT licence in `LICENSE` does not cover them, and this
+  project has no licence from the authors to grant anyone else. They are included, with credit,
+  so that the tunes can be studied and the instruments tried in the editor.
+- Credit is kept with the data: every entry in `public/examples/index.json` carries the title,
+  author and release line from its `.sid`, and every instrument in the kit names the tune it
+  came from.
+- The editor does not save or export a tune loaded from Examples.
+- An author who does not want a tune included can have it removed.
+- Authors: Jaakko Viitalähde (Aomeba), Sarah Jane Avory, Bartosz Zolynski (Bago Zonde),
+  Barney Gumble, Lasse Öörni (Cadaver), Sean McKenzie (Fade), Alex Brem (freQvibez),
+  Gylby Dynnyri, Mark Waldaukat (Heinmück), Hein Holt, Jake Manley (Jellica),
+  Jaymz Julian (A Life in Hell), Pedro (La Vaca Blasa), Mauro Staci (MAT64), Vanja Utne (Mermaid),
+  Adam Morton, Péter Nagy-Miklós (NecroPolo), Marc van den Bovenkamp (No-XS),
+  Simone Bevilacqua (Saimo), Jan Diabelez Arent Harries (SIDwave), Jan Rödig (Spider Jerusalem),
+  Alexander Ney (Taxim), László Vincze (Vincenzo), Roy Johan Widding (Rotteroy), and the unnamed
+  author of two "Secret of Monkey Island" game tunes.
+
 ## Songs
 
 `songs/second-strike.nt2` and `songs/claude2.nt2` use the instruments (tables and commands) of

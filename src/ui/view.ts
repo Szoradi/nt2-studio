@@ -312,7 +312,7 @@ const HINTS: Record<string, string> = {
   tracks: 'Hex: pattern 01-7F, transpose 80-FF (C0 = none), end with 00 xx to loop  |  Enter: open pattern  Shift+Enter: new pattern  F6: play from here',
   pattern: 'Notes: piano keys  Space: key off  Shift+Space: key on  Enter: play row and step  |  Shift+Q/A: transpose  Shift+L: legato  Shift+O: optimize  -/+: command',
   tables: 'Hex edit  |  Enter: follow jump  Shift+Space: test command  Space: key off  Ins/Del: insert/delete row',
-  inst: 'Piano keys: try the instrument  Shift+Space: test note  Space: key off  Up/Down: other instrument  |  Drag the points in the graphs, or use the controls',
+  inst: 'Piano keys: try the instrument  Shift+Space: test note  Space: key off  Up/Down: other instrument  Del: remove it  |  Drag the points in the graphs, or use the controls',
   commands: 'ADSR + table pointers  |  Enter: go to table  Shift+Enter: new table row  Shift+Space: test  Tab into Name to type',
 };
 
@@ -428,6 +428,7 @@ export const HELP_HTML = `
 <tr><td>Piano keys</td><td>Try the instrument (while the Instruments panel is active)</td></tr>
 <tr><td>Shift+Space / Space</td><td>Test note / key off</td></tr>
 <tr><td>Up / Down</td><td>Previous / next instrument</td></tr>
+<tr><td>Delete</td><td>Remove the selected instrument from the song (same as Clear)</td></tr>
 </table>
 <p>The instrument number is the command number to type in a pattern. <b>+</b> adds a step after a step (a copy of it), <b>&times;</b> removes one, and <b>Then</b> says what happens after the last step: stop, or repeat from a step. If two instruments use the same steps the section says <i>Shared</i>; <b>Make own copy</b> separates them. <b>Remove</b> stops using a table and deletes its steps unless something else still uses them.</p>
 <h4>Commands</h4>

@@ -20,7 +20,7 @@
         <button id="btn-new" title="New song (the current one is kept under Recent)">New</button>
         <button id="btn-open" title="Open a song file or .d64 disk image, or import a NinjaTracker 2 .sid, packed .prg or gamemusic file (Ctrl+O)">Open</button>
         <button id="btn-recent" title="Songs that were replaced by New, Open or Examples">Recent</button>
-        <button id="btn-examples" title="Example tunes from the NinjaTracker V2.03 disk">Examples</button>
+        <button id="btn-examples" title="Tunes by NinjaTracker 2 musicians, and the example tunes from the NinjaTracker V2.03 disk">Examples</button>
         <span class="sep"></span>
         <button id="btn-save" title="Save in NinjaTracker 2 song format (Ctrl+S, Ctrl+Shift+S to save as)">Save</button>
         <button id="btn-export" title="Pack and export for the C64 (.sid, .prg, gamemusic, 4k intro source)">Export</button>
@@ -74,6 +74,7 @@
           <button id="btn-mode-inst" class="toggle" title="Edit sounds as instruments: envelope, waveform, pulse and filter steps with sliders and graphs">Instruments</button>
           <button id="btn-mode-classic" class="toggle" title="Edit sounds as in NinjaTracker: the wave, pulse and filter tables and the command list in hex">Tables</button>
         </span>
+        <button id="btn-kit" title="Browse instruments taken from existing NinjaTracker 2 tunes, hear them and add them to this song">Kit&hellip;</button>
       </div>
       <span class="spacer"></span>
       <div class="group">
@@ -142,6 +143,42 @@
     </div>
     <pre id="ex-info"></pre>
     <div class="actions"><button data-close>Close</button><button id="ex-go" class="primary">Download</button></div>
+  </dialog>
+
+  <dialog id="dlg-examples">
+    <h3>Examples <span class="info">NinjaTracker 2 tunes, by musician</span></h3>
+    <div class="kit">
+      <div id="exm-musicians" class="list"></div>
+      <div class="kit-main">
+        <div class="kit-bar"><input id="exm-search" type="search" placeholder="Search title, musician or year" spellcheck="false"></div>
+        <div id="exm-list" class="list"></div>
+      </div>
+    </div>
+    <div class="actions">
+      <span class="kit-hint">Click a tune to open it &middot; the song you are working on is kept under Recent &middot; examples cannot be saved or exported &middot; &asymp; made with a modified player, may sound slightly different</span>
+      <button data-close>Close</button>
+    </div>
+  </dialog>
+
+  <dialog id="dlg-kit">
+    <h3>Instrument kit <span class="info">instruments from existing NinjaTracker 2 tunes, by musician</span></h3>
+    <div class="kit">
+      <div id="kit-musicians" class="list"></div>
+      <div class="kit-main">
+        <div class="kit-bar">
+          <input id="kit-search" type="search" placeholder="Search name, description or tune" spellcheck="false">
+          <span id="kit-cats" class="seg"></span>
+        </div>
+        <div id="kit-list" class="list"></div>
+        <div id="kit-detail"></div>
+      </div>
+    </div>
+    <div class="actions">
+      <span class="kit-hint">Hold the mouse on a row to hear it &middot; arrow keys step through &middot; Enter or double-click adds</span>
+      <button id="kit-test" class="go" title="Hold to hear the selected instrument">&#9654; Test</button>
+      <button id="kit-add" class="primary" title="Add the selected instrument to the first unused instrument of this song">Add to song</button>
+      <button data-close>Close</button>
+    </div>
   </dialog>
 
   <dialog id="dlg-help">
