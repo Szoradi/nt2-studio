@@ -2,7 +2,7 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { loadSongFile } from '../src/core/songfile.ts';
 import {
-  S, replaceSong, cursorStart, trackTimeline, undo, programAt, programUsers, rowsPlayed, instStepRange, instMoveStep, instRemoveProgram, instClear,
+  S, replaceSong, cursorStart, trackTimeline, undo, programAt, programUsers, rowsPlayed, carriedDur, instStepRange, instMoveStep, instRemoveProgram, instClear,
 } from '../src/ui/editor.ts';
 import { patternDuration, newSong, emptyCommand } from '../src/core/song.ts';
 
@@ -12,7 +12,7 @@ const check = (ok: boolean, what: string) => { console.log(`${ok ? 'PASS' : 'FAI
 for (const file of readdirSync('songs').filter(f => f.endsWith('.nt2'))) {
   const name = file.replace('.nt2', '');
   replaceSong(loadSongFile(new Uint8Array(readFileSync('songs/' + file))), name);
-  const longest = Math.max(...S.song.patterns.map(patternDuration));
+  const longest = Math.max(...S.song.patterns.map(p => patternDuration(p)));
   let wrongTime = 0, maxSkip = 0, entries = 0;
   for (let c = 0; c < 3; c++) {
     S.focus = 'tracks';
@@ -161,5 +161,34 @@ check(table(0) === '21:0 ff:0 41:0 ff:3' && table(1) === '80:80 ff:0' && S.song.
 tableSong(0, '21:0 41:0 ff:1', [1, 1]);
 instClear(0);
 check(table(0) === '21:0 41:0 ff:1' && ptrs(0, 2) === '0,1', 'clear: a program a second instrument uses stays');
+
+// A pattern that starts without a duration keeps the one its channel had
+{
+  const song = newSong();
+  const row = (dur: number) => ({ note: 0x30, cmd: 0, dur });
+  song.patterns[0] = [row(6), row(0), row(12)];   // 01: ends on duration 12
+  song.patterns[1] = [row(0), row(0), row(4)];    // 02: starts without one
+  song.patterns[2] = [row(0), row(0)];            // 03: has none at all
+  song.patterns[3] = [row(0)];                    // 04: played by no track
+  song.tracks[0] = [[2, 1, 2, 3, 0, 0], [3, 0, 0], [1, 0, 0]];
+  replaceSong(song, 'check');
+  const line = trackTimeline(0);
+  check(line.map(e => `${e.time}/${e.dur}`).join(' ') === '0/3 10/4 34/12 62/4',
+    'carried: a track gives each pattern the duration the one before it ended on, and 3 frames before any is set');
+  S.pattCh = 0; S.pattNum = [2, 3, 4]; S.trkRow = [0, 0, 0];
+  check(carriedDur(0) === 3, 'carried: the shown pattern takes the duration of its use at the track cursor');
+  S.trkRow[0] = 2;
+  check(carriedDur(0) === 12, 'carried: at a later use of the pattern it is the duration carried there');
+  S.trkRow[0] = 1;
+  check(carriedDur(0) === 3, 'carried: with the track cursor on another pattern it is the first use in the track');
+  check(carriedDur(2) === 0, 'carried: a pattern no track plays has none');
+  S.pattNum[2] = 3;
+  check(carriedDur(2) === 4, 'carried: a pattern its own channel does not play takes the duration from the channel that does');
+  check(patternDuration(song.patterns[1], 12) === 28 && patternDuration(song.patterns[1]) === 4,
+    'carried: the length of a pattern counts its first rows with the carried duration');
+  S.focus = 'pattern'; S.pattCh = 0; S.pattNum[0] = 2; S.trkRow[0] = 2; S.pattRow[0] = 2;
+  const at = cursorStart();
+  check(!!at && at !== 'notInTrack' && at.time === 34 + 24, 'carried: play from the cursor counts the rows above it with the carried duration');
+}
 
 process.exit(fail ? 1 : 0);

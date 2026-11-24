@@ -125,9 +125,12 @@ export function unpackPattern(data: Uint8Array, start = 0): Row[] {
   return rows;
 }
 
-/** Total length of a pattern in frames. */
-export function patternDuration(rows: Row[]): number {
-  let total = 0, dur = 0;
+/**
+ * Total length of a pattern in frames. Rows before the first duration of the pattern last for
+ * `carried`, the duration the channel had when the pattern began (none: they count as nothing).
+ */
+export function patternDuration(rows: Row[], carried = 0): number {
+  let total = 0, dur = carried;
   for (const r of rows) {
     if (r.dur) dur = r.dur;
     total += dur;

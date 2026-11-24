@@ -1,5 +1,8 @@
 // The example browser: tunes rebuilt from NinjaTracker 2 .sid files by scripts/extract-instruments.ts,
-// listed by musician, plus the tunes from the original NinjaTracker disk.
+// listed by musician, with the tunes from the original NinjaTracker disk as a group of their own.
+
+import { d64Directory, d64ReadFile } from '../core/d64.ts';
+import { isSongFile } from '../core/songfile.ts';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -13,6 +16,13 @@ export interface ExampleTune {
   subtunes: number;
   /** 'exact': plays register for register like the .sid. 'close': same notes, commands and timing, but the original used a modified player. */
   check: 'exact' | 'close';
+  /**
+   * The tune may be saved and exported, as a copy: its author allows it. Set by hand on the tune in
+   * index.json ("copy": true); the bundled file is never written to.
+   */
+  copy?: boolean;
+  /** The song file itself, for a tune that is not fetched from the examples folder (the disk's). */
+  bytes?: Uint8Array;
 }
 export interface ExampleMusician { id: string; name: string; tunes: ExampleTune[] }
 interface Index { format: string; musicians: ExampleMusician[] }
@@ -20,10 +30,33 @@ interface Index { format: string; musicians: ExampleMusician[] }
 export interface ExamplesHost {
   /** Folder the index and the song files are served from, ending in a slash. */
   base: string;
-  /** Show the tunes of the original NinjaTracker disk. */
-  openDisk(): void;
+  /** The disk image of the NinjaTracker distribution, whose tunes are listed as a group. */
+  disk: string;
   load(tune: ExampleTune, bytes: Uint8Array): void;
   status(msg: string, error?: boolean): void;
+}
+
+const DISK = '*disk';
+
+/** The tunes that came on the NinjaTracker disk, as a group like a musician's. Freeware with the editor. */
+async function diskTunes(url: string): Promise<ExampleMusician | null> {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const image = new Uint8Array(await res.arrayBuffer());
+    const tunes: ExampleTune[] = [];
+    for (const entry of d64Directory(image)) {
+      const bytes = d64ReadFile(image, entry);
+      if (!isSongFile(bytes)) continue;
+      tunes.push({
+        file: `${entry.name.toLowerCase()}.nt2`, title: entry.name, author: 'Lasse \u00D6\u00F6rni (Cadaver)', released: 'NinjaTracker V2.03 disk',
+        model: '', subtunes: 1, check: 'exact', copy: true, bytes,
+      });
+    }
+    return tunes.length ? { id: DISK, name: 'NinjaTracker 2 disk', tunes } : null;
+  } catch {
+    return null;
+  }
 }
 
 let host: ExamplesHost;
@@ -40,7 +73,6 @@ function render() {
   let total = 0;
   const counts = index.musicians.map(m => { const n = m.tunes.filter(t => matches(t, words)).length; total += n; return n; });
   $('exm-musicians').innerHTML =
-    `<div class="il" data-disk="1" title="The example tunes that came with NinjaTracker V2.03"><span class="il-name">NinjaTracker 2 disk</span><span class="il-tags">&#9654;</span></div>` +
     `<div class="il${musician === '' ? ' cur' : ''}" data-m=""><span class="il-name">All musicians</span><span class="il-tags">${total}</span></div>` +
     index.musicians.map((m, k) => `<div class="il${m.id === musician ? ' cur' : ''}${counts[k] ? '' : ' none'}" data-m="${esc(m.id)}">` +
       `<span class="il-name">${esc(m.name)}</span><span class="il-tags">${counts[k]}</span></div>`).join('');
@@ -53,7 +85,8 @@ function render() {
       html += `<div class="kr" data-k="${shown.length}"><span class="exm-title">${esc(t.title)}</span>` +
         `<span class="kr-desc">${musician ? '' : esc(m.name)}</span>` +
         `<span class="exm-sub">${t.subtunes > 1 ? `${t.subtunes} subtunes` : ''}</span>` +
-        `<span class="exm-check"${t.check === 'close' ? ' title="Made with a modified player: the notes, commands and timing are the same, but it may sound slightly different from the original"' : ''}>${t.check === 'close' ? '&asymp;' : ''}</span>` +
+        `<span class="exm-copy"${t.copy ? ' title="Can be changed and saved as a copy"' : ''}>${t.copy ? 'copy' : ''}</span>` +
+        `<span class="exm-check">${t.check === 'close' ? '&asymp;' : ''}</span>` +
         `<span class="kr-src">${esc(t.released)}</span></div>`;
       shown.push(t);
     }
@@ -74,11 +107,12 @@ export async function openExamples() {
       if (data?.format !== 'nt2-examples') throw new Error('the list is not in the expected format');
       index = data;
     } catch (err) {
-      // Without the collection there is still the original disk
-      $('exm-list').innerHTML = `<div class="kit-more err">Could not load the tune list: ${esc((err as Error).message)}</div>`;
-      $('exm-musicians').innerHTML = `<div class="il" data-disk="1"><span class="il-name">NinjaTracker 2 disk</span><span class="il-tags">&#9654;</span></div>`;
-      return;
+      // Without the collection there are still the tunes of the original disk
+      index = { format: 'nt2-examples', musicians: [] };
+      host.status(`Could not load the tune list: ${(err as Error).message}`, true);
     }
+    const disk = await diskTunes(host.disk);
+    if (disk) index.musicians.unshift(disk);
   }
   render();
   $<HTMLInputElement>('exm-search').focus();
@@ -89,7 +123,6 @@ export function wireExamples(h: ExamplesHost) {
   const dlg = $<HTMLDialogElement>('dlg-examples');
   $('exm-musicians').addEventListener('click', e => {
     const target = e.target as HTMLElement;
-    if (target.closest('[data-disk]')) { dlg.close(); host.openDisk(); return; }
     const el = target.closest<HTMLElement>('[data-m]');
     if (!el) return;
     musician = el.dataset.m!;
@@ -106,9 +139,12 @@ export function wireExamples(h: ExamplesHost) {
     const tune = el && shown[parseInt(el.dataset.k!, 10)];
     if (!tune) return;
     try {
-      const res = await fetch(host.base + tune.file.split('/').map(encodeURIComponent).join('/'));
-      if (!res.ok) throw new Error(`could not fetch ${tune.file}`);
-      const bytes = new Uint8Array(await res.arrayBuffer());
+      let bytes = tune.bytes;
+      if (!bytes) {
+        const res = await fetch(host.base + tune.file.split('/').map(encodeURIComponent).join('/'));
+        if (!res.ok) throw new Error(`could not fetch ${tune.file}`);
+        bytes = new Uint8Array(await res.arrayBuffer());
+      }
       dlg.close();
       host.load(tune, bytes);
     } catch (err) { host.status((err as Error).message, true); }

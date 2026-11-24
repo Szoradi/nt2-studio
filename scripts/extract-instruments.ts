@@ -762,7 +762,7 @@ function compare(a: Uint8Array[], b: Uint8Array[]): string {
   return best;
 }
 const fullFiles = new Set<string>();
-interface ExampleEntry { file: string; title: string; author: string; released: string; model: string; subtunes: number; check: 'exact' | 'close' }
+interface ExampleEntry { file: string; title: string; author: string; released: string; model: string; subtunes: number; check: 'exact' | 'close'; copy?: boolean }
 const examples = new Map<string, ExampleEntry[]>(); // by musician id
 const dropped: string[] = [];
 let tunesSame = 0, tunesNotes = 0, tunesEvents = 0, tunesCompared = 0, songFiles = 0;
@@ -871,6 +871,14 @@ for (const m of sorted) for (const file of [...new Set(m.instruments.flatMap(i =
     });
   });
 }
+
+// Which tunes may be saved as a copy is set by hand in the index ("copy": true on a tune, with its
+// author's permission), so it is carried over from the index that is being replaced
+try {
+  const old = JSON.parse(readFileSync(`${EXAMPLES}/index.json`, 'utf8')) as { musicians: { tunes: ExampleEntry[] }[] };
+  const copy = new Set(old.musicians.flatMap(m => m.tunes).filter(t => t.copy).map(t => t.file));
+  for (const list of examples.values()) for (const t of list) if (copy.has(t.file)) t.copy = true;
+} catch { /* no index yet */ }
 
 const exampleIndex = {
   format: 'nt2-examples',

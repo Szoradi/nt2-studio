@@ -1056,7 +1056,17 @@ export function paste() {
   }
 }
 
-export interface TrackEntry { row: number; time: number; trans: number; patt: number }
+export interface TrackEntry {
+  row: number; time: number; trans: number; patt: number;
+  /** The duration the channel has when the pattern starts: its rows last this long until one sets another. */
+  dur: number;
+}
+
+/**
+ * A channel keeps its duration from one pattern to the next and round the loop of its track.
+ * Before any pattern has set one, the player's rows are 3 frames long (its duration byte starts at $FF).
+ */
+export const FIRST_DUR = 3;
 
 /**
  * Pattern entries of a track with the frame at which each starts and the transpose in effect.
@@ -1066,7 +1076,7 @@ export interface TrackEntry { row: number; time: number; trans: number; patt: nu
 export function trackTimeline(channel: number, until = -1): TrackEntry[] {
   const t = curTracks()[channel];
   const out: TrackEntry[] = [];
-  let time = 0, trans = 0xc0, dur = 0, i = 0, lastLoopTime = -1;
+  let time = 0, trans = 0xc0, dur = FIRST_DUR, i = 0, lastLoopTime = -1;
   for (let guard = 0; guard < 4096 && i < t.length; guard++) {
     const v = t[i];
     if (v === 0) {
@@ -1078,7 +1088,7 @@ export function trackTimeline(channel: number, until = -1): TrackEntry[] {
     }
     i++;
     if (v >= 0x80) { trans = v; continue; }
-    out.push({ row: i - 1, time, trans, patt: v });
+    out.push({ row: i - 1, time, trans, patt: v, dur });
     if (until >= 0 && time > until) break;
     for (const r of S.song.patterns[v - 1]) {
       if (r.dur) dur = r.dur;
@@ -1088,9 +1098,26 @@ export function trackTimeline(channel: number, until = -1): TrackEntry[] {
   return out;
 }
 
+/**
+ * The duration the shown pattern of a channel starts with, as its track plays it: at the track
+ * cursor's entry if that is this pattern, else where the track first plays it, else where another
+ * channel's track does. 0 if no track of this subtune plays the pattern. It only matters for a
+ * pattern whose first row sets no duration.
+ */
+export function carriedDur(c: number): number {
+  const n = S.pattNum[c];
+  for (const ch of [c, ...[0, 1, 2].filter(x => x !== c)]) {
+    const line = trackTimeline(ch);
+    const atCursor = ch === c ? line.find(e => e.row >= S.trkRow[c]) : undefined;
+    const entry = atCursor?.patt === n ? atCursor : line.find(e => e.patt === n);
+    if (entry) return entry.dur;
+  }
+  return 0;
+}
+
 /** Frame, counted from the start of the pattern, at which a pattern row begins. */
-function rowTime(rows: Row[], row: number): number {
-  let time = 0, dur = 0;
+function rowTime(rows: Row[], row: number, carried = 0): number {
+  let time = 0, dur = carried;
   for (let i = 0; i < row && i < rows.length; i++) {
     if (rows[i].dur) dur = rows[i].dur;
     time += dur;
@@ -1123,7 +1150,7 @@ export function cursorStart(): CursorStart | 'notInTrack' | null {
     const atCursor = lines[c].find(e => e.row >= S.trkRow[c]);
     const entry = atCursor && atCursor.patt === n ? atCursor : lines[c].find(e => e.patt === n);
     if (!entry) return 'notInTrack';
-    time = entry.time + rowTime(curPattern(c), S.pattRow[c]);
+    time = entry.time + rowTime(curPattern(c), S.pattRow[c], entry.dur);
   } else {
     const c = S.trkCh;
     const entry = lines[c].find(e => e.row >= S.trkRow[c]) ?? lines[c][lines[c].length - 1];

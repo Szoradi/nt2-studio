@@ -29,8 +29,9 @@ npm test         # core, sound engine, import and 4k export checks
 ```
 
 Press **F8** in the app for the key and data format reference. **Examples** opens a browser of
-tunes by NinjaTracker 2 musicians (they can be played and changed, but not saved or exported) and
-the four tunes from the NinjaTracker V2.03 disk. **Kit** browses the instruments of those tunes
+tunes by NinjaTracker 2 musicians and the four tunes from the NinjaTracker V2.03 disk. They can
+be played and changed but not saved or exported, except the tunes marked *copy* (the disk's, and
+those whose author allows it), which are saved as a copy to a file of your own. **Kit** browses the instruments of those tunes
 by musician, plays them and adds them to your song. Both are built from a folder of `.sid` files
 with `node scripts/extract-instruments.ts`; see `THIRD-PARTY-NOTICES.md` for whose work they are.
 

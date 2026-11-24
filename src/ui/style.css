@@ -391,12 +391,14 @@ dialog .list button { display: block; width: 100%; text-align: left; margin-bott
 #exm-musicians { flex: 0 0 250px; max-height: none; min-width: 0; border: 1px solid var(--line); border-radius: 6px; padding: 4px; }
 #exm-musicians .il { font-family: system-ui, sans-serif; font-size: 13px; }
 #exm-musicians .il.none { color: var(--faint); }
-#exm-musicians .il[data-disk] { color: var(--accent); margin-bottom: 4px; }
 #exm-search { flex: 1; min-width: 120px; height: 26px; padding: 0 8px; background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 4px; }
 #exm-list { max-height: none; min-width: 0; border: 1px solid var(--line); border-radius: 6px; padding: 4px; }
 #exm-list .kr { font-family: system-ui, sans-serif; font-size: 13px; line-height: 22px; }
-.exm-title { flex: 0 1 46%; min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--note); }
-.exm-sub { flex: 0 0 9ch; font-size: 12px; color: var(--dim); text-align: right; }
+/* Every column has a width of its own, so the rows line up whatever they hold */
+#exm-list .kr-src { flex: 0 0 25%; max-width: none; }
+.exm-title { flex: 0 0 32%; min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--note); }
+.exm-sub { flex: 0 0 10ch; font-size: 12px; color: var(--dim); text-align: right; }
+.exm-copy { flex: 0 0 5ch; font-size: 12px; color: var(--dim); text-align: right; }
 .exm-check { flex: 0 0 2ch; color: var(--cmd); text-align: center; }
 #dlg-kit h3 .info, #dlg-examples h3 .info { font-weight: normal; color: var(--dim); font-size: 12px; margin-left: 8px; }
 .kit { display: flex; gap: 12px; height: min(620px, 68vh); }

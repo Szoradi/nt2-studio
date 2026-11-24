@@ -1192,7 +1192,8 @@
      "released": "2010 Ancients Pledge Inc.",
      "model": "8580",
      "subtunes": 1,
-     "check": "exact"
+     "check": "exact",
+     "copy": true
     },
     {
      "file": "NecroPolo/Bricks_n_Balls.nt2",
@@ -1201,7 +1202,8 @@
      "released": "2026 Avatar",
      "model": "8580",
      "subtunes": 1,
-     "check": "exact"
+     "check": "exact",
+     "copy": true
     },
     {
      "file": "NecroPolo/Minorita.nt2",
@@ -1210,7 +1212,8 @@
      "released": "2009 Ancients Pledge Inc.",
      "model": "8580",
      "subtunes": 1,
-     "check": "exact"
+     "check": "exact",
+     "copy": true
     },
     {
      "file": "NecroPolo/Ninfa_intro.nt2",
@@ -1219,7 +1222,8 @@
      "released": "2012 Level 64",
      "model": "8580",
      "subtunes": 1,
-     "check": "exact"
+     "check": "exact",
+     "copy": true
     },
     {
      "file": "NecroPolo/Ninfa_main_tune_2_ext.nt2",
@@ -1228,7 +1232,8 @@
      "released": "2012 Level 64",
      "model": "8580",
      "subtunes": 1,
-     "check": "exact"
+     "check": "exact",
+     "copy": true
     },
     {
      "file": "NecroPolo/Ninfa_main_tune_2.nt2",
@@ -1237,7 +1242,8 @@
      "released": "2012 Level 64",
      "model": "8580",
      "subtunes": 1,
-     "check": "exact"
+     "check": "exact",
+     "copy": true
     },
     {
      "file": "NecroPolo/Ninfa_outro.nt2",
@@ -1246,7 +1252,8 @@
      "released": "2012 Level 64",
      "model": "8580",
      "subtunes": 1,
-     "check": "exact"
+     "check": "exact",
+     "copy": true
     },
     {
      "file": "NecroPolo/Pink_Shuriken_Part_2.nt2",
@@ -1255,7 +1262,8 @@
      "released": "2021 NecroPolo",
      "model": "8580",
      "subtunes": 1,
-     "check": "exact"
+     "check": "exact",
+     "copy": true
     },
     {
      "file": "NecroPolo/Rising_Sun.nt2",
@@ -1264,7 +1272,8 @@
      "released": "2010 Hokuto Force",
      "model": "8580",
      "subtunes": 1,
-     "check": "exact"
+     "check": "exact",
+     "copy": true
     },
     {
      "file": "NecroPolo/S-Blox.nt2",
@@ -1273,7 +1282,8 @@
      "released": "2013 Avatar",
      "model": "8580",
      "subtunes": 3,
-     "check": "close"
+     "check": "close",
+     "copy": true
     },
     {
      "file": "NecroPolo/Strauss.nt2",
@@ -1282,7 +1292,8 @@
      "released": "2010 Ancients Pledge Inc.",
      "model": "8580",
      "subtunes": 1,
-     "check": "exact"
+     "check": "exact",
+     "copy": true
     },
     {
      "file": "NecroPolo/Test_NT.nt2",
@@ -1291,7 +1302,8 @@
      "released": "2010 NecroPolo",
      "model": "8580",
      "subtunes": 3,
-     "check": "exact"
+     "check": "exact",
+     "copy": true
     },
     {
      "file": "NecroPolo/Fender_of_the_Crown.nt2",
@@ -1300,7 +1312,8 @@
      "released": "2010 Samar/Onslaught",
      "model": "8580",
      "subtunes": 1,
-     "check": "exact"
+     "check": "exact",
+     "copy": true
     },
     {
      "file": "NecroPolo/Time_Paradox_tune_7.nt2",
@@ -1309,7 +1322,8 @@
      "released": "2026 Level 64",
      "model": "8580",
      "subtunes": 1,
-     "check": "exact"
+     "check": "exact",
+     "copy": true
     },
     {
      "file": "NecroPolo/Wavemode.nt2",
@@ -1318,7 +1332,8 @@
      "released": "2025 Lethargy",
      "model": "8580",
      "subtunes": 1,
-     "check": "close"
+     "check": "close",
+     "copy": true
     }
    ]
   },
@@ -1882,7 +1897,8 @@
      "released": "2022 Lethargy",
      "model": "8580",
      "subtunes": 1,
-     "check": "exact"
+     "check": "exact",
+     "copy": true
     },
     {
      "file": "Vincenzo/Pink_Shuriken_Part_1.nt2",
@@ -1891,7 +1907,8 @@
      "released": "2021 Lethargy",
      "model": "8580",
      "subtunes": 1,
-     "check": "exact"
+     "check": "exact",
+     "copy": true
     },
     {
      "file": "Vincenzo/Plasma_Ninja.nt2",
@@ -1900,7 +1917,8 @@
      "released": "2022 Resource",
      "model": "8580",
      "subtunes": 1,
-     "check": "exact"
+     "check": "exact",
+     "copy": true
     },
     {
      "file": "Vincenzo/Skotkockas_Pled.nt2",
@@ -1909,7 +1927,8 @@
      "released": "2022 Lethargy",
      "model": "8580",
      "subtunes": 1,
-     "check": "exact"
+     "check": "exact",
+     "copy": true
     },
     {
      "file": "Vincenzo/Transelites.nt2",
@@ -1918,7 +1937,8 @@
      "released": "2023 Lethargy",
      "model": "8580",
      "subtunes": 1,
-     "check": "exact"
+     "check": "exact",
+     "copy": true
     },
     {
      "file": "Vincenzo/Wavemode_Endpart.nt2",
@@ -1927,7 +1947,8 @@
      "released": "2025 Lethargy",
      "model": "8580",
      "subtunes": 1,
-     "check": "exact"
+     "check": "exact",
+     "copy": true
     },
     {
      "file": "Vincenzo/Wives_Unchained.nt2",
@@ -1936,7 +1957,8 @@
      "released": "2020 Lethargy",
      "model": "6581",
      "subtunes": 1,
-     "check": "exact"
+     "check": "exact",
+     "copy": true
     },
     {
      "file": "Vincenzo/Wives_Unchained_Remix.nt2",
@@ -1945,7 +1967,8 @@
      "released": "2021 Lethargy",
      "model": "6581",
      "subtunes": 1,
-     "check": "exact"
+     "check": "exact",
+     "copy": true
     }
    ]
   },

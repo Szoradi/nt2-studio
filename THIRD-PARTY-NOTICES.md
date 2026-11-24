@@ -39,7 +39,10 @@ licence.
 - Credit is kept with the data: every entry in `public/examples/index.json` carries the title,
   author and release line from its `.sid`, and every instrument in the kit names the tune it
   came from.
-- The editor does not save or export a tune loaded from Examples.
+- The editor does not save or export a tune loaded from Examples, except the tunes of
+  László Vincze (Vincenzo) and Péter Nagy-Miklós (NecroPolo), who allow theirs to be changed and
+  saved. Those, and the four tunes from the NinjaTracker disk, are saved as a copy: the bundled
+  files are never written to.
 - An author who does not want a tune included can have it removed.
 - Authors: Jaakko Viitalähde (Aomeba), Sarah Jane Avory, Bartosz Zolynski (Bago Zonde),
   Barney Gumble, Lasse Öörni (Cadaver), Sean McKenzie (Fade), Alex Brem (freQvibez),

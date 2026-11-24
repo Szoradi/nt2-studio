@@ -4,7 +4,7 @@ import {
   type Row, noteName, hex2, patternDuration, packedPatternSize, patternRowOffsets, songTrackBytes, trackProblem,
   KEYOFF, KEYON, MAX_PATTLEN, MAX_SONGLEN, MAX_TBLLEN, MAX_CMD, MAX_CMDNAMELEN, FIRSTNOTE,
 } from '../core/song.ts';
-import { S, selectionRange, curTracks, patternUsed, CMD_NAME_COL } from './editor.ts';
+import { S, selectionRange, curTracks, patternUsed, carriedDur, CMD_NAME_COL } from './editor.ts';
 import type { PlayState } from '../audio/engine.ts';
 import { renderInstruments } from './instrument.ts';
 
@@ -83,7 +83,9 @@ function renderPatterns() {
     const range = selectionRange('pattern', c, cur);
     const size = packedPatternSize(rows);
     const bar = S.barFrames, beat = bar / 4;
-    const total = patternDuration(rows);
+    // A pattern that starts without a duration goes on with the one its channel had before it
+    const carried = rows.length && !rows[0].dur ? carriedDur(c) : 0;
+    const total = patternDuration(rows, carried);
     const bars = total / bar;
     const barText = total ? ` \u00b7 ${Number.isInteger(bars) ? bars : bars.toFixed(2)} bar${bars === 1 ? '' : 's'}` : '';
     let html = `<div class="col${active ? ' active' : ''}" data-i="${c}"><div class="col-head">` +
@@ -93,8 +95,8 @@ function renderPatterns() {
       `<button data-act="mute" class="mut${S.mute[c] ? ' on' : ''}" title="${S.mute[c] ? `Channel ${c + 1} is muted. Click to hear it again` : `Mute channel ${c + 1}`} (Shift+click: solo)" aria-label="Mute channel ${c + 1}" aria-pressed="${S.mute[c]}">${S.mute[c] ? ICON_MUTED : ICON_SOUND}</button>` +
       `<span class="grow"></span>` +
       `${rows.length && !patternUsed(num) ? '<span class="warn" title="No track plays this pattern">unused</span> ' : ''}` +
-      `<span class="meta" title="Packed size ${size} of ${MAX_PATTLEN} bytes, length ${total} frames (set the bar length in the toolbar)">${size}b \u00b7 ${total}f${barText}</span></div><div class="list">`;
-    let dur = 0, time = 0, cmd = 0;
+      `<span class="meta" title="Packed size ${size} of ${MAX_PATTLEN} bytes, length ${total} frames${carried ? `, starting with the duration ${carried} carried over from the pattern before it in the track` : ''} (set the bar length in the toolbar)">${size}b \u00b7 ${total}f${barText}</span></div><div class="list">`;
+    let dur = carried, time = 0, cmd = 0;
     for (let r = 0; r <= rows.length && r < MAX_PATTLEN; r++) {
       const end = r === rows.length;
       const cc = active && r === cur ? S.pattCol : -1;
@@ -109,7 +111,8 @@ function renderPatterns() {
       const shown = row.dur || dur;
       const dh = shown ? String(shown).padStart(2, '0') : '..';
       const durCls = row.dur ? 'd' : shown ? 'e' : 'z';
-      const line = time % bar === 0 ? ' bar' : Number.isInteger(beat) && time % beat === 0 ? ' beat' : '';
+      // No duration known (a pattern without one that no track plays): its rows have no place in a bar
+      const line = !shown ? '' : time % bar === 0 ? ' bar' : Number.isInteger(beat) && time % beat === 0 ? ' beat' : '';
       const noteCls = row.note < FIRSTNOTE ? (row.note === KEYOFF ? 'n off' : 'n') : 'n';
       let desc = '';
       if (row.cmd) {
@@ -480,7 +483,7 @@ export const HELP_HTML = `
 <tr><td>Ctrl+Left/Right</td><td>Previous / next pattern</td></tr>
 <tr><td>Ctrl+D</td><td>Duplicate the pattern to the first unused one</td></tr>
 </table>
-<p>A dimmed duration is the one carried over from the row above. A line marks each bar and a shaded row each beat, counted from the start of the pattern using the <b>Bar</b> length (in frames) from the toolbar. The bar length is remembered for each song in this browser and guessed from the patterns the first time. Shift+click a Mute button to solo that channel.</p>
+<p>A dimmed duration is the one carried over from the row above. A pattern that starts without a duration keeps the one its channel had at the end of the pattern before it in the track, and is shown and counted with that. A line marks each bar and a shaded row each beat, counted from the start of the pattern using the <b>Bar</b> length (in frames) from the toolbar. The bar length is remembered for each song in this browser and guessed from the patterns the first time. Shift+click a Mute button to solo that channel.</p>
 <p>Columns: note / key off (---) / key on (+++), command 01-7F (81-FF = the same command in legato mode: no hard restart, no ADSR), duration in frames (3-65, decimal). An empty command or duration keeps the previous one. Positions use physical key locations, so the piano layout is the same on every keyboard.</p>
 <h4>Tables</h4>
 <table>

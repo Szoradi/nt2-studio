@@ -231,30 +231,36 @@ const STORE_KEY = 'nt2studio.song';
 const RECENT_KEY = 'nt2studio.recent';
 const MAX_RECENT = 12;
 
-interface StoredSong { name: string; data: string; time?: number; example?: string }
+interface StoredSong { name: string; data: string; time?: number; example?: string; copy?: boolean }
 
 /**
  * Set while the song in the editor is one of the bundled examples ("title by author"): another
  * musician's tune, to study and play with, but not to save or export. It stays set through
  * edits, the autosave and Recent, and ends when another song is opened or a new one started.
+ *
+ * Some authors allow their tunes to be changed and saved (`exampleCopy`). Those can be saved and
+ * exported, but a save is always a copy in a file of the user's choosing; from then on the song
+ * is that file and no longer the example.
  */
 let exampleOf = '';
+let exampleCopy = false;
+const exampleLocked = () => !!exampleOf && !exampleCopy;
 const EXAMPLE_SAVE_TIP = 'This is an example tune by another musician: it can be played and changed, but not saved or exported';
 
 function refuseForExample(what: string): boolean {
-  if (!exampleOf) return false;
+  if (!exampleLocked()) return false;
   showStatus(`${exampleOf} is an example tune: it can be played and changed here, but not ${what}. Use the Kit to take its instruments into a song of your own.`, true);
   return true;
 }
 
 function syncExampleLock() {
   const save = $<HTMLButtonElement>('btn-save'), exp = $<HTMLButtonElement>('btn-export');
-  if (save.disabled === !!exampleOf) return;
   for (const b of [save, exp]) {
     if (!b.dataset.tip) b.dataset.tip = b.title;
-    b.disabled = !!exampleOf;
-    b.title = exampleOf ? EXAMPLE_SAVE_TIP : b.dataset.tip;
+    b.disabled = exampleLocked();
+    b.title = exampleLocked() ? EXAMPLE_SAVE_TIP : b.dataset.tip;
   }
+  if (exampleOf && exampleCopy) save.title = `Save a copy of ${exampleOf} to a file of your own (Ctrl+S)`;
 }
 
 const toBase64 = (bytes: Uint8Array) => {
@@ -325,7 +331,7 @@ function applyBarForSong() {
 function autosave() {
   try {
     const stored: StoredSong = { name: S.fileName, data: toBase64(saveSongFile(S.song)) };
-    if (exampleOf) stored.example = exampleOf;
+    if (exampleOf) { stored.example = exampleOf; stored.copy = exampleCopy; }
     localStorage.setItem(STORE_KEY, JSON.stringify(stored));
   } catch { /* storage may be unavailable */ }
 }
@@ -334,9 +340,10 @@ function restoreAutosave(): boolean {
   try {
     const raw = localStorage.getItem(STORE_KEY);
     if (!raw) return false;
-    const { name, data, example } = JSON.parse(raw) as StoredSong;
+    const { name, data, example, copy } = JSON.parse(raw) as StoredSong;
     E.replaceSong(loadSongFile(fromBase64(data)), name);
     exampleOf = example ?? '';
+    exampleCopy = !!example && !!copy;
     return true;
   } catch {
     return false;
@@ -359,7 +366,7 @@ function keepInRecent(): boolean {
     if (data === EMPTY_SONG_DATA) return false;
     const list = readRecent().filter(r => !(r.name === S.fileName && r.data === data));
     const entry: StoredSong = { name: S.fileName, data, time: Date.now() };
-    if (exampleOf) entry.example = exampleOf;
+    if (exampleOf) { entry.example = exampleOf; entry.copy = exampleCopy; }
     list.unshift(entry);
     localStorage.setItem(RECENT_KEY, JSON.stringify(list.slice(0, MAX_RECENT)));
     return true;
@@ -372,6 +379,7 @@ function keepInRecent(): boolean {
 function setSong(song: Song, name: string, handle: FileHandle | null = null): boolean {
   const kept = keepInRecent();
   exampleOf = ''; // whoever loads an example sets it again
+  exampleCopy = false;
   engine?.stop();
   E.replaceSong(song, name);
   applyBarForSong();
@@ -434,7 +442,7 @@ function openRecent() {
       dlg.close();
       try {
         setSong(loadSongFile(fromBase64(r.data)), r.name);
-        if (r.example) { exampleOf = r.example; autosave(); syncGlobals(); }
+        if (r.example) { exampleOf = r.example; exampleCopy = !!r.copy; autosave(); syncGlobals(); }
         showStatus(`Restored ${r.name} from Recent`);
       } catch (err) { showStatus((err as Error).message, true); }
     };
@@ -489,22 +497,17 @@ async function openFile() {
   input.click();
 }
 
-async function openExampleDisk() {
-  try {
-    const res = await fetch(import.meta.env.BASE_URL + 'examples.d64');
-    if (!res.ok) throw new Error('could not fetch the example disk');
-    chooseFromD64(new Uint8Array(await res.arrayBuffer()), 'Example tunes (NinjaTracker V2.03 disk)');
-  } catch (err) { showStatus((err as Error).message, true); }
-}
-
 /** Save writes back to the file the song was opened from or last saved to; Save As picks a new one. */
 async function saveSong(saveAs = false) {
   if (refuseForExample('saved')) return;
   const bytes = saveSongFile(S.song);
+  // An example that may be saved goes to a file of the user's own, under a name that says it is a copy
+  const copyOf = exampleOf;
+  const saveName = copyOf && !/-copy$/.test(S.fileName) ? `${S.fileName}-copy` : S.fileName;
   try {
-    if ((saveAs || !fileHandle) && fsApi.showSaveFilePicker) {
+    if ((saveAs || !fileHandle || copyOf) && fsApi.showSaveFilePicker) {
       fileHandle = await fsApi.showSaveFilePicker({
-        suggestedName: `${S.fileName}.nt2`,
+        suggestedName: `${saveName}.nt2`,
         types: [{ description: 'NinjaTracker 2 song', accept: { 'application/octet-stream': ['.nt2'] } }],
       });
     }
@@ -514,8 +517,9 @@ async function saveSong(saveAs = false) {
       await w.close();
       S.fileName = fileHandle.name.replace(/\.[^.]+$/, '');
       storeBar();
-      showStatus(`Saved to ${fileHandle.name}`);
+      showStatus(copyOf ? `Saved a copy of ${copyOf} to ${fileHandle.name}` : `Saved to ${fileHandle.name}`);
     } else {
+      S.fileName = saveName;
       download(bytes, `${S.fileName}.nt2`);
       showStatus(`Downloaded ${S.fileName}.nt2 (this browser cannot save back to a file)`);
     }
@@ -523,6 +527,9 @@ async function saveSong(saveAs = false) {
     if ((err as Error).name !== 'AbortError') showStatus(`Could not save: ${(err as Error).message}`, true);
     return;
   }
+  // The saved copy is the user's own song from here on
+  exampleOf = '';
+  exampleCopy = false;
   S.dirty = false;
   syncGlobals();
   autosave();
@@ -859,7 +866,8 @@ function stepRow(): number {
     // A note uses the command in effect at that row; a key on/off only runs a command of its own
     const cmd = row.note >= 0x18 ? E.commandAt(rows, r) || S.testCmd : row.cmd;
     engine.testRow(c, row.note, cmd);
-    // The row lasts for its own duration, or the one carried from above
+    // The row lasts for its own duration, or the one carried from above (or from the pattern before)
+    frames = E.carriedDur(c);
     for (let i = 0; i <= r; i++) if (rows[i].dur) frames = rows[i].dur;
     if (!frames) frames = 6;
   }
@@ -1379,12 +1387,13 @@ wireInstruments({
 });
 wireExamples({
   base: import.meta.env.BASE_URL + 'examples/',
-  openDisk: () => void openExampleDisk(),
+  disk: import.meta.env.BASE_URL + 'examples.d64',
   status: showStatus,
   load: (tune, bytes) => {
     try {
       const kept = setSong(loadSongFile(bytes), tune.file.split('/').pop()!.replace(/\.nt2$/i, ''));
       exampleOf = `${tune.title} by ${tune.author}`;
+      exampleCopy = !!tune.copy;
       autosave();
       syncGlobals();
       // Keep the credit with the song for a later export, and play it on the chip it was made for
@@ -1398,7 +1407,7 @@ wireExamples({
       renderAll(null);
       showStatus(`Loaded ${tune.title} by ${tune.author}${tune.released ? ` (${tune.released})` : ''}.` +
         `${tune.check === 'close' ? ' It was made with a modified player, so it may sound slightly different here.' : ''}` +
-        ` Examples cannot be saved or exported.${keptNote(kept)}`);
+        ` ${tune.copy ? 'It can be changed and saved as a copy.' : 'This example cannot be saved or exported.'}${keptNote(kept)}`);
     } catch (err) { showStatus((err as Error).message, true); }
   },
 });
