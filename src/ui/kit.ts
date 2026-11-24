@@ -80,11 +80,13 @@ function renderDetail() {
   if (!ins) { $('kit-detail').innerHTML = '<span class="dim">Click an instrument to hear it. Double-click, or press Add, to put it in your song.</span>'; return; }
   const prog = (label: string, text: string) => (text ? `<div><span class="dim">${label}</span> ${esc(text)}</div>` : '');
   const src = kitMainSource(ins);
-  const others = ins.sources.length - 1;
+  const others = ins.sources.filter(s => !s.variant).length - 1;
+  const variants = ins.sources.filter(s => s.variant).length;
   const range = src.uses ? `played ${src.uses} time${src.uses === 1 ? '' : 's'}, ${noteName(src.lowNote * 2)} to ${noteName(src.highNote * 2)}, mostly ${noteName(src.typicalNote * 2)}` : 'named in a pattern but not reached while playing';
   $('kit-detail').innerHTML =
     `<div><b>${esc(ins.name)}</b> &nbsp;${esc(ins.description)}</div>` +
-    `<div><span class="dim">From</span> ${esc(src.song)}${src.released ? ` (${esc(src.released)})` : ''}, command ${hex2(src.cmd)}: ${range}${others > 0 ? `; also in ${others} other tune${others === 1 ? '' : 's'}` : ''}</div>` +
+    `<div><span class="dim">From</span> ${esc(src.song)}${src.released ? ` (${esc(src.released)})` : ''}, command ${hex2(src.cmd)}: ${range}${others > 0 ? `; also in ${others} other tune${others === 1 ? '' : 's'}` : ''}` +
+    `${variants ? `; stands for ${variants} near-identical instrument${variants === 1 ? '' : 's'} of this musician as well` : ''}</div>` +
     `<div class="kit-bytes"><div><span class="dim">Attack/Decay</span> ${ins.ad} <span class="dim">Sustain/Release</span> ${ins.sr}` +
     `${ins.legatoOnly ? ' <span class="dim">(meant for tied notes: use it as command + 80)</span>' : ''}</div>` +
     prog('Wave', ins.wave) + prog('Pulse', ins.pulse) + prog('Filter', ins.filter) + '</div>' +

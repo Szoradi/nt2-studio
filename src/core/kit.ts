@@ -6,6 +6,8 @@ import { type Song, MAX_TBLLEN } from './song.ts';
 export interface KitSource {
   file: string; song: string; released: string; model: string; cmd: number; hrParam: number; firstWave: number;
   uses: number; legatoUses: number; lowNote: number; highNote: number; typicalNote: number; channels: number[]; subtunes: number[];
+  /** The tune used a near-duplicate of this instrument, which was left out of the kit in its favour. */
+  variant?: boolean;
 }
 
 /** An instrument as stored in the kit file: bytes as hex text, table rows as "LLRR LLRR ...". */
@@ -37,7 +39,8 @@ const TABLE_NAME = ['wave', 'pulse', 'filter'];
 
 /** The source the instrument was used most in: the best guide to how it is meant to be played. */
 export function kitMainSource(ins: KitInstrument): KitSource {
-  return ins.sources.reduce((best, s) => (s.uses > best.uses ? s : best), ins.sources[0]);
+  const own = ins.sources.filter(s => !s.variant);
+  return own.reduce((best, s) => (s.uses > best.uses ? s : best), own[0] ?? ins.sources[0]);
 }
 
 /** A note (number, C-1 = 12) that suits the instrument and that its own pitch steps keep in range. */

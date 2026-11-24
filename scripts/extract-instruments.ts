@@ -16,6 +16,7 @@ import { type Song, type Table, newSong, unpackPattern, unpackTracks, trackProbl
 import { buildEditorSid, EDIT_PLAYER, packNormal } from '../src/core/packer.ts';
 import { saveSongFile, loadSongFile } from '../src/core/songfile.ts';
 import { locatePlayers, find, X, type Player } from './nt2locate.ts';
+import { render, alike, alikeShape, EXACT, type Render } from './kit-similar.ts';
 
 const SRC = process.argv[2] ?? '../c64music';
 const OUT = process.argv[3] ?? 'kit';
@@ -351,6 +352,8 @@ interface Instrument {
 interface Source {
   file: string; song: string; released: string; model: string; cmd: number; hrParam: number; firstWave: number;
   uses: number; legatoUses: number; lowNote: number; highNote: number; typicalNote: number; channels: number[]; subtunes: number[];
+  /** The tune used a near-duplicate of this instrument, not exactly this one. */
+  variant?: boolean;
 }
 
 const identity = (i: Instrument) => JSON.stringify([i.ad, i.sr, i.legatoOnly, i.wave, i.pulse, i.filter]);
@@ -582,8 +585,13 @@ for (const sid of sids) {
 
 // Names: describe each instrument, then number the ones that share a name within a musician
 const prog = (p: Program) => p.rows.map(r => hex2(r[0]) + hex2(r[1])).join(' ');
+const usesOf = (i: Instrument) => i.sources.reduce((n, s) => n + s.uses, 0);
+const line = (i: Instrument) => `${hex2(i.ad)}${hex2(i.sr)} W ${prog(i.wave) || '-'} | P ${prog(i.pulse) || '-'} | F ${prog(i.filter) || '-'}`;
+const mergeReport: string[] = [];
+let mergedSame = 0, mergedNear = 0;
 for (const mus of musicians.values()) {
   const groups = new Map<string, Instrument[]>();
+  const baseOf = new Map<Instrument, string>();
   for (const i of mus.instruments) {
     const uses = i.sources.reduce((n, s) => n + s.uses, 0);
     const best = [...i.sources].sort((a, b) => b.uses - a.uses)[0];
@@ -596,7 +604,31 @@ for (const mus of musicians.values()) {
     if (!i.verified && w.some(r => r[0] === 0xff && r[1] && w[r[1] - 1]?.[0] === 0xff)) {
       i.description += ' (its program jumps onto a jump row, which the player runs as a very fast slide: the stand-alone copy differs by a frame or two)';
     }
-    const key = d.base.join('|');
+    baseOf.set(i, d.base.join('|'));
+  }
+  // A musician's kit needs each sound once. Of instruments that sound the same (the same values
+  // written to the SID, whatever rows they are built from) or nearly the same (in the same
+  // category, either the same output within a small margin or the same program row for row with
+  // close numbers), the most used one stays and the tunes of the others are listed with it.
+  // This is done within a musician only: a sound two musicians share stays in both lists.
+  const kept: { ins: Instrument; r: Render }[] = [];
+  const absorbed = new Map<Instrument, Instrument>();
+  const lines: string[] = [];
+  for (const i of [...mus.instruments].sort((a, b) => usesOf(b) - usesOf(a))) {
+    const r = render(i);
+    let how = '=';
+    let rep = i.verified ? kept.find(k => k.ins.verified && alike(k.r, r, EXACT)) : undefined;
+    if (!rep && i.verified) { how = '~'; rep = kept.find(k => k.ins.verified && k.ins.category === i.category && (alike(k.r, r) || alikeShape(k.ins, i))); }
+    if (!rep) { kept.push({ ins: i, r }); continue; }
+    absorbed.set(i, rep.ins);
+    if (how === '=') mergedSame++; else mergedNear++;
+    lines.push(`${how} ${line(i)}  (${usesOf(i)} notes; ${[...new Set(i.sources.map(s => s.song))].join(', ')})\n      kept: ${line(rep.ins)}`);
+    rep.ins.sources.push(...i.sources.map(s => ({ ...s, variant: true })));
+  }
+  if (lines.length) mergeReport.push('', `${mus.name}: ${lines.length} of ${mus.instruments.length}`, ...lines.map(l => '  ' + l));
+  mus.instruments = mus.instruments.filter(i => !absorbed.has(i));
+  for (const i of mus.instruments) {
+    const key = baseOf.get(i)!;
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key)!.push(i);
   }
@@ -610,6 +642,8 @@ for (const mus of musicians.values()) {
       i.name = fit + suffix;
     });
   }
+  // The commands of the songs that used a merged instrument carry the name of the one that stayed
+  for (const [gone, rep] of absorbed) { gone.name = rep.name; gone.category = rep.category; }
   const order = ['drum', 'bass', 'lead', 'pad', 'chord', 'modifier'];
   mus.instruments.sort((a, b) => order.indexOf(a.category) - order.indexOf(b.category) || a.name.localeCompare(b.name, 'en', { numeric: true }));
   total += mus.instruments.length;
@@ -850,6 +884,10 @@ const exampleIndex = {
 };
 writeFileSync(`${EXAMPLES}/index.json`, JSON.stringify(exampleIndex, null, 1));
 if (dropped.length) report.push('', 'Left out of the examples:', ...dropped.map(d => '  ' + d));
+if (mergeReport.length) {
+  report.push('', `Merged within a musician: ${mergedSame} that sound the same (=) and ${mergedNear} that sound nearly the same (~).`,
+    'Each line is envelope, wave, pulse and filter program of the instrument left out, then the one kept in its place.', ...mergeReport);
+}
 writeFileSync(`${OUT}/report.txt`, report.join('\n') + '\n');
 console.log(report.join('\n'));
 console.log('');
@@ -860,6 +898,7 @@ for (const m of sorted) {
 }
 console.log(`\n${total} instruments from ${sids.length} files, ${musicians.size} musicians; ${unverified} failed the stand-alone check; ${skippedEmpty} empty commands skipped`);
 console.log(`${[...examples.values()].reduce((n, l) => n + l.length, 0)} examples in ${EXAMPLES}; left out: ${dropped.join('; ') || 'none'}`);
+console.log(`merged within a musician: ${mergedSame} that sound the same, ${mergedNear} nearly the same`);
 console.log(`${songFiles} whole songs in ${OUT}/nt2 (of ${tunesCompared} subtunes: ${tunesSame} play identically to their .sid, ${tunesNotes} with identical notes but other filter or volume, ` +
   `${tunesEvents} with the same notes, commands and timing on a non-standard player, ${tunesCompared - tunesSame - tunesNotes - tunesEvents} differ); ` +
   `${nt2.length - songFiles} instrument-only files, ${fileMismatch} commands in them differ from their instrument`);

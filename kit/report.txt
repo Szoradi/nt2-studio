@@ -106,3 +106,470 @@ Left out of the examples:
   Avory_Sarah_Jane/Briley_Witch_Chronicles_t26.nt2 (subtune 26 differs from the .sid)
   Avory_Sarah_Jane/Soul_Force_t27.nt2 (subtune 27 differs from the .sid)
   Heinmueck/Enforcer_2_Level_2_preview.nt2 (subtune 2 differs from the .sid)
+
+Merged within a musician: 4 that sound the same (=) and 215 that sound nearly the same (~).
+Each line is envelope, wave, pulse and filter program of the instrument left out, then the one kept in its place.
+
+Pedro (La Vaca Blasa): 2 of 68
+  ~ 7909 W 4100 1100 FF00 | P 8080 FF00 | F -  (154 notes; The Secret of Monkey Island)
+      kept: 7908 W 4100 1100 FF00 | P 8080 FF00 | F -
+  ~ 31F8 W 4100 1100 9F00 C32F | P 8002 FF00 | F -  (16 notes; The Secret of Monkey Island)
+      kept: 31F9 W 4100 1100 9F00 C32F | P 8002 FF00 | F -
+
+Barney Gumble: 1 of 20
+  ~ 04FD W 81C6 41A0 419D 4100 FF00 | P 8080 0100 8018 1004 0AFD 0A03 FF05 | F -  (180 notes; Ultomato)
+      kept: 04FD W 81C6 41A0 419D 4100 FF00 | P 8080 0100 8017 1004 0AFD 0A03 FF05 | F -
+
+Jaakko Viitalähde (Aomeba): 2 of 86
+  ~ 0000 W E130 | P - | F -  (9 notes; Hi Five (tune 1))
+      kept: 0000 W E100 | P - | F -
+  ~ 0000 W E003 | P - | F -  (2 notes; Lucky)
+      kept: 0000 W E004 | P - | F -
+
+Sarah Jane Avory: 69 of 392
+  ~ 00FA W 1100 FF00 | P - | F -  (3562 notes; Briley Witch Chronicles, Soul Force)
+      kept: 00F9 W 1100 FF00 | P - | F -
+  ~ 009D W 81CC 80C2 80BC 4100 FF00 | P 8010 6004 60FC FF02 | F -  (3012 notes; Soul Force)
+      kept: 008D W 81CC 80C2 80BC 4100 FF00 | P 8010 6004 60FC FF02 | F -
+  ~ 019B W 4100 FF00 | P 8010 3002 30FE FF02 | F -  (2708 notes; Soul Force)
+      kept: 018B W 4100 FF00 | P 8010 3002 30FE FF02 | F -
+  ~ 019D W 81CC 41AE 41A8 81CA 4100 FF00 | P 8080 8080 8080 8080 8010 6004 60FC FF06 | F -  (2590 notes; Soul Force)
+      kept: 01AD W 81CC 41AE 41A8 81CA 4100 FF00 | P 8080 8080 8080 8080 8010 6004 60FC FF06 | F -
+  ~ 01AD W 81C8 41A8 4100 FF00 | P 8080 8080 8080 8010 6004 60FC FF05 | F -  (2560 notes; Soul Force)
+      kept: 019D W 81C8 41A8 4100 FF00 | P 8080 8080 8080 8010 6004 60FC FF05 | F -
+  ~ 018D W 81C8 41A8 4100 FF00 | P 8080 8080 8080 8010 6004 60FC FF05 | F -  (2324 notes; Soul Force, Zeta Wing)
+      kept: 019D W 81C8 41A8 4100 FF00 | P 8080 8080 8080 8010 6004 60FC FF05 | F -
+  ~ 00F8 W 1100 FF00 | P - | F -  (2218 notes; Zeta Wing)
+      kept: 00F9 W 1100 FF00 | P - | F -
+  ~ 00AA W 1100 FF00 | P 8078 20E0 FF00 | F -  (1968 notes; Soul Force)
+      kept: 009A W 1100 FF00 | P - | F -
+  ~ 018B W 4100 FF00 | P 8050 050A 05F6 FF02 | F -  (1817 notes; Soul Force)
+      kept: 017B W 4100 FF00 | P 8050 050A 05F6 FF02 | F -
+  ~ 0089 W 1100 FF00 | P - | F -  (1500 notes; Soul Force)
+      kept: 009A W 1100 FF00 | P - | F -
+  ~ 00CA W 1100 FF00 | P - | F -  (1402 notes; Neutron, Soul Force)
+      kept: 00C9 W 1100 FF00 | P - | F -
+  ~ 80E9 W 1100 FF00 | P - | F -  (1342 notes; Soul Force)
+      kept: 80F9 W 1100 FF00 | P - | F -
+  ~ 026D W 81C8 41A8 4100 FF00 | P 8080 8080 8080 8010 6004 60FC FF05 | F -  (1251 notes; Santron)
+      kept: 017D W 81C8 41A8 4100 FF00 | P 8080 8080 8080 8010 6004 60FC FF05 | F -
+  ~ 0098 W 1100 FF00 | P - | F -  (1152 notes; Soul Force)
+      kept: 00A8 W 1100 FF00 | P - | F -
+  ~ 018D W 81CC 41AE 41A8 81CA 4100 FF00 | P 8080 8080 8080 8080 8050 050A 05F6 FF06 | F -  (1059 notes; Soul Force)
+      kept: 019D W 81CC 41AE 41A8 81CA 4100 FF00 | P 8080 8080 8080 8080 8050 050A 05F6 FF06 | F -
+  ~ 01A8 W 81C8 41AC 41A4 80C4 80C0 FF00 | P 8080 8080 8080 8080 FF00 | F -  (901 notes; Zeta Wing)
+      kept: 00A8 W 81C8 41AC 41A4 80C4 80C0 FF00 | P 8080 FF00 | F -
+  ~ 018C W 4100 FF00 | P 8010 3002 30FE FF02 | F -  (797 notes; Soul Force)
+      kept: 018B W 4100 FF00 | P 8010 3002 30FE FF02 | F -
+  ~ 018D W 81C8 41A8 4100 FF00 | P 8080 8080 8080 8050 050A 05F6 FF05 | F -  (791 notes; Soul Force)
+      kept: 019D W 81C8 41A8 4100 FF00 | P 8080 8080 8080 8050 050A 05F6 FF05 | F -
+  ~ 017B W 4100 FF00 | P 8010 3002 30FE FF02 | F -  (791 notes; Soul Force)
+      kept: 018B W 4100 FF00 | P 8010 3002 30FE FF02 | F -
+  ~ 0069 W 4100 C128 | P 8080 FF00 | F -  (748 notes; Soul Force)
+      kept: 0059 W 4100 C128 | P 8080 FF00 | F -
+  ~ 00D8 W 81C8 41AC 41A4 80C4 80C0 FF00 | P 8080 FF00 | F -  (681 notes; Soul Force)
+      kept: 00C8 W 81C8 41AC 41A4 80C4 80C0 FF00 | P 8080 FF00 | F -
+  ~ 00B9 W 1100 FF00 | P - | F -  (666 notes; Briley Witch Chronicles)
+      kept: 00A8 W 1100 FF00 | P - | F -
+  ~ 0069 W 1100 FF00 | P 80C0 20FC 2004 FF02 | F -  (655 notes; Briley Witch Chronicles)
+      kept: 0069 W 1100 FF00 | P - | F -
+  ~ 008C W 1100 FF00 | P - | F -  (574 notes; Briley Witch Chronicles)
+      kept: 008B W 1100 FF00 | P - | F -
+  ~ 019B W 81C8 41A8 4100 FF00 | P 8080 8080 8080 8010 6004 60FC FF05 | F -  (504 notes; Soul Force)
+      kept: 01AA W 81C8 41A8 4100 FF00 | P 8080 8080 8080 8010 6004 60FC FF05 | F -
+  ~ 019C W 81C8 41A8 4100 FF00 | P 8080 8080 8080 8010 6004 60FC FF05 | F -  (486 notes; Briley Witch Chronicles, Soul Force)
+      kept: 019D W 81C8 41A8 4100 FF00 | P 8080 8080 8080 8010 6004 60FC FF05 | F -
+  ~ 00D8 W 1100 FF00 | P - | F -  (460 notes; Briley Witch Chronicles, Soul Force)
+      kept: 00C9 W 1100 FF00 | P - | F -
+  ~ 017A W 4100 FF00 | P 8010 3002 30FE FF02 | F -  (438 notes; Soul Force)
+      kept: 018B W 4100 FF00 | P 8010 3002 30FE FF02 | F -
+  ~ 009A W 81C8 41A8 4100 FF00 | P 8080 8080 8080 8010 6004 60FC FF05 | F -  (421 notes; Briley Witch Chronicles)
+      kept: 01AA W 81C8 41A8 4100 FF00 | P 8080 8080 8080 8010 6004 60FC FF05 | F -
+  ~ 017E W 81C8 41A8 4100 FF00 | P 8080 8080 8080 8010 6004 60FC FF05 | F -  (419 notes; Soul Force)
+      kept: 017D W 81C8 41A8 4100 FF00 | P 8080 8080 8080 8010 6004 60FC FF05 | F -
+  ~ 008C W 81CC 41AE 41A8 81CA 4100 FF00 | P 8080 8080 8080 8080 8010 6004 60FC FF06 | F -  (398 notes; Briley Witch Chronicles)
+      kept: 018D W 81CC 41AE 41A8 81CA 4100 FF00 | P 8080 8080 8080 8080 8010 6004 60FC FF06 | F -
+  ~ 0069 W 1100 9000 900C FF02 | P - | F -  (384 notes; Soul Force)
+      kept: 0059 W 1100 9000 900C FF02 | P - | F -
+  ~ 01AA W 81CC 41AE 41A8 81CA 4100 FF00 | P 8080 8080 8080 8080 8010 6004 60FC FF06 | F -  (375 notes; Soul Force)
+      kept: 019B W 81CC 41AE 41A8 81CA 4100 FF00 | P 8080 8080 8080 8080 8010 6004 60FC FF06 | F -
+  ~ 00C7 W 81C8 41AC 41A4 80C4 80C0 FF00 | P 8080 FF00 | F -  (360 notes; Soul Force)
+      kept: 00C8 W 81C8 41AC 41A4 80C4 80C0 FF00 | P 8080 FF00 | F -
+  ~ 017B W 4100 9800 DC08 | P 8010 3002 30FE FF02 | F -  (328 notes; Neutron)
+      kept: 006B W 4100 9800 DC08 | P 8010 3002 30FE FF02 | F -
+  ~ 007E W 81C4 4100 FF00 | P 8060 200C 20F4 FF02 | F -  (320 notes; Briley Witch Chronicles)
+      kept: 006F W 81C4 4100 FF00 | P 8060 200C 20F4 FF02 | F -
+  ~ 007A W 1100 FF00 | P - | F -  (312 notes; Soul Force)
+      kept: 0069 W 1100 FF00 | P - | F -
+  ~ 008D W 81CC 41AE 41A8 81CA 4100 FF00 | P 8080 8080 8080 8080 8010 6004 60FC FF06 | F -  (300 notes; Soul Force)
+      kept: 018D W 81CC 41AE 41A8 81CA 4100 FF00 | P 8080 8080 8080 8080 8010 6004 60FC FF06 | F -
+  ~ 008B W 4100 FF00 | P 808C 0A03 0AFD FF02 | F -  (293 notes; Soul Force)
+      kept: 009A W 4100 FF00 | P 808C 0A03 0AFD FF02 | F -
+  ~ 019A W 81C8 41A8 4100 FF00 | P 8080 8080 8080 8010 6004 60FC FF05 | F -  (288 notes; Soul Force)
+      kept: 01AA W 81C8 41A8 4100 FF00 | P 8080 8080 8080 8010 6004 60FC FF05 | F -
+  ~ 017C W 4100 FF00 | P 8028 2804 28FC FF02 | F -  (257 notes; Briley Witch Chronicles)
+      kept: 016C W 4100 FF00 | P 8028 2804 28FC FF02 | F -
+  ~ 017C W 81CC 41AE 41A8 81CA 4100 FF00 | P 8080 8080 8080 8080 8010 6004 60FC FF06 | F -  (220 notes; Briley Witch Chronicles)
+      kept: 016D W 81CC 41AE 41A8 81CA 4100 FF00 | P 8080 8080 8080 8080 8010 6004 60FC FF06 | F -
+  ~ 018E W 81CC 41AE 41A8 81CA 4100 FF00 | P 8080 8080 8080 8080 8010 6004 60FC FF06 | F -  (207 notes; Soul Force)
+      kept: 018D W 81CC 41AE 41A8 81CA 4100 FF00 | P 8080 8080 8080 8080 8010 6004 60FC FF06 | F -
+  ~ 019C W 4100 FF00 | P 8010 3002 30FE FF02 | F -  (168 notes; Soul Force)
+      kept: 018B W 4100 FF00 | P 8010 3002 30FE FF02 | F -
+  ~ 007B W 4100 FF00 | P 8010 3002 30FE FF02 | F -  (150 notes; Soul Force)
+      kept: 018B W 4100 FF00 | P 8010 3002 30FE FF02 | F -
+  ~ 006A W 4100 C214 | P 80B4 FF00 | F -  (132 notes; Briley Witch Chronicles)
+      kept: 007A W 4100 C214 | P 80B4 FF00 | F -
+  ~ D06A W 4100 9003 9007 9000 FF02 | P 8060 200C 20F4 FF02 | F -  (132 notes; Soul Force)
+      kept: D05A W 4100 9003 9007 9000 FF02 | P 8060 200C 20F4 FF02 | F -
+  ~ 006B W 4100 FF00 | P 8030 1404 14FC FF02 | F -  (127 notes; Briley Witch Chronicles)
+      kept: 007B W 4100 FF00 | P 8030 1404 14FC FF02 | F -
+  ~ 00B9 W 1100 900C 9000 FF02 | P - | F -  (120 notes; Soul Force)
+      kept: 00C9 W 1100 900C 9000 FF02 | P - | F -
+  ~ 019C W 81CC 41AE 41A8 81CA 4100 FF00 | P 8080 8080 8080 8080 8010 6004 60FC FF06 | F -  (117 notes; Briley Witch Chronicles)
+      kept: 01AD W 81CC 41AE 41A8 81CA 4100 FF00 | P 8080 8080 8080 8080 8010 6004 60FC FF06 | F -
+  ~ 0089 W 4100 900C 9007 9000 FF02 | P 8010 0503 05FD FF02 | F -  (100 notes; Briley Witch Chronicles)
+      kept: 008A W 4100 900C 9007 9000 FF02 | P 8010 0503 05FD FF02 | F -
+  ~ 00CD W 1100 C21E | P - | F -  (94 notes; Briley Witch Chronicles)
+      kept: 00BD W 1100 C21E | P - | F -
+  ~ 019E W 81CC 41AE 41A8 81CA 4100 FF00 | P 8080 8080 8080 8080 8010 6004 60FC FF06 | F -  (84 notes; Soul Force)
+      kept: 01AD W 81CC 41AE 41A8 81CA 4100 FF00 | P 8080 8080 8080 8080 8010 6004 60FC FF06 | F -
+  ~ 20FA W 1100 FF00 | P - | F -  (72 notes; Soul Force)
+      kept: 00F9 W 1100 FF00 | P - | F -
+  ~ 7A89 W 1100 FF00 | P - | F -  (60 notes; Briley Witch Chronicles)
+      kept: 7A7A W 1100 FF00 | P - | F -
+  ~ 3089 W 4100 FF00 | P 8060 0A02 0AFE FF02 | F -  (56 notes; Soul Force)
+      kept: 3089 W 4100 FF00 | P 80A0 0A01 0AFF FF02 | F -
+  ~ 0000 W E050 | P - | F -  (56 notes; Soul Force)
+      kept: 0000 W E040 | P - | F -
+  ~ 007B W 4100 C220 | P 8040 0CFC 0A02 0AFE FF03 | F -  (53 notes; Briley Witch Chronicles)
+      kept: 008B W 4100 C220 | P 8040 0CFC 0A02 0AFE FF03 | F -
+  ~ 007A W 4100 FF00 | P 803C FF00 | F -  (48 notes; Briley Witch Chronicles)
+      kept: 008A W 4100 FF00 | P 803D FF00 | F -
+  ~ 019A W 81CC 41AE 41A8 81CA 4100 FF00 | P 8080 8080 8080 8080 8010 6004 60FC FF06 | F -  (40 notes; Soul Force)
+      kept: 019B W 81CC 41AE 41A8 81CA 4100 FF00 | P 8080 8080 8080 8080 8010 6004 60FC FF06 | F -
+  ~ 008C W 4100 C804 | P 808C 0A03 0AFD FF02 | F -  (20 notes; Briley Witch Chronicles)
+      kept: 008B W 4100 C804 | P 808C 0A03 0AFD FF02 | F -
+  ~ 008E W 81CC 80C2 80BC 4100 FF00 | P 8010 6004 60FC FF02 | F -  (12 notes; Soul Force)
+      kept: 008D W 81CC 80C2 80BC 4100 FF00 | P 8010 6004 60FC FF02 | F -
+  ~ C0FA W 1100 9103 9107 9100 FF02 | P 80A0 0808 08F8 FF02 | F -  (6 notes; Soul Force)
+      kept: C0FA W 1100 9103 9107 9100 FF02 | P 8060 200C 20F4 FF02 | F -
+  ~ 008D W 1100 FF00 | P 8070 2004 20FC FF02 | F -  (0 notes; Briley Witch Chronicles)
+      kept: 008D W 1100 FF00 | P 80C0 20FC 2004 FF02 | F -
+  ~ 0000 W E040 | P - | F -  (0 notes; Briley Witch Chronicles)
+      kept: 0000 W E03C | P - | F -
+  ~ 009B W 1100 FF00 | P - | F -  (0 notes; Briley Witch Chronicles)
+      kept: 009A W 1100 FF00 | P - | F -
+  ~ 406B W 4100 C828 | P 8060 200C 20F4 FF02 | F -  (0 notes; Soul Force)
+      kept: 405B W 4100 C828 | P 8060 200C 20F4 FF02 | F -
+  ~ 107C W 4100 9800 C440 | P 808C 0A03 0AFD FF02 | F -  (0 notes; Soul Force)
+      kept: 007C W 4100 9700 C440 | P 808C 0A03 0AFD FF02 | F -
+  ~ 006C W 4100 9700 C440 | P 808C 0A03 0AFD FF02 | F -  (0 notes; Soul Force)
+      kept: 007C W 4100 9700 C440 | P 808C 0A03 0AFD FF02 | F -
+
+Lasse Öörni (Cadaver): 59 of 534
+  ~ 045A W 2100 9103 9107 910C 9100 FF02 | P - | F -  (268 notes; Steel Ranger)
+      kept: 046A W 2100 9103 9107 910C 9100 FF02 | P - | F -
+  ~ 037D W 2100 900C 9000 FF02 | P 8010 FF00 | F -  (208 notes; Steel Ranger)
+      kept: 028D W 2100 900C 9000 FF02 | P 8010 FF00 | F -
+  ~ 0249 W 9300 C310 2100 4100 FF01 | P 8014 2006 30FE 3002 FF03 | F -  (184 notes; Steel Ranger)
+      kept: 035A W 9300 C310 2100 4100 FF01 | P 8014 2006 30FE 3002 FF03 | F -
+  ~ 039B W A000 C438 2100 4300 4100 FF01 | P 8018 2004 4001 40FF FF03 | F 94D8 20FF 2001 FF02  (182 notes; Hessian)
+      kept: 038B W 2100 4300 4100 A000 C438 | P 8018 2004 4001 40FF FF03 | F 94D8 20FF 2001 FF02
+  ~ 045A W 2100 9005 900C 9000 FF02 | P - | F -  (160 notes; Steel Ranger)
+      kept: 035B W 2100 9005 900C 9000 FF02 | P - | F -
+  ~ 0588 W 81C8 4114 4110 80C4 400E 900C 900A 9008 9006 9004 9002 FF00 | P 8080 FF00 | F -  (150 notes; Hessian)
+      kept: 0578 W 81C8 4114 4110 80C4 400E 900C 900A 9008 9006 9004 9002 FF00 | P 8080 FF00 | F -
+  ~ 335B W 9200 C304 5100 2100 4100 4000 FF01 | P 8004 0C04 4002 40FE FF03 | F -  (110 notes; Steel Ranger)
+      kept: 336B W 5100 2100 4100 4000 9200 C304 | P 8004 0C04 4002 40FE FF03 | F -
+  ~ 029C W 9500 C30C 81D8 4100 FF01 | P 8020 1002 19FE 1902 FF03 | F 94F0 24FF 2401 FF02  (80 notes; Hessian)
+      kept: 028C W 81D8 4100 9500 C30C | P 8020 1002 19FE 1902 FF03 | F 94F0 24FF 2401 FF02
+  ~ 0668 W 81C8 4114 4110 80C4 400E 900C 900A 9008 9006 9004 9002 FF00 | P 8080 FF00 | F -  (73 notes; Hessian)
+      kept: 0578 W 81C8 4114 4110 80C4 400E 900C 900A 9008 9006 9004 9002 FF00 | P 8080 FF00 | F -
+  ~ 06BA W 9A00 C304 81C8 41A8 41A2 4100 FF01 | P 2002 20FE FF01 8080 0100 10FC FF01 | F 92A8 0601 06FF FF02 92F0 05F0 FF01  (48 notes; Hessian)
+      kept: 07BA W 9A00 C304 81C8 41A8 41A2 4100 FF01 | P 2002 20FE FF01 8080 0100 10FC FF01 | F 92A8 0601 06FF FF02 92F0 05F0 FF01
+  ~ 0000 W E070 | P - | F -  (47 notes; Hessian, Steel Ranger)
+      kept: 0000 W E060 | P - | F -
+  ~ 00D9 W 81C8 41AB 41A8 80CC 40A8 80D0 FF04 | P 8080 FF00 | F -  (44 notes; Steel Ranger)
+      kept: 00E9 W 81C8 41AB 41A8 80CC 40A8 80D0 FF04 | P 8080 FF00 | F -
+  ~ 00BE W 9700 C306 81DF 4100 FF01 | P 801C 1403 20FE 2002 FF03 | F 92EC 48FE 1001 1002 10FE 10FF FF03  (34 notes; Steel Ranger)
+      kept: 00CE W 81DF 4100 9700 C306 | P 801C 1403 20FE 2002 FF03 | F 92EC 48FE 1001 1002 10FE 10FF FF03
+  ~ 068C W 9500 C320 5100 4100 FF01 | P 8010 1003 10FD FF02 | F -  (32 notes; Hessian)
+      kept: 067C W 9500 C320 5100 4100 FF01 | P 8010 1003 10FD FF02 | F -
+  ~ 069D W A000 C428 5100 4100 FF01 | P 8002 3002 30FE 3002 FF03 | F -  (24 notes; Steel Ranger)
+      kept: 06AD W 5100 4100 A000 C428 | P 8002 3002 30FE 3002 FF03 | F -
+  ~ 044B W 4100 9204 9207 920C 9200 FF02 | P 8004 2806 30FC 3004 FF03 | F -  (24 notes; Steel Ranger)
+      kept: 045B W 4100 9204 9207 920C 9200 FF02 | P 8004 2806 30FC 3004 FF03 | F -
+  ~ 0488 W 81C8 4114 4110 80C4 400E 900C 900A 9008 9006 9004 9002 FF00 | P 8080 FF00 | F -  (22 notes; Little Sentient Hatchback VS ...)
+      kept: 0578 W 81C8 4114 4110 80C4 400E 900C 900A 9008 9006 9004 9002 FF00 | P 8080 FF00 | F -
+  ~ 0000 W E050 | P - | F -  (19 notes; Hessian, Little Sentient Hatchback VS ..., Steel Ranger)
+      kept: 0000 W E040 | P - | F -
+  ~ 006D W 4100 9303 9307 9300 FF02 | P 8008 1001 2003 20FD FF03 | F -  (19 notes; Steel Ranger)
+      kept: 005E W 4100 9303 9307 9300 FF02 | P 8008 1001 2003 20FD FF03 | F -
+  ~ 034A W 4100 9204 9207 920C 9200 FF02 | P 8004 2806 30FC 3004 FF03 | F -  (18 notes; Hessian)
+      kept: 045B W 4100 9204 9207 920C 9200 FF02 | P 8004 2806 30FC 3004 FF03 | F -
+  ~ 047D W 4300 9A00 C320 | P 80E0 0F02 FF01 | F -  (16 notes; Steel Ranger)
+      kept: 048D W 9A00 C320 4300 FF01 | P 80E0 0F02 FF01 | F -
+  ~ 0000 W E048 | P - | F -  (15 notes; Hessian)
+      kept: 0000 W E040 | P - | F -
+  ~ 0000 W E230 | P - | F -  (14 notes; Hessian)
+      kept: 0000 W E200 | P - | F -
+  ~ 044B W 4100 9203 9207 920C 9200 FF02 | P 8004 2806 30FC 3004 FF03 | F -  (14 notes; Steel Ranger)
+      kept: 034A W 4100 9203 9207 920C 9200 FF02 | P 8004 2806 30FC 3004 FF03 | F -
+  ~ 077D W 2100 9207 920C 9207 9200 FF02 | P - | F -  (12 notes; Steel Ranger)
+      kept: 067C W 2100 9207 920C 9207 9200 FF02 | P - | F -
+  ~ 0000 W E140 | P - | F -  (10 notes; Hessian)
+      kept: 0000 W E100 | P - | F -
+  ~ 028C W 4100 A600 9C00 C420 | P 8000 1807 1004 10FC FF03 | F 94D8 30FF 3001 FF02  (10 notes; Steel Ranger)
+      kept: 029C W 4100 A600 9C00 C420 | P 8000 1807 1004 10FC FF03 | F 94D8 30FF 3001 FF02
+  ~ 0000 W E01A | P - | F -  (9 notes; Hessian)
+      kept: 0000 W E020 | P - | F -
+  ~ 046C W 2100 9207 920C 9207 9200 FF02 | P - | F -  (9 notes; Steel Ranger)
+      kept: 055D W 2100 9207 920C 9207 9200 FF02 | P - | F -
+  ~ 0000 W E30C | P - | F -  (7 notes; Hessian)
+      kept: 0000 W E304 | P - | F -
+  ~ 25AE W 9C00 C324 2100 FF01 | P - | F -  (7 notes; Steel Ranger)
+      kept: 259E W 2100 9C00 C324 | P - | F -
+  ~ 0000 W E028 | P - | F -  (6 notes; Hessian, Steel Ranger)
+      kept: 0000 W E020 | P - | F -
+  ~ 035B W 4100 9303 9307 9300 FF02 | P 8080 0401 10FA 1006 FF03 | F -  (6 notes; Little Sentient Hatchback VS ...)
+      kept: 034B W 4100 9303 9307 9300 FF02 | P 8080 0401 10FA 1006 FF03 | F -
+  ~ 045B W 4100 9203 9207 920C 9200 FF02 | P 8004 2806 30FC 3004 FF03 | F -  (6 notes; Steel Ranger)
+      kept: 034A W 4100 9203 9207 920C 9200 FF02 | P 8004 2806 30FC 3004 FF03 | F -
+  ~ 0000 W E038 | P - | F -  (5 notes; Steel Ranger)
+      kept: 0000 W E040 | P - | F -
+  ~ 0000 W E068 | P - | F -  (5 notes; Steel Ranger)
+      kept: 0000 W E060 | P - | F -
+  ~ 035B W 4100 9304 9307 9300 FF02 | P 8080 0401 10FA 1006 FF03 | F -  (4 notes; Little Sentient Hatchback VS ...)
+      kept: 034B W 4100 9304 9307 9300 FF02 | P 8080 0401 10FA 1006 FF03 | F -
+  ~ 090A W 81C8 41AB 41A7 80C2 80D0 40A8 4098 FF04 | P 8080 FF00 | F 92F8 08FD 50FE FF00  (4 notes; Steel Ranger)
+      kept: 0909 W 81C8 41AB 41A7 80C2 80D0 40A8 4098 FF04 | P 8080 FF00 | F 92F8 08FD 50FE FF00
+  ~ 0000 W E0A0 | P - | F -  (4 notes; Steel Ranger)
+      kept: 0000 W E080 | P - | F -
+  ~ 0000 W E024 | P - | F -  (3 notes; Hessian)
+      kept: 0000 W E020 | P - | F -
+  ~ 069D W 4300 4100 4300 4100 9C00 C30C | P 8008 2006 30FC 3004 FF03 | F -  (3 notes; Steel Ranger)
+      kept: 079D W 4300 4100 4300 4100 9C00 C30C | P 8008 2006 30FC 3004 FF03 | F -
+  ~ 0000 W E02C | P - | F -  (2 notes; Hessian)
+      kept: 0000 W E030 | P - | F -
+  ~ 0099 W 81CC 41AA 41A6 80C6 80D8 FF00 | P 8080 FF00 | F -  (2 notes; Hessian)
+      kept: 0089 W 81CC 41AA 41A6 80C6 80D8 FF00 | P 8080 FF00 | F -
+  ~ 0000 W E0E0 | P - | F -  (2 notes; Hessian)
+      kept: 0000 W E100 | P - | F -
+  ~ 006C W C318 4100 FF01 | P 8000 7F01 FF02 | F -  (2 notes; Hessian)
+      kept: 005C W 4100 C318 | P 8000 7F01 FF02 | F -
+  = 02CC W 81D8 4100 950C 9500 FF03 | P 8040 3002 30FE FF02 | F 94E0 78FF 30FF FF00  (2 notes; Hessian)
+      kept: 02CC W 81D8 4100 950C 9500 FF03 | P 8040 3002 30FE FF02 | F 94E0 78FF 7801 FF02
+  ~ 0000 W E088 | P - | F -  (2 notes; Hessian)
+      kept: 0000 W E080 | P - | F -
+  ~ 025E W 4100 9205 9207 920C 9200 FF02 | P 8000 2803 30FE 3002 FF03 | F -  (2 notes; Steel Ranger)
+      kept: 024E W 4100 9205 9207 920C 9200 FF02 | P 8000 2803 30FE 3002 FF03 | F -
+  ~ 0000 W E012 | P - | F -  (1 notes; Hessian)
+      kept: 0000 W E010 | P - | F -
+  ~ 035C W 5100 4100 9107 910C 9100 FF03 | P 80C0 1C02 38FF FF02 | F -  (1 notes; Hessian)
+      kept: 035D W 5100 4100 9107 910C 9100 FF03 | P 80C0 1C02 38FF FF02 | F -
+  ~ 0000 W E120 | P - | F -  (1 notes; Hessian)
+      kept: 0000 W E100 | P - | F -
+  ~ 06AC W 81D0 4100 FF00 | P 8040 3002 30FE FF02 | F -  (1 notes; Hessian)
+      kept: 06BC W 81D0 4100 FF00 | P 8040 3002 30FE FF02 | F -
+  ~ BE6F W 4100 9600 C404 | P 8040 2804 28FC FF02 | F -  (1 notes; Steel Ranger)
+      kept: CE6F W 4100 9600 C404 | P 8040 2804 28FC FF02 | F -
+  ~ 024E W 4100 9205 9209 920C 9200 FF02 | P 8000 2803 30FE 3002 FF03 | F -  (1 notes; Steel Ranger)
+      kept: 025E W 4100 9205 9209 920C 9200 FF02 | P 8000 2803 30FE 3002 FF03 | F -
+  ~ 007D W - | P - | F -  (0 notes; Little Sentient Hatchback VS ...)
+      kept: 007C W - | P - | F -
+  ~ 00BD W - | P - | F -  (0 notes; Steel Ranger)
+      kept: 00AC W - | P - | F -
+  ~ 008D W - | P - | F -  (0 notes; Steel Ranger)
+      kept: 007C W - | P - | F -
+  ~ 006C W - | P - | F -  (0 notes; Steel Ranger)
+      kept: 005B W - | P - | F -
+  ~ 005C W - | P - | F -  (0 notes; Steel Ranger)
+      kept: 005B W - | P - | F -
+
+Mauro Staci (MAT64): 6 of 111
+  ~ 1FF5 W 81DF 41AD 80AB 80DF 80C0 FF00 | P 8088 FF00 | F -  (333 notes; Gaiares - Mission 2)
+      kept: 0FF5 W 81DF 41AD 80AB 80DF 80C0 FF00 | P 8088 FF00 | F -
+  ~ 0A00 W 4100 FF00 | P 8088 7F02 FF00 | F -  (268 notes; Uridium 2)
+      kept: 2900 W 4100 FF00 | P 8088 7F02 FF00 | F -
+  ~ 0404 W 81DF FF00 | P - | F -  (202 notes; Strawberry Strings)
+      kept: 0404 W 81DF FF00 | P 8088 FF00 | F -
+  = 0A00 W 81DF 41A4 40A0 4100 FF00 | P 8088 7F02 FF00 | F -  (36 notes; Strawberry Strings)
+      kept: 0A00 W 81DF 41A4 40A0 4100 FF00 | P 8088 7F02 FF02 | F -
+  ~ 9A88 W 4100 C40F | P 8090 0101 0100 FF02 | F -  (20 notes; Adventure 1)
+      kept: 9A77 W 4100 C40F | P 8090 0101 0100 FF02 | F -
+  = 2A00 W 4100 FF00 | P 8088 7F02 FF00 | F -  (16 notes; Strawberry Strings)
+      kept: 2A00 W 4100 FF00 | P 8088 7F02 FF02 | F -
+
+Péter Nagy-Miklós (NecroPolo): 9 of 125
+  ~ 008E W 4100 5507 310C 1100 C280 | P 8040 6001 7FFF 1F01 FF02 | F D13F 7F01 7FFF FF01  (200 notes; The Fender of the Crown)
+      kept: 007E W 4100 5507 310C 1100 C280 | P 8040 6001 7FFF 1F01 FF02 | F D13F 7F01 7FFF FF01
+  ~ 012B W 4100 9107 910C 9100 FF02 | P 8040 6001 7FFF 1F01 FF02 | F -  (196 notes; Rising Sun)
+      kept: 023B W 4100 9107 910C 9100 FF02 | P 8040 6001 7FFF 1F01 FF02 | F -
+  ~ 125F W 4700 C280 | P 8020 6802 70FE 0802 FF02 | F -  (166 notes; Minorita, Rising Sun, S-Blox, Test NT)
+      kept: 026F W 4700 C280 | P 8020 6802 70FE 0802 FF02 | F -
+  ~ 116F W 4700 C380 | P 8020 6802 70FE 0802 FF02 | F -  (67 notes; Ninfa (outro))
+      kept: 127F W 4700 C380 | P 8020 6802 70FE 0802 FF02 | F -
+  ~ 026D W 5100 4100 9800 C410 | P 8004 2903 25FD 2503 FF03 | F -  (22 notes; Ninfa (intro), Ninfa (outro))
+      kept: 027D W 5100 4100 9800 C410 | P 8004 2903 25FD 2503 FF03 | F -
+  ~ 0000 W E048 | P - | F -  (17 notes; The Fender of the Crown, Minorita, Ninfa (outro), Rising Sun, Test NT)
+      kept: 0000 W E050 | P - | F -
+  ~ 0000 W E01D | P - | F -  (2 notes; Bricks'n'Balls)
+      kept: 0000 W E020 | P - | F -
+  ~ 0000 W E021 | P - | F -  (1 notes; Bricks'n'Balls)
+      kept: 0000 W E020 | P - | F -
+  ~ 0000 W E240 | P - | F -  (1 notes; Wavemode)
+      kept: 0000 W E280 | P - | F -
+
+Marc van den Bovenkamp (No-XS): 2 of 11
+  ~ 0444 W 81D2 41A6 80CC FF00 | P 8070 FF00 | F -  (10 notes; Postex 2018)
+      kept: 0454 W 81D2 41A6 80CC FF00 | P 8070 FF00 | F -
+  ~ 0494 W 81D2 41A6 80CC FF00 | P 8070 FF00 | F -  (10 notes; Postex 2018)
+      kept: 04A4 W 81D2 41A6 80CC FF00 | P 8070 FF00 | F -
+
+Simone Bevilacqua (Saimo): 5 of 17
+  ~ 00FA W 1100 1000 FF00 | P - | F -  (166 notes; QUOD INIT EXIT IIo (preview))
+      kept: 00F9 W 1100 1000 FF00 | P - | F -
+  ~ 00FA W 1105 1000 FF00 | P - | F -  (75 notes; QUOD INIT EXIT IIo (preview))
+      kept: 00F9 W 1105 1000 FF00 | P - | F -
+  ~ 001A W 100C 9400 FF01 | P - | F -  (13 notes; QUOD INIT EXIT IIo (preview))
+      kept: 0019 W 100C 9400 FF01 | P - | F -
+  ~ 0038 W 81DF 41AA 80D8 80D0 80C8 FF00 | P 8080 FF00 | F -  (10 notes; QUOD INIT EXIT IIo (preview))
+      kept: 0048 W 81DF 41AA 80D8 80D0 80C8 FF00 | P 8080 FF00 | F -
+  ~ 0058 W 81DF 41AA 80D8 80D0 80C8 FF00 | P 8080 FF00 | F -  (10 notes; QUOD INIT EXIT IIo (preview))
+      kept: 0068 W 81DF 41AA 80D8 80D0 80C8 FF00 | P 8080 FF00 | F -
+
+Jan Rödig (Spider Jerusalem): 17 of 438
+  ~ 06B9 W 81CF 41A2 4100 FF00 | P 8080 0100 8050 1003 FF00 | F C112 9104 0700 0101 FF03  (162 notes; Red Serpent Intro)
+      kept: 06B9 W 81CF 41A2 4100 FF00 | P 8080 0100 8050 1003 FF00 | F C112 9104 0500 0101 FF03
+  ~ 00E9 W 210C 2100 200C 2000 FF03 | P - | F -  (109 notes; Mein Verlies)
+      kept: 00F9 W 210C 2100 200C 2000 FF03 | P - | F -
+  ~ 0000 W FE00 | P - | F -  (90 notes; Cheesetro Tune, Speedtro Tune)
+      kept: 0000 W FEFF | P - | F -
+  = 0FF8 W 1700 FF00 | P - | F 0100 FF01  (16 notes; Megalovania)
+      kept: 0FF8 W 1700 FF00 | P - | F -
+  ~ 0000 W E042 | P - | F -  (15 notes; Oldskewl Vibrators)
+      kept: 0000 W E040 | P - | F -
+  ~ 0000 W E050 | P - | F -  (15 notes; Sunday)
+      kept: 0000 W E040 | P - | F -
+  ~ 0000 W E0D8 | P - | F -  (14 notes; We Cracks from the Countryside)
+      kept: 0000 W E0F0 | P - | F -
+  ~ 0000 W E120 | P - | F -  (8 notes; Pushing Onwards)
+      kept: 0000 W E0F0 | P - | F -
+  ~ 005A W 4100 4000 FF00 | P 0101 0300 FF01 | F B302 0101 FF02  (6 notes; Connect Me)
+      kept: 0069 W 4100 4000 FF00 | P 0101 0300 FF01 | F B302 0101 FF02
+  ~ 0000 W E060 | P - | F -  (5 notes; I Held That Cheese for 2 Mins..., Oldskewl Vibrators)
+      kept: 0000 W E070 | P - | F -
+  ~ 708A W 4100 9D00 C228 | P 8081 FF00 | F -  (5 notes; We Cracks from the Countryside)
+      kept: 808A W 4100 9D00 C228 | P 8081 FF00 | F -
+  ~ 0000 W E0F8 | P - | F -  (4 notes; Week in Progress)
+      kept: 0000 W E0F0 | P - | F -
+  ~ B099 W 4100 FF00 | P 80A8 0200 20FC 4002 10FF 1001 FF05 | F -  (2 notes; Mein Verlies)
+      kept: C099 W 4100 FF00 | P 80A8 0200 20FC 4002 10FF 1001 FF05 | F -
+  ~ 0000 W E048 | P - | F -  (0 notes; Simple Tune)
+      kept: 0000 W E040 | P - | F -
+  ~ 0000 W - | P 01FA FF01 | F -  (0 notes; We Cracks from the Countryside)
+      kept: 0001 W - | P - | F -
+  ~ 0000 W - | P 8081 FF00 | F -  (0 notes; We Cracks from the Countryside)
+      kept: 0001 W - | P - | F -
+  ~ 0000 W - | P 0102 FF01 | F -  (0 notes; Week in Progress)
+      kept: 0001 W - | P - | F -
+
+Alexander Ney: 44 of 417
+  ~ 016E W 4100 C10D | P 8018 FF01 | F -  (387 notes; Sam's Journey)
+      kept: 017E W 4100 C10D | P 8018 FF01 | F -
+  ~ 206F W 4118 410C 9100 110C C221 | P 8062 0A09 FF02 | F -  (360 notes; Sam's Journey)
+      kept: 016F W 4118 410C 9100 110C C221 | P 8062 0A09 FF02 | F -
+  ~ 0079 W 410C 4100 4000 400C 400C 4000 FF00 | P 8081 8071 FF01 | F -  (282 notes; Sam's Journey)
+      kept: 0069 W 410C 4100 4000 400C 400C 4000 FF00 | P 8081 8071 FF01 | F -
+  ~ 03DF W 41B5 40A2 2000 FF00 | P 8888 8888 8888 7402 FF04 | F B270 B204 B240 B205 FF00  (216 notes; Sam's Journey)
+      kept: 02CF W 41B5 40A2 2000 FF00 | P 8888 8888 8888 7402 FF04 | F B270 B204 B240 B205 FF00
+  ~ 035A W 4100 C21D | P 810A 810C 810F FF01 | F -  (176 notes; Sam's Journey)
+      kept: 024A W 4100 C21D | P 810A 810C 810F FF01 | F -
+  ~ 0089 W 410C 4100 4000 400C 400C 4000 FF00 | P 8081 8071 FF01 | F -  (138 notes; Sam's Journey)
+      kept: 0099 W 410C 4100 4000 400C 400C 4000 FF00 | P 8081 8071 FF01 | F -
+  ~ 01AF W 41C0 41A2 4198 4100 C106 | P 828A 8888 8888 0404 FF04 | F B280 B203 B280 B280 B270 B260 B250 B240 B230 B220 FF00  (118 notes; Sam's Journey)
+      kept: 02AF W 41C0 41A2 4198 4100 C106 | P 828A 8888 8888 0404 FF04 | F B280 B203 B280 B280 B270 B260 B250 B240 B230 B220 FF00
+  ~ 0000 W E20C | P - | F -  (116 notes; Sam's Journey)
+      kept: 0000 W E205 | P - | F -
+  ~ 207F W 4100 C10D | P 8018 FF01 | F -  (110 notes; Sam's Journey)
+      kept: 017E W 4100 C10D | P 8018 FF01 | F -
+  ~ 017F W 4100 C21A | P 1F05 FF01 | F -  (108 notes; Sam's Journey)
+      kept: 007F W 4100 C220 | P 1A06 FF01 | F -
+  ~ 0000 W E20A | P - | F -  (87 notes; Sam's Journey)
+      kept: 0000 W E205 | P - | F -
+  ~ 037F W 470C 9100 4100 C225 | P 8042 0A02 FF02 | F -  (78 notes; Sam's Journey)
+      kept: 038F W 470C 9100 4100 C225 | P 8042 0A02 FF02 | F -
+  ~ 003A W 4100 4103 4107 410C 4107 4103 FF01 | P 1A06 FF01 | F -  (70 notes; Sam's Journey)
+      kept: 004A W 4100 4103 4107 410C 4107 4103 FF01 | P 1A06 FF01 | F -
+  ~ 043A W 2100 110C C309 | P 4103 FF01 | F -  (64 notes; Sam's Journey)
+      kept: 033A W 2100 110C C309 | P 4103 FF01 | F -
+  ~ 0000 W E10C | P - | F -  (64 notes; Sam's Journey)
+      kept: 0000 W E101 | P - | F -
+  ~ 0000 W E224 | P - | F -  (60 notes; Sam's Journey)
+      kept: 0000 W E205 | P - | F -
+  ~ 024A W 4100 C21D | P 0402 8125 FF02 | F -  (48 notes; Sam's Journey)
+      kept: 035A W 4100 C21D | P 0402 8125 FF02 | F -
+  ~ 23AD W 81BC 41A2 2000 FF00 | P 8888 FF00 | F D200 B206 B204 FF00  (32 notes; Sam's Journey)
+      kept: 04AD W 81BC 41A2 2000 FF00 | P 8888 FF00 | F D200 B206 B204 FF00
+  ~ 004F W 81DF 2100 4104 4107 2104 FF02 | P 806F 805F 804F 803F 802F 801F FF01 | F D100 B170 B160 B140 B120 B106 FF00  (32 notes; Sam's Journey)
+      kept: 205F W 81DF 2100 4104 4107 2104 FF02 | P 806F 805F 804F 803F 802F 801F FF01 | F D100 B170 B160 B140 B120 B106 FF00
+  ~ 024A W 81DF FF00 | P 8888 8888 8888 8044 FF04 | F -  (31 notes; Sam's Journey)
+      kept: 025A W 81DF FF00 | P 8062 FF01 | F -
+  ~ 0000 W E132 | P - | F -  (28 notes; Sam's Journey)
+      kept: 0000 W E101 | P - | F -
+  ~ 017E W 2100 C132 | P 8064 0AFA 0A24 FF03 | F -  (24 notes; Sam's Journey)
+      kept: 027E W 2100 C132 | P 8064 0AFA 0A24 FF03 | F -
+  ~ 016E W 2100 C132 | P 8064 0AFA 0A24 FF03 | F -  (18 notes; Sam's Journey)
+      kept: 027E W 2100 C132 | P 8064 0AFA 0A24 FF03 | F -
+  ~ 004E W 2100 C132 | P 8064 0AFA 0A24 FF03 | F -  (18 notes; Sam's Journey)
+      kept: 005E W 2100 C132 | P 8064 0AFA 0A24 FF03 | F -
+  ~ F111 W 1100 1000 FF00 | P - | F -  (14 notes; Sam's Journey)
+      kept: F111 W 1100 1000 FF00 | P 2402 FF01 | F -
+  ~ 0229 W 41B5 40A2 80A5 80DF 9100 0100 FF00 | P 8888 8888 8888 4803 8010 FF04 | F B280 D280 D280 D280 C206 FF00  (12 notes; Sam's Journey)
+      kept: 0329 W 41B5 40A2 80A5 80DF 9100 0100 FF00 | P 8888 8888 8888 4803 8010 FF04 | F B280 D280 D280 D280 C206 FF00
+  ~ 0000 W E208 | P - | F -  (12 notes; Sam's Journey)
+      kept: 0000 W E205 | P - | F -
+  ~ 003E W 8131 8031 FF00 | P 8888 FF00 | F -  (11 notes; Sam's Journey)
+      kept: 002F W 8131 8031 FF00 | P 8888 FF00 | F -
+  ~ 0448 W 41B7 41A2 81DF FF00 | P 8888 8888 8888 0402 FF04 | F -  (11 notes; Sam's Journey)
+      kept: 0438 W 41B7 41A2 81DF FF00 | P 8888 8888 8888 0402 FF04 | F -
+  ~ 00AF W 2100 C124 | P 808F 807F 806F 805F 804F 805F 806F 807F 0F04 FF01 | F -  (8 notes; Sam's Journey)
+      kept: 009F W 2100 C124 | P 8088 FF01 | F -
+  ~ 0000 W E509 | P - | F -  (8 notes; Sam's Journey)
+      kept: 0000 W E50A | P - | F -
+  ~ 0000 W E40C | P - | F -  (8 notes; Sam's Journey)
+      kept: 0000 W E50A | P - | F -
+  ~ F911 W 1100 1000 FF00 | P 8888 8888 8888 8044 FF04 | F -  (7 notes; Sam's Journey)
+      kept: F911 W 1100 1000 FF00 | P 0A0A FF01 | F -
+  ~ 0000 W E724 | P - | F -  (6 notes; Sam's Journey)
+      kept: 0000 W E764 | P - | F -
+  ~ 024A W 4100 C248 | P 0502 0102 FF00 | F -  (4 notes; Sam's Journey)
+      kept: 025A W 4100 C248 | P 0502 0102 FF00 | F -
+  ~ F111 W 1100 1000 FF00 | P 8888 8888 8888 8042 0403 FF05 | F -  (3 notes; Sam's Journey)
+      kept: F111 W 1100 1000 FF00 | P 8888 FF01 | F -
+  ~ F911 W 1100 1000 FF00 | P 8064 0AFA 0A24 FF03 | F -  (2 notes; Sam's Journey)
+      kept: F911 W 1100 1000 FF00 | P 0A0A FF01 | F -
+  ~ 20AF W 4100 C225 | P 8092 0A11 FF02 | F -  (1 notes; Sam's Journey)
+      kept: 20BF W 4100 C225 | P 8092 0A11 FF02 | F -
+  ~ 0000 W C26C | P - | F -  (0 notes; Sam's Journey)
+      kept: 0000 W C275 | P - | F -
+  ~ 0000 W C248 | P - | F -  (0 notes; Sam's Journey)
+      kept: 0000 W C240 | P - | F -
+  ~ 0000 W C239 | P - | F -  (0 notes; Sam's Journey)
+      kept: 0000 W C240 | P - | F -
+  ~ 0000 W C265 | P - | F -  (0 notes; Sam's Journey)
+      kept: 0000 W C275 | P - | F -
+  ~ 0000 W C24A | P - | F -  (0 notes; Sam's Journey)
+      kept: 0000 W C240 | P - | F -
+  ~ 0000 W C230 | P - | F -  (0 notes; Sam's Journey)
+      kept: 0000 W C232 | P - | F -
+
+László Vincze (Vincenzo): 1 of 71
+  ~ 00E4 W 81CC 41A4 419A 4196 408C FF00 | P 8080 FF01 | F 91A0 9104 9102 FF00  (402 notes; Plasma Ninja)
+      kept: 00F5 W 81CC 41A4 419A 4196 408C FF00 | P 8080 FF01 | F 91A0 9104 9102 FF00
+
+Roy Johan Widding (Rotteroy): 2 of 126
+  ~ 008C W 4100 9600 C25E | P 8080 1800 18FF FF02 | F -  (380 notes; Kalle Kloakk 4k)
+      kept: 007C W 4100 9600 C25E | P 8080 1800 18FF FF02 | F -
+  ~ 0086 W 80DC C308 | P - | F -  (10 notes; Dodge)
+      kept: 0086 W 80DC C408 | P - | F -
