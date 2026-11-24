@@ -898,6 +898,14 @@ function patternCtrlEnter() {
   else if (S.pattCol <= 2 && row) gotoCommand(row.cmd & 0x7f);
 }
 
+/** Set while Enter holds a note of the instrument editor: letting go of the key ends the note. */
+let enterNote = false;
+function endEnterNote() {
+  if (!enterNote) return;
+  enterNote = false;
+  engine?.testKeyOff(S.trkCh);
+}
+
 function testCurrentCommand(cmdNumber: number) {
   S.testCmd = cmdNumber;
   testNote(S.octave * 12 * 2, cmdNumber, S.trkCh);
@@ -910,6 +918,11 @@ function panelKey(e: KeyboardEvent): boolean {
     if (e.code === 'Space') {
       if (e.shiftKey) testCurrentCommand(S.cmdNum + 1);
       else engine?.testKeyOff(S.trkCh);
+      return true;
+    }
+    // Enter plays the instrument for as long as it is held, so the list can be walked and heard
+    if (e.code === 'Enter' || e.code === 'NumpadEnter') {
+      if (!e.repeat) { testCurrentCommand(S.cmdNum + 1); enterNote = true; }
       return true;
     }
     if (e.shiftKey || e.repeat) return false;
@@ -1433,8 +1446,8 @@ wireKit({
 });
 document.addEventListener('keydown', onKeyDown);
 // Releasing Enter (or leaving the window) ends held stepping
-document.addEventListener('keyup', e => { if (e.code === 'Enter' || e.code === 'NumpadEnter') heldStep = null; });
-window.addEventListener('blur', () => { heldStep = null; });
+document.addEventListener('keyup', e => { if (e.code === 'Enter' || e.code === 'NumpadEnter') { heldStep = null; endEnterNote(); } });
+window.addEventListener('blur', () => { heldStep = null; endEnterNote(); });
 // Drop a song file or disk image anywhere on the window to open it
 window.addEventListener('dragover', e => e.preventDefault());
 window.addEventListener('drop', async e => {

@@ -315,7 +315,7 @@ const HINTS: Record<string, string> = {
   tracks: 'Hex: pattern 01-7F, transpose 80-FF (C0 = none), end with 00 xx to loop  |  Enter: open pattern  Shift+Enter: new pattern  F6: play from here',
   pattern: 'Notes: piano keys  Space: key off  Shift+Space: key on  Enter: play row and step  |  Shift+Q/A: transpose  Shift+L: legato  Shift+O: optimize  -/+: command',
   tables: 'Hex edit  |  Enter: follow jump  Shift+Space: test command  Space: key off  Ins/Del: insert/delete row',
-  inst: 'Piano keys: try the instrument  Shift+Space: test note  Space: key off  Up/Down: other instrument  Del: remove it  |  Drag the points in the graphs, or use the controls',
+  inst: 'Piano keys: try the instrument  Enter: play it while held  Shift+Space: test note  Space: key off  Up/Down: other instrument  Del: remove it  |  Drag the points in the graphs, or use the controls',
   commands: 'ADSR + table pointers  |  Enter: go to table  Shift+Enter: new table row  Shift+Space: test  Tab into Name to type',
 };
 
@@ -497,6 +497,7 @@ export const HELP_HTML = `
 <p>The <b>Sounds</b> switch in the toolbar chooses how sounds are edited. <b>Instruments</b> shows each command as an instrument: a name, an envelope with four sliders, and its waveform, pulse and filter programs as lists of steps, each with a graph of the program frame by frame. Drag a point in a graph to change its step: a round point is a set value, a diamond is the end of a sweep (sideways for its length, up or down for its speed), a pitch step moves by semitones. The shaded part is the program repeating. Pulse width is shown in per cent and filter cutoff as 0-255, on the sliders and in the graphs alike. <b>Tables</b> shows the same data as in NinjaTracker: the three tables and the command list in hex. Both edit the same song, so you can switch at any time and nothing is converted.</p>
 <table>
 <tr><td>Piano keys</td><td>Try the instrument (while the Instruments panel is active). With the cursor in a number field the letter keys still play, so a value can be changed and heard without leaving it; the digit keys type</td></tr>
+<tr><td>Enter</td><td>Play the instrument for as long as the key is held</td></tr>
 <tr><td>Shift+Space / Space</td><td>Test note / key off</td></tr>
 <tr><td>Hold Test</td><td>Hear the instrument with the mouse; the name and the Test button stay in view while the sections scroll</td></tr>
 <tr><td>Up / Down</td><td>Previous / next instrument</td></tr>
