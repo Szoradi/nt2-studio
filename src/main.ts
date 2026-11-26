@@ -18,6 +18,7 @@ import { wireInstruments, clearInstrument } from './ui/instrument.ts';
 import { wireKit, openKit, previewNote } from './ui/kit.ts';
 import { wireExamples, openExamples as openExampleBrowser } from './ui/examples.ts';
 import { addKitInstrument, type KitInstrument } from './core/kit.ts';
+import { wireMenus } from './ui/menu.ts';
 import { renderAll, renderTime, showStatus, HELP_HTML, FOLDS, folded, hiddenNow, foldOf, setFolded, type Fold } from './ui/view.ts';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -1297,6 +1298,8 @@ function wireToolbar() {
   });
   on('btn-clearmusic', () => { E.clearMusic(); showStatus('Cleared all patterns and tracks; tables and commands are kept (Ctrl+Z to undo)'); });
   on('btn-examples', () => void openExampleBrowser());
+  on('btn-undo', () => E.undo());
+  on('btn-redo', () => E.redo());
   on('btn-save', () => void saveSong(false));
   on('btn-export', openExport);
   on('btn-play', play);
@@ -1404,6 +1407,7 @@ function wireToolbar() {
 E.setListeners(onStateChanged, msg => showStatus(msg, true));
 try { if (localStorage.getItem('nt2studio.sideMode') === 'classic') S.sideMode = 'classic'; } catch { /* storage unavailable */ }
 wireToolbar();
+wireMenus($('menus'));
 wireListSplit();
 wireInstruments({
   test: () => { ensureAudio(); testCurrentCommand(S.cmdNum + 1); },

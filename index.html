@@ -8,48 +8,65 @@
 </head>
 <body>
   <header id="toolbar">
-    <!-- Row 1: the song and its files -->
+    <!-- Row 1: the menus, and what belongs to the whole song -->
     <div class="tbar">
       <button class="brand" id="brand" title="About NT2 Studio: version and credits">NT2 Studio</button>
+      <nav class="menus" id="menus">
+        <div class="menu">
+          <button class="menu-title" aria-haspopup="menu" aria-expanded="false">File</button>
+          <div class="menu-pop" role="menu">
+            <button id="btn-new" role="menuitem" title="New song (the current one is kept under Recent)"><span>New</span></button>
+            <button id="btn-open" role="menuitem" title="Open a song file or .d64 disk image, or import a NinjaTracker 2 .sid, packed .prg or gamemusic file (Ctrl+O)"><span>Open&hellip;</span><kbd>Ctrl+O</kbd></button>
+            <button id="btn-recent" role="menuitem" title="Songs that were replaced by New, Open or Examples"><span>Recent songs&hellip;</span></button>
+            <button id="btn-examples" role="menuitem" title="Tunes by NinjaTracker 2 musicians, and the example tunes from the NinjaTracker V2.03 disk"><span>Examples&hellip;</span></button>
+            <hr>
+            <button id="btn-save" role="menuitem" title="Save in NinjaTracker 2 song format (Ctrl+S, Ctrl+Shift+S to save as)"><span>Save</span><kbd>Ctrl+S</kbd></button>
+            <button id="btn-export" role="menuitem" title="Pack and export for the C64 (.sid, .prg, gamemusic, 4k intro source)"><span>Export&hellip;</span></button>
+          </div>
+        </div>
+        <div class="menu">
+          <button class="menu-title" aria-haspopup="menu" aria-expanded="false">Edit</button>
+          <div class="menu-pop" role="menu">
+            <button id="btn-undo" role="menuitem" title="Take back the last change (Ctrl+Z)"><span>Undo</span><kbd>Ctrl+Z</kbd></button>
+            <button id="btn-redo" role="menuitem" title="Make the change that was taken back again (Ctrl+Y or Ctrl+Shift+Z)"><span>Redo</span><kbd>Ctrl+Y</kbd></button>
+            <hr>
+            <button id="btn-pdup" role="menuitem" title="Copy the current pattern to the first unused one (Ctrl+D)"><span>Duplicate pattern</span><kbd>Ctrl+D</kbd></button>
+            <button id="btn-pclear" role="menuitem" title="Empty the current pattern"><span>Clear pattern</span></button>
+            <hr>
+            <button id="btn-clearmusic" class="danger" role="menuitem" title="Remove all patterns and tracks, keep tables and commands (Ctrl+Z to undo)"><span>Clear music</span></button>
+          </div>
+        </div>
+        <div class="menu">
+          <button class="menu-title" aria-haspopup="menu" aria-expanded="false">Help</button>
+          <div class="menu-pop" role="menu">
+            <button id="btn-help" role="menuitem" title="Keys and data format reference (F8)"><span>Keys and data format</span><kbd>F8</kbd></button>
+            <button role="menuitem" data-click="brand" title="Version and credits"><span>About NT2 Studio</span></button>
+          </div>
+        </div>
+      </nav>
       <div class="group">
-        <span class="cap">Song</span>
+        <label for="in-name">Song</label>
         <input id="in-name" class="songname" maxlength="32" spellcheck="false" title="Song name (used for saved and exported files)">
-      </div>
-      <div class="group">
-        <span class="cap">File</span>
-        <button id="btn-new" title="New song (the current one is kept under Recent)">New</button>
-        <button id="btn-open" title="Open a song file or .d64 disk image, or import a NinjaTracker 2 .sid, packed .prg or gamemusic file (Ctrl+O)">Open</button>
-        <button id="btn-recent" title="Songs that were replaced by New, Open or Examples">Recent</button>
-        <button id="btn-examples" title="Tunes by NinjaTracker 2 musicians, and the example tunes from the NinjaTracker V2.03 disk">Examples</button>
-        <span class="sep"></span>
-        <button id="btn-save" title="Save in NinjaTracker 2 song format (Ctrl+S, Ctrl+Shift+S to save as)">Save</button>
-        <button id="btn-export" title="Pack and export for the C64 (.sid, .prg, gamemusic, 4k intro source)">Export</button>
-        <span class="sep"></span>
-        <button id="btn-clearmusic" class="danger" title="Remove all patterns and tracks, keep tables and commands (Ctrl+Z to undo)">Clear music</button>
-      </div>
-      <div class="group">
-        <span class="cap">Pattern</span>
-        <button id="btn-pdup" title="Copy the current pattern to the first unused one (Ctrl+D)">Duplicate</button>
-        <button id="btn-pclear" title="Empty the current pattern">Clear</button>
-        <label for="in-bar" title="Frames per bar (4 beats), for the bar and beat lines. Remembered for each song; guessed for a new one">Bar</label>
-        <input id="in-bar" class="hex" maxlength="3" size="3" spellcheck="false" title="Frames per bar (4 beats), for the bar and beat lines. Remembered for each song; guessed for a new one">
       </div>
       <span class="spacer"></span>
       <div class="group">
-        <button id="btn-help" title="Keys and data format reference (F8)">Help</button>
+        <label for="sel-model">SID</label>
+        <select id="sel-model"><option>8580</option><option>6581</option></select>
+        <label for="in-hr" title="Sustain/Release value used during hard restart">HR</label>
+        <input id="in-hr" class="hex" maxlength="2" size="2" spellcheck="false">
+        <label for="in-fw" title="Waveform of the note init frame">1st wave</label>
+        <input id="in-fw" class="hex" maxlength="2" size="2" spellcheck="false">
       </div>
     </div>
     <!-- Row 2: playing and editing -->
     <div class="tbar">
       <div class="group">
-        <span class="cap">Play</span>
-        <button id="btn-play" class="go" title="Play from the beginning (F1)">&#9654; Start</button>
-        <button id="btn-playcursor" title="Play from the cursor row of the pattern, or from the track cursor (F6)">&#9654; Cursor</button>
-        <button id="btn-playpatt" title="Loop the current pattern on its own (F9)">&#8635; Pattern</button>
-        <button id="btn-stop" title="Stop (F3 or Esc)">&#9632; Stop</button>
-        <span id="time" class="readout" title="Play time">0:00</span>
-        <span class="sep"></span>
-        <button id="btn-ff" class="toggle" title="Fast forward (F7)">FF</button>
+        <button id="btn-play" class="ic go" title="Play from the beginning (F1)" aria-label="Play from the beginning"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 2.5v11l9.5-5.5z" fill="currentColor"/></svg></button>
+        <button id="btn-playcursor" class="ic" title="Play from the cursor row of the pattern, or from the track cursor (F6)" aria-label="Play from the cursor"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M2.5 2.5h2v11h-2zM6.5 2.5v11L15 8z" fill="currentColor"/></svg></button>
+        <button id="btn-playpatt" class="ic" title="Loop the current pattern on its own (F9)" aria-label="Loop the current pattern"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M12.6 10.2A5 5 0 1 1 8 3h2.2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M9.6.4v5.2L13.4 3z" fill="currentColor"/></svg></button>
+        <button id="btn-stop" class="ic" title="Stop (F3 or Esc)" aria-label="Stop"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3.5 3.5h9v9h-9z" fill="currentColor"/></svg></button>
+        <span id="time" class="readout well" title="Play time">0:00</span>
+        <button id="btn-ff" class="ic toggle" title="Fast forward (F7)" aria-label="Fast forward"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M1.5 3v10L8 8zM8 3v10l6.5-5z" fill="currentColor"/></svg></button>
       </div>
       <div class="group">
         <span class="cap">Subtune</span>
@@ -69,21 +86,17 @@
         <button id="btn-keymode" title="Note entry layout: ProTracker or DMC keys (F4)">PT</button>
       </div>
       <div class="group">
+        <label for="in-bar" title="Frames per bar (4 beats), for the bar and beat lines. Remembered for each song; guessed for a new one">Bar</label>
+        <input id="in-bar" class="hex" maxlength="3" size="3" spellcheck="false" title="Frames per bar (4 beats), for the bar and beat lines. Remembered for each song; guessed for a new one">
+      </div>
+      <span class="spacer"></span>
+      <div class="group">
         <span class="cap">Sounds</span>
         <span class="seg">
           <button id="btn-mode-inst" class="toggle" title="Edit sounds as instruments: envelope, waveform, pulse and filter steps with sliders and graphs">Instruments</button>
           <button id="btn-mode-classic" class="toggle" title="Edit sounds as in NinjaTracker: the wave, pulse and filter tables and the command list in hex">Tables</button>
         </span>
         <button id="btn-kit" title="Browse instruments taken from existing NinjaTracker 2 tunes, hear them and add them to this song">Kit&hellip;</button>
-      </div>
-      <span class="spacer"></span>
-      <div class="group">
-        <label for="sel-model">SID</label>
-        <select id="sel-model"><option>8580</option><option>6581</option></select>
-        <label for="in-hr" title="Sustain/Release value used during hard restart">HR</label>
-        <input id="in-hr" class="hex" maxlength="2" size="2" spellcheck="false">
-        <label for="in-fw" title="Waveform of the note init frame">1st wave</label>
-        <input id="in-fw" class="hex" maxlength="2" size="2" spellcheck="false">
       </div>
     </div>
   </header>

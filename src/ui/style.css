@@ -73,6 +73,43 @@ body {
 }
 .tbar + .tbar { border-top: 1px solid var(--bg); }
 .brand { font-weight: 600; color: var(--accent); letter-spacing: .02em; margin-right: 14px; }
+/* The menu bar: a title opens its list under it. The entries are the same buttons the toolbar had */
+.menus { display: flex; margin-right: 6px; }
+.menu { position: relative; }
+.menu-title { background: none; border-color: transparent; padding: 0 9px; }
+.menu-title:hover, .menu.open .menu-title { background: var(--ctl-hover); }
+.menu-pop {
+  display: none;
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  z-index: 50;
+  min-width: 210px;
+  padding: 4px 0;
+  background: #2c2c2c;
+  border: 1px solid var(--edge);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .55);
+}
+.menu.open .menu-pop { display: block; }
+.menu-pop button {
+  display: flex;
+  justify-content: space-between;
+  gap: 28px;
+  width: 100%;
+  padding: 0 12px;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  text-align: left;
+}
+.menu-pop button:hover:not(:disabled), .menu-pop button:focus { background: var(--on); color: #fff; outline: 0; }
+.menu-pop button.danger:hover, .menu-pop button.danger:focus { background: #6a3538; color: #fff; }
+.menu-pop kbd { font: inherit; color: var(--dim); }
+.menu-pop button:hover:not(:disabled) kbd, .menu-pop button:focus kbd { color: inherit; }
+.menu-pop hr { border: 0; border-top: 1px solid var(--ctl-line); margin: 4px 0; }
+/* A button that is only a picture */
+button.ic { width: 30px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
+.readout.well { height: 24px; line-height: 22px; padding: 0 6px; margin: 0 4px; background: var(--well); border: 1px solid var(--ctl-line); border-radius: 2px; }
 .group {
   display: flex;
   align-items: center;
