@@ -57,3 +57,10 @@ licence.
 
 `songs/second-strike.nt2` and `songs/claude2.nt2` use the instruments (tables and commands) of
 the MW4TITLE example tune from the NinjaTracker disk, with new patterns and tracks.
+
+## IBM Plex fonts
+
+- Files: the `@fontsource/ibm-plex-mono` and `@fontsource/ibm-plex-sans-condensed` packages,
+  whose font files the build copies into `dist/assets/`
+- © IBM Corp., <https://github.com/IBM/plex>
+- Licence: SIL Open Font License 1.1 (<https://openfontlicense.org>)

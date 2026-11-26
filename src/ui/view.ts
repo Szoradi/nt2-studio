@@ -349,7 +349,7 @@ export function setFolded(g: Fold, on: boolean) {
 const recent: Fold[] = ['pattern', 'side', 'tracks'];
 /** The least width a column is useful at (the same as in the style sheet), and the width of a strip. */
 const MIN_WIDTH = { inst: { tracks: 200, pattern: 440, side: 600 }, classic: { tracks: 230, pattern: 480, side: 420 } };
-const STRIP = 28, GAP = 6;
+const STRIP = 28, GAP = 0;
 
 function applyFolds() {
   // The panel with the keyboard is never hidden: jumping to a folded panel opens it
