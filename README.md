@@ -3,7 +3,7 @@
 A modern, cross-platform music editor for the **NinjaTracker V2.03** Commodore 64 playroutine
 by Cadaver (Lasse Öörni). It runs in any current browser on Windows, macOS and Linux.
 
-![NT2 Studio with a song loaded: tracks, three pattern columns, the wave, pulse and filter tables and the command list](docs/screenshot.png)
+![NT2 Studio with a song playing: tracks, three pattern columns, the instrument list and the instrument editor with its wave and pulse graphs](docs/screenshot.png)
 
 - Tracker-style editing of tracks, patterns, wave/pulse/filter tables and commands, with the
   original editor's keys plus mouse support, row selection, undo/redo and all three channels
